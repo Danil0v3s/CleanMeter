@@ -166,7 +166,9 @@ private fun ApplicationScope.SettingsWindow(
         icon = icon,
         visible = isVisible,
         title = "Clean Meter",
-        resizable = false
+        resizable = false,
+        undecorated = true,
+        transparent = true,
     ) {
         Settings(onOverlaySettings = onOverlaySettings)
     }

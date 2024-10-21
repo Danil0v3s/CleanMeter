@@ -20,10 +20,10 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import ui.ColorTokens.ClearGray
-import ui.ColorTokens.Green
-import ui.ColorTokens.Red
-import ui.ColorTokens.Yellow
+import br.com.firstsoft.target.server.ui.ColorTokens.ClearGray
+import br.com.firstsoft.target.server.ui.ColorTokens.Green
+import br.com.firstsoft.target.server.ui.ColorTokens.Red
+import br.com.firstsoft.target.server.ui.ColorTokens.Yellow
 import ui.app.OverlaySettings
 import kotlin.math.abs
 

@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.fastForEachIndexed
+import br.com.firstsoft.target.server.ui.ColorTokens.OffWhite
 import br.com.firstsoft.target.server.ui.components.Pill
 import br.com.firstsoft.target.server.ui.components.Progress
 import mahm.CpuTemp
@@ -56,16 +57,9 @@ import mahm.RamUsage
 import mahm.RamUsagePercent
 import mahm.VramUsage
 import mahm.VramUsagePercent
-import ui.ColorTokens.OffWhite
 import ui.app.OverlaySettings
 
-object ColorTokens {
-    val Green = Color(0xff1cad69)
-    val Yellow = Color(0xfffcc748)
-    val Red = Color(0xffed4335)
-    val ClearGray = Color(0x11d3d3d3)
-    val OffWhite = Color(0xffc0c0c0)
-}
+
 
 inline fun Modifier.conditional(
     predicate: Boolean,

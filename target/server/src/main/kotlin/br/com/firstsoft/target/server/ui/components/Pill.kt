@@ -18,7 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import ui.ColorTokens.OffWhite
+import br.com.firstsoft.target.server.ui.ColorTokens.OffWhite
 import ui.conditional
 
 @Composable
