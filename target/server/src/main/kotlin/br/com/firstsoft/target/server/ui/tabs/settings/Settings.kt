@@ -1,20 +1,20 @@
 package ui.app
 
-import Title
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ScrollableTabRow
 import androidx.compose.material.Tab
-import androidx.compose.material.TabRow
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Close
@@ -30,7 +30,7 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -69,12 +69,13 @@ fun Settings(
 
         var selectedTabIndex by remember { mutableStateOf(0) }
 
-        Column(modifier = Modifier.fillMaxSize().padding(24.dp)) {
-            TabRow(
+        Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+            ScrollableTabRow(
                 selectedTabIndex = selectedTabIndex,
                 modifier = Modifier.fillMaxWidth().height(44.dp),
                 backgroundColor = Color.Transparent,
                 contentColor = DarkGray,
+                edgePadding = 0.dp,
                 indicator = { tabPositions -> },
                 divider = {}
             ) {
@@ -82,19 +83,19 @@ fun Settings(
                     selected = selectedTabIndex == 0,
                     onClick = { selectedTabIndex = 0 },
                     label = "Stats",
-                    icon = Icons.Rounded.Minimize,
+                    icon = painterResource("icons/data_usage.svg"),
                 )
                 SettingsTab(
                     selected = selectedTabIndex == 1,
                     onClick = { selectedTabIndex = 1 },
                     label = "Style",
-                    icon = Icons.Rounded.Minimize,
+                    icon = painterResource("icons/layers.svg"),
                 )
                 SettingsTab(
                     selected = selectedTabIndex == 2,
                     onClick = { selectedTabIndex = 2 },
                     label = "Settings",
-                    icon = Icons.Rounded.Minimize,
+                    icon = painterResource("icons/settings.svg"),
                 )
             }
 
@@ -112,31 +113,38 @@ private fun SettingsTab(
     selected: Boolean,
     onClick: () -> Unit,
     label: String,
-    icon: ImageVector,
+    icon: Painter,
 ) = Tab(
     selected = selected,
     onClick = onClick,
     selectedContentColor = DarkGray,
     unselectedContentColor = MutedGray,
     modifier = Modifier
+        .fillMaxHeight()
         .background(
             color = if (selected) DarkGray else Color.Transparent,
             shape = RoundedCornerShape(50)
         )
-        .border(2.dp, BarelyVisibleGray, RoundedCornerShape(50)),
+        .border(2.dp, BarelyVisibleGray, RoundedCornerShape(50))
+        .padding(horizontal = 16.dp)
+    ,
 ) {
-    Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.fillMaxSize()
+    ) {
         Image(
-            imageVector = icon,
+            painter = icon,
             contentDescription = "logo",
-            modifier = Modifier.size(25.dp),
+            modifier = Modifier.size(16.dp),
             colorFilter = ColorFilter.tint(if (selected) Color.White else MutedGray),
         )
         Text(
             text = label,
             fontWeight = FontWeight.Medium,
             color = if (selected) Color.White else MutedGray,
-            fontSize = 16.sp
+            fontSize = 16.sp,
         )
     }
 }
@@ -156,7 +164,7 @@ private fun TopBar() {
                     strokeWidth = 2.dp.toPx()
                 )
             }
-            .padding(horizontal = 24.dp, vertical = 16.dp),
+            .padding(horizontal = 16.dp, vertical = 12.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
