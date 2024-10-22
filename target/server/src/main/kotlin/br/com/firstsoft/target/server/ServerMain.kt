@@ -9,6 +9,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
@@ -157,7 +158,7 @@ private fun ApplicationScope.SettingsWindow(
     }
     val icon = painterResource("imgs/logo.png")
     val state = rememberWindowState().apply {
-        size = DpSize(500.dp, 500.dp)
+        size = DpSize(650.dp, 900.dp)
     }
 
     Window(

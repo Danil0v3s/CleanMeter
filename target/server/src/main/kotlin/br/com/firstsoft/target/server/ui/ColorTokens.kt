@@ -10,8 +10,8 @@ object ColorTokens {
     val OffWhite = Color(0xffc0c0c0)
 
     val BackgroundOffWhite = Color(0xffF0F1F1)
-    val AlmostGray = Color(0xff475467)
     val BarelyVisibleGray = Color(0x0C111D1A)
+    val AlmostVisibleGray = Color(0xFFCECFD2)
     val DarkGray = Color(0xFF0C111D)
     val MutedGray = Color(0xFF475467)
 }

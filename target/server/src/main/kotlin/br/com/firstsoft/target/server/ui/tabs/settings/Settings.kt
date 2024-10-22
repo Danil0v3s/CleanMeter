@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -36,7 +37,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.com.firstsoft.target.server.ui.AppTheme
-import br.com.firstsoft.target.server.ui.ColorTokens.AlmostGray
 import br.com.firstsoft.target.server.ui.ColorTokens.BackgroundOffWhite
 import br.com.firstsoft.target.server.ui.ColorTokens.BarelyVisibleGray
 import br.com.firstsoft.target.server.ui.ColorTokens.DarkGray
@@ -69,7 +69,7 @@ fun Settings(
 
         var selectedTabIndex by remember { mutableStateOf(0) }
 
-        Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+        Column(modifier = Modifier.fillMaxSize().padding(24.dp)) {
             ScrollableTabRow(
                 selectedTabIndex = selectedTabIndex,
                 modifier = Modifier.fillMaxWidth().height(44.dp),
@@ -90,18 +90,21 @@ fun Settings(
                     onClick = { selectedTabIndex = 1 },
                     label = "Style",
                     icon = painterResource("icons/layers.svg"),
+                    modifier = Modifier.padding(start = 8.dp)
                 )
                 SettingsTab(
                     selected = selectedTabIndex == 2,
                     onClick = { selectedTabIndex = 2 },
                     label = "Settings",
                     icon = painterResource("icons/settings.svg"),
+                    modifier = Modifier.padding(start = 8.dp),
                 )
             }
 
             when (selectedTabIndex) {
                 0 -> OverlaySettingsUi(onOverlaySettings)
                 1 -> AppSettingsUi()
+                2 -> AppSettingsUi()
                 else -> Unit
             }
         }
@@ -114,20 +117,20 @@ private fun SettingsTab(
     onClick: () -> Unit,
     label: String,
     icon: Painter,
+    modifier: Modifier = Modifier,
 ) = Tab(
     selected = selected,
     onClick = onClick,
     selectedContentColor = DarkGray,
     unselectedContentColor = MutedGray,
-    modifier = Modifier
+    modifier = modifier
         .fillMaxHeight()
         .background(
             color = if (selected) DarkGray else Color.Transparent,
             shape = RoundedCornerShape(50)
         )
         .border(2.dp, BarelyVisibleGray, RoundedCornerShape(50))
-        .padding(horizontal = 16.dp)
-    ,
+        .padding(horizontal = 16.dp),
 ) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -164,7 +167,7 @@ private fun TopBar() {
                     strokeWidth = 2.dp.toPx()
                 )
             }
-            .padding(horizontal = 16.dp, vertical = 12.dp),
+            .padding(horizontal = 24.dp, vertical = 16.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -184,12 +187,12 @@ private fun TopBar() {
             Image(
                 imageVector = Icons.Rounded.Minimize,
                 contentDescription = "Minimize",
-                colorFilter = ColorFilter.tint(AlmostGray),
+                colorFilter = ColorFilter.tint(MutedGray),
             )
             Image(
                 imageVector = Icons.Rounded.Close,
                 contentDescription = "Close",
-                colorFilter = ColorFilter.tint(AlmostGray),
+                colorFilter = ColorFilter.tint(MutedGray),
             )
         }
     }
