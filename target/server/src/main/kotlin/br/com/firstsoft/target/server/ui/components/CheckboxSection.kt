@@ -42,8 +42,9 @@ fun CheckboxSection(
             fontWeight = FontWeight.SemiBold,
             letterSpacing = 1.sp
         )
-        Switch(
-            checked = options.any { it.isSelected }, onCheckedChange = onSwitchToggle
+        Toggle(
+            checked = options.any { it.isSelected },
+            onCheckedChange = onSwitchToggle
         )
     }
 

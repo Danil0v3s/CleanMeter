@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
@@ -52,16 +53,13 @@ fun CollapsibleSection(
             fontWeight = FontWeight.SemiBold,
             letterSpacing = 1.sp
         )
-        IconButton(onClick = { expanded = !expanded }, modifier = Modifier.clearAndSetSemantics { }) {
+        IconButton(onClick = { expanded = !expanded }, modifier = Modifier.clearAndSetSemantics { } .height(20.dp)) {
             Icon(
-                Icons.Rounded.ChevronRight,
-                "Trailing icon for exposed dropdown menu",
-                Modifier.rotate(
-                    if (expanded)
-                        270f
-                    else
-                        90f
-                )
+                imageVector = Icons.Rounded.ChevronRight,
+                contentDescription = "Trailing icon for exposed dropdown menu",
+                modifier = Modifier
+                    .rotate(if (expanded) 270f else 90f)
+                    .height(20.dp)
             )
         }
     }

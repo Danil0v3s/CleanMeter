@@ -16,6 +16,7 @@ dependencies {
 
     implementation(compose.desktop.currentOs)
     implementation(libs.compose.material.icons)
+    implementation(libs.compose.material)
 
     implementation(projects.core.common)
     implementation(projects.core.native)

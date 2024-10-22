@@ -135,7 +135,7 @@ private fun SettingsTab(
     modifier = modifier
         .fillMaxHeight()
         .background(
-            color = if (selected) DarkGray else Color.Transparent,
+            color = if (selected) DarkGray else Color.White,
             shape = RoundedCornerShape(50)
         )
         .border(2.dp, BarelyVisibleGray, RoundedCornerShape(50))
