@@ -16,25 +16,38 @@ import androidx.compose.ui.unit.dp
 import PreferencesRepository
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import br.com.firstsoft.target.server.ui.components.CheckboxWithLabel
+import br.com.firstsoft.target.server.ui.components.Section
 import win32.WinRegistry
 
 const val PREFERENCE_START_MINIMIZED = "PREFERENCE_START_MINIMIZED"
 
 @Composable
-fun AppSettingsUi() = Column {
+fun AppSettingsUi() = Box(modifier = Modifier.fillMaxSize().padding(top = 20.dp)) {
     Column(
-        modifier = Modifier.weight(1f).fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        modifier = Modifier.verticalScroll(rememberScrollState()),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        startWithWindowsCheckbox()
-        startMinimizedCheckbox()
+        Section(
+            title = "GENERAL",
+        ) {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                startWithWindowsCheckbox()
+                startMinimizedCheckbox()
+            }
+        }
     }
-    Box(modifier = Modifier.weight(0.1f)) {
-        FooterUi()
-    }
+
+    FooterUi(modifier = Modifier.align(Alignment.BottomStart))
 }
 
 @OptIn(ExperimentalFoundationApi::class)
