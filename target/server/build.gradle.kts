@@ -33,10 +33,26 @@ sourceSets {
 compose.desktop {
     application {
         mainClass = "br.com.firstsoft.target.server.ServerMainKt"
+
+        buildTypes.release.proguard {
+            isEnabled = false
+            optimize.set(false)
+        }
+
+
         nativeDistributions {
-            targetFormats(TargetFormat.Msi)
+            targetFormats(TargetFormat.Exe, TargetFormat.Deb)
+
             packageName = "Clean Meter"
             packageVersion = "0.0.1"
+
+            windows {
+                iconFile.set(project.file("src/main/resources/imgs/favicon.ico"))
+            }
+
+            linux {
+                iconFile.set(project.file("src/main/resources/imgs/logo.png"))
+            }
         }
     }
 }
