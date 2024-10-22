@@ -188,7 +188,12 @@ private fun ApplicationScope.SettingsWindow(
         undecorated = true,
         transparent = true,
     ) {
-        Settings(overlaySettings = overlaySettings, onOverlaySettings = onOverlaySettings)
+        Settings(
+            overlaySettings = overlaySettings,
+            onOverlaySettings = onOverlaySettings,
+            onCloseRequest = { isVisible = false },
+            onMinimizeRequest = { state.isMinimized = true }
+        )
     }
 
     if (!isVisible) {

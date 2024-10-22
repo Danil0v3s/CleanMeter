@@ -3,6 +3,7 @@ package ui.app
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.window.WindowDraggableArea
 import androidx.compose.material.ScrollableTabRow
 import androidx.compose.material.Tab
 import androidx.compose.material.Text
@@ -36,6 +38,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.WindowScope
 import br.com.firstsoft.target.server.ui.AppTheme
 import br.com.firstsoft.target.server.ui.ColorTokens.BackgroundOffWhite
 import br.com.firstsoft.target.server.ui.ColorTokens.BarelyVisibleGray
@@ -60,9 +63,11 @@ val positionsLabels = listOf(
 )
 
 @Composable
-fun Settings(
-    onOverlaySettings: (OverlaySettings) -> Unit,
+fun WindowScope.Settings(
     overlaySettings: OverlaySettings,
+    onCloseRequest: () -> Unit,
+    onMinimizeRequest: () -> Unit,
+    onOverlaySettings: (OverlaySettings) -> Unit,
 ) = AppTheme {
     LaunchedEffect(overlaySettings) {
         PreferencesRepository.setPreference(OVERLAY_SETTINGS_PREFERENCE_KEY, Json.encodeToString(overlaySettings))
@@ -74,7 +79,9 @@ fun Settings(
             .fillMaxSize()
             .background(BackgroundOffWhite, RoundedCornerShape(12.dp))
     ) {
-        TopBar()
+        WindowDraggableArea {
+            TopBar(onCloseRequest = onCloseRequest, onMinimizeRequest = onMinimizeRequest)
+        }
 
         var selectedTabIndex by remember { mutableStateOf(0) }
 
@@ -162,7 +169,10 @@ private fun SettingsTab(
 }
 
 @Composable
-private fun TopBar() {
+private fun TopBar(
+    onCloseRequest: () -> Unit,
+    onMinimizeRequest: () -> Unit,
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -197,11 +207,13 @@ private fun TopBar() {
                 imageVector = Icons.Rounded.Minimize,
                 contentDescription = "Minimize",
                 colorFilter = ColorFilter.tint(MutedGray),
+                modifier = Modifier.clickable { onMinimizeRequest() }
             )
             Image(
                 imageVector = Icons.Rounded.Close,
                 contentDescription = "Close",
                 colorFilter = ColorFilter.tint(MutedGray),
+                modifier = Modifier.clickable { onCloseRequest() }
             )
         }
     }
