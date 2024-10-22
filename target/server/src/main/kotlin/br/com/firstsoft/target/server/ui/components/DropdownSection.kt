@@ -44,7 +44,7 @@ fun DropdownSection(
     selectedIndex: Int,
 ) = Column(
     modifier = Modifier.background(Color.White, RoundedCornerShape(12.dp)).padding(20.dp),
-    verticalArrangement = Arrangement.spacedBy(12.dp)
+    verticalArrangement = Arrangement.spacedBy(20.dp)
 ) {
     var expanded by remember { mutableStateOf(false) }
     var selectedOption by remember { mutableStateOf(options[selectedIndex]) }

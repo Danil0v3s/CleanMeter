@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -20,11 +21,11 @@ import br.com.firstsoft.target.server.ui.ColorTokens.MutedGray
 import br.com.firstsoft.target.server.ui.tabs.settings.CheckboxSectionOption
 
 @Composable
-fun CheckboxSection(
+fun ToggleSection(
     title: String,
-    options: List<CheckboxSectionOption>,
-    onOptionToggle: (CheckboxSectionOption) -> Unit,
+    isEnabled: Boolean,
     onSwitchToggle: (Boolean) -> Unit,
+    content: @Composable () -> Unit
 ) = Column(
     modifier = Modifier.background(Color.White, RoundedCornerShape(12.dp)).padding(20.dp),
     verticalArrangement = Arrangement.spacedBy(20.dp)
@@ -43,17 +44,10 @@ fun CheckboxSection(
             letterSpacing = 1.sp
         )
         Switch(
-            checked = options.any { it.isSelected }, onCheckedChange = onSwitchToggle
+            checked = isEnabled,
+            onCheckedChange = onSwitchToggle
         )
     }
 
-    Column(modifier = Modifier, verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        options.forEach { option ->
-            CheckboxWithLabel(
-                label = option.name,
-                onCheckedChange = { onOptionToggle(option.copy(isSelected = !option.isSelected)) },
-                checked = option.isSelected,
-            )
-        }
-    }
+    content()
 }
