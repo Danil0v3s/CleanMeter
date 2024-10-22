@@ -38,5 +38,4 @@ rootProject.name = "CleanMeter"
 
 include("core:common")
 include("core:native")
-include("target:client")
 include("target:server")

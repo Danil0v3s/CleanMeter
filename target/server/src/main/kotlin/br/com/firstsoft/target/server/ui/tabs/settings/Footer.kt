@@ -56,7 +56,7 @@ fun FooterUi(modifier: Modifier = Modifier) {
                 )
 
                 Text(
-                    text = "Version 0.0.3",
+                    text = "Version ${System.getProperty("jpackage.app-version")}",
                     fontSize = 14.sp,
                     color = AlmostVisibleGray,
                     lineHeight = 0.sp,
