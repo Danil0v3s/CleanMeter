@@ -98,11 +98,9 @@ private fun ApplicationScope.OverlayWindow(
         }
     }
 
-    val alignment = remember(overlaySettings.positionIndex) { positions[overlaySettings.positionIndex] }
     val overlayState = rememberWindowState().apply {
         size = if (overlaySettings.isHorizontal) DpSize(1024.dp, 80.dp) else DpSize(350.dp, 1024.dp)
         placement = WindowPlacement.Floating
-        position = WindowPosition.Aligned(alignment)
     }
 
     val graphicsEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment()
@@ -122,7 +120,8 @@ private fun ApplicationScope.OverlayWindow(
         focusable = false,
         enabled = false,
     ) {
-        LaunchedEffect(alignment, overlaySettings.selectedDisplayIndex) {
+        LaunchedEffect(overlaySettings) {
+            val alignment = positions[overlaySettings.positionIndex]
             val location = when (alignment) {
                 Alignment.TopStart -> IntSize(graphicsConfiguration.bounds.x, graphicsConfiguration.bounds.y)
                 Alignment.TopCenter -> IntSize(
@@ -152,6 +151,7 @@ private fun ApplicationScope.OverlayWindow(
 
                 else -> IntSize.Zero
             }
+            overlayState.position = WindowPosition.Aligned(alignment)
             window.setLocation(location.width, location.height)
             window.toFront()
         }
