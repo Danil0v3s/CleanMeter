@@ -1,5 +1,6 @@
 package br.com.firstsoft.target.server.ui.components
 
+import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -35,8 +36,8 @@ fun Progress(
     progressType: OverlaySettings.ProgressType
 ) {
     val color = when {
-        value > 0.7f && value < 0.9f -> Red
-        value > 0.5f && value < 0.7f -> Yellow
+        value > 0.8f -> Red
+        value in 0.6f..0.8f -> Yellow
         else -> Green
     }
     Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -51,8 +52,16 @@ fun Progress(
             )
 
             OverlaySettings.ProgressType.Bar -> Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                val integerValue = value.times(10).toInt()
+
                 repeat(10) {
-                    val barColor = if (value.times(10) > abs(it - 9)) color else Color.Transparent
+                    val inverseValue = abs(it - 9)
+
+                    val barColor = if (integerValue < inverseValue) Color.Transparent else when {
+                        inverseValue >= 8 -> Red
+                        inverseValue in 5..7 -> Yellow
+                        else -> Green
+                    }
 
                     Box(
                         modifier = Modifier
@@ -94,4 +103,45 @@ private fun ProgressLabel(label: String) {
         lineHeight = 0.sp,
         fontWeight = FontWeight.Normal,
     )
+}
+
+@Preview
+@Composable
+private fun ProgressPreview() {
+    Row(modifier = Modifier.background(Color.Black)) {
+        Progress(
+            value = 0.5f,
+            label = "05",
+            progressType = OverlaySettings.ProgressType.Bar,
+            unit = "C"
+        )
+
+        Progress(
+            value = 0.6f,
+            label = "06",
+            progressType = OverlaySettings.ProgressType.Bar,
+            unit = "C"
+        )
+
+        Progress(
+            value = 0.7f,
+            label = "07",
+            progressType = OverlaySettings.ProgressType.Bar,
+            unit = "C"
+        )
+
+        Progress(
+            value = 0.8f,
+            label = "08",
+            progressType = OverlaySettings.ProgressType.Bar,
+            unit = "C"
+        )
+
+        Progress(
+            value = 0.9f,
+            label = "09",
+            progressType = OverlaySettings.ProgressType.Bar,
+            unit = "C"
+        )
+    }
 }
