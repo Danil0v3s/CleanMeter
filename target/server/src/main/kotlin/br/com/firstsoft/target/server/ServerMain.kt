@@ -9,7 +9,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
@@ -26,7 +25,10 @@ import com.github.kwhat.jnativehook.keyboard.NativeKeyListener
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
 import ui.PREFERENCE_START_MINIMIZED
+import ui.app.OVERLAY_SETTINGS_PREFERENCE_KEY
 import ui.app.Overlay
 import ui.app.OverlaySettings
 import ui.app.Settings
@@ -42,6 +44,20 @@ val positions = listOf(
     Alignment.BottomCenter,
     Alignment.BottomEnd,
 )
+
+private fun loadOverlaySettings(): OverlaySettings {
+    val json = PreferencesRepository.getPreferenceString(OVERLAY_SETTINGS_PREFERENCE_KEY)
+    val settings = if (json != null) {
+        try {
+            Json.decodeFromString<OverlaySettings>(json)
+        } catch (e: Exception) {
+            OverlaySettings()
+        }
+    } else {
+        OverlaySettings()
+    }
+    return settings
+}
 
 fun main() {
     val channel = Channel<Unit>()
@@ -60,13 +76,13 @@ fun main() {
     })
 
     application {
-        var overlaySettings by remember { mutableStateOf(OverlaySettings()) }
+        var overlaySettings by remember { mutableStateOf(loadOverlaySettings()) }
 
         OverlayWindow(channel, overlaySettings)
 
-        SettingsWindow {
+        SettingsWindow(overlaySettings, {
             overlaySettings = it
-        }
+        })
     }
 }
 
@@ -147,6 +163,7 @@ private fun ApplicationScope.OverlayWindow(
 
 @Composable
 private fun ApplicationScope.SettingsWindow(
+    overlaySettings: OverlaySettings,
     onOverlaySettings: (OverlaySettings) -> Unit
 ) {
     var isVisible by remember {
@@ -171,7 +188,7 @@ private fun ApplicationScope.SettingsWindow(
         undecorated = true,
         transparent = true,
     ) {
-        Settings(onOverlaySettings = onOverlaySettings)
+        Settings(overlaySettings = overlaySettings, onOverlaySettings = onOverlaySettings)
     }
 
     if (!isVisible) {

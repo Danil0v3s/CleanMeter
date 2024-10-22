@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -21,6 +20,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Minimize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,7 +42,10 @@ import br.com.firstsoft.target.server.ui.ColorTokens.BarelyVisibleGray
 import br.com.firstsoft.target.server.ui.ColorTokens.DarkGray
 import br.com.firstsoft.target.server.ui.ColorTokens.MutedGray
 import br.com.firstsoft.target.server.ui.tabs.settings.OverlaySettingsUi
+import br.com.firstsoft.target.server.ui.tabs.settings.StyleUi
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import ui.AppSettingsUi
 
 const val OVERLAY_SETTINGS_PREFERENCE_KEY = "OVERLAY_SETTINGS_PREFERENCE_KEY"
@@ -59,7 +62,13 @@ val positionsLabels = listOf(
 @Composable
 fun Settings(
     onOverlaySettings: (OverlaySettings) -> Unit,
+    overlaySettings: OverlaySettings,
 ) = AppTheme {
+    LaunchedEffect(overlaySettings) {
+        PreferencesRepository.setPreference(OVERLAY_SETTINGS_PREFERENCE_KEY, Json.encodeToString(overlaySettings))
+        onOverlaySettings(overlaySettings)
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -102,8 +111,8 @@ fun Settings(
             }
 
             when (selectedTabIndex) {
-                0 -> OverlaySettingsUi(onOverlaySettings)
-                1 -> AppSettingsUi()
+                0 -> OverlaySettingsUi(overlaySettings, onOverlaySettings)
+                1 -> StyleUi(overlaySettings, onOverlaySettings)
                 2 -> AppSettingsUi()
                 else -> Unit
             }
