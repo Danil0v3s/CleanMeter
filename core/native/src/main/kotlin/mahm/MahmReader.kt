@@ -135,7 +135,7 @@ class MahmReader {
         val array = ByteArray(MAX_STRING_LENGTH)
         get(array, 0, MAX_STRING_LENGTH)
 
-        return String(trim(array), StandardCharsets.UTF_8)
+        return String(trim(array), StandardCharsets.ISO_8859_1)
     }
 
     private fun trim(bytes: ByteArray): ByteArray {

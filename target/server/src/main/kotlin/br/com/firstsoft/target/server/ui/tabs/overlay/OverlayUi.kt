@@ -46,11 +46,13 @@ import br.com.firstsoft.target.server.ui.ColorTokens.OffWhite
 import br.com.firstsoft.target.server.ui.components.Pill
 import br.com.firstsoft.target.server.ui.components.Progress
 import mahm.CpuTemp
+import mahm.CpuTempUnit
 import mahm.CpuUsage
 import mahm.Data
 import mahm.FPS
 import mahm.Frametime
 import mahm.GpuTemp
+import mahm.GpuTempUnit
 import mahm.GpuUsage
 import mahm.MahmReader
 import mahm.RamUsage
@@ -193,7 +195,7 @@ private fun cpu(overlaySettings: OverlaySettings, data: Data) {
                 Progress(
                     value = data.CpuTemp / 100f,
                     label = "${data.CpuTemp}",
-                    unit = "c",
+                    unit = data.CpuTempUnit,
                     progressType = overlaySettings.progressType
                 )
             }
@@ -220,7 +222,7 @@ private fun gpu(overlaySettings: OverlaySettings, data: Data) {
                 Progress(
                     value = data.GpuTemp / 100f,
                     label = "${data.GpuTemp}",
-                    unit = "c",
+                    unit = data.GpuTempUnit,
                     progressType = overlaySettings.progressType
                 )
             }

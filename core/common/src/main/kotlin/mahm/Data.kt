@@ -21,6 +21,9 @@ val Data.GpuTemp: Int
     get() = (entries.firstOrNull { it.dwSrcId == SourceID.MONITORING_SOURCE_ID_GPU_TEMPERATURE }?.data?.toInt()
         ?: 0).coerceAtLeast(1)
 
+val Data.GpuTempUnit: String
+    get() = entries.firstOrNull { it.dwSrcId == SourceID.MONITORING_SOURCE_ID_GPU_TEMPERATURE }?.szLocalisedSrcUnits ?: "c"
+
 val Data.GpuUsage: Int
     get() = (entries.firstOrNull { it.dwSrcId == SourceID.MONITORING_SOURCE_ID_GPU_USAGE }?.data?.toInt()
         ?: 0).coerceAtLeast(1)
@@ -36,6 +39,9 @@ val Data.VramUsage: Float
 val Data.CpuTemp: Int
     get() = (entries.firstOrNull { it.dwSrcId == SourceID.MONITORING_SOURCE_ID_CPU_TEMPERATURE }?.data?.toInt()
         ?: 0).coerceAtLeast(1)
+
+val Data.CpuTempUnit: String
+    get() = entries.firstOrNull { it.dwSrcId == SourceID.MONITORING_SOURCE_ID_CPU_TEMPERATURE }?.szLocalisedSrcUnits ?: "c"
 
 val Data.CpuUsage: Int
     get() = (entries.firstOrNull { it.dwSrcId == SourceID.MONITORING_SOURCE_ID_CPU_USAGE }?.data?.toInt()
