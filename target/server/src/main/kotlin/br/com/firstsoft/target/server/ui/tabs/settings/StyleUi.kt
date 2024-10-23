@@ -1,5 +1,6 @@
 package br.com.firstsoft.target.server.ui.tabs.settings
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -12,7 +13,6 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -20,21 +20,14 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.ExposedDropdownMenuDefaults
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ChevronRight
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -44,6 +37,7 @@ import br.com.firstsoft.target.server.ui.ColorTokens.BarelyVisibleGray
 import br.com.firstsoft.target.server.ui.ColorTokens.DarkGray
 import br.com.firstsoft.target.server.ui.ColorTokens.MutedGray
 import br.com.firstsoft.target.server.ui.components.CollapsibleSection
+import br.com.firstsoft.target.server.ui.components.Section
 import br.com.firstsoft.target.server.ui.components.ToggleSection
 import ui.app.OverlaySettings
 import ui.conditional
@@ -180,7 +174,7 @@ fun StyleUi(
             StyleCard(
                 label = "Custom (%)",
                 isSelected = overlaySettings.positionIndex == 6,
-                modifier = Modifier.weight(.6f),
+                modifier = Modifier.weight(.3f),
                 onClick = { onOverlaySettings(overlaySettings.copy(positionIndex = 6)) },
                 content = {
                     Box(
@@ -204,48 +198,73 @@ fun StyleUi(
                         )
                     }
                 },
-                customLabel = {
-                    TextField(
-                        value = overlaySettings.positionX.toString(),
-                        onValueChange = {
-                            it.toIntOrNull()?.coerceIn(0..100)?.let { onOverlaySettings(overlaySettings.copy(positionX = it)) }
-                        },
-                        modifier = Modifier.align(Alignment.CenterStart).fillMaxWidth(.5f),
-                        textStyle = TextStyle(
-                            color = Color.DarkGray,
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Medium
-                        ),
-                        colors = TextFieldDefaults.textFieldColors(
-                            backgroundColor = Color.Transparent,
-                            unfocusedIndicatorColor = Color.Transparent,
-                            focusedIndicatorColor = Color.Transparent,
-                        )
-                    )
-
-                    TextField(
-                        value = overlaySettings.positionY.toString(),
-                        onValueChange = {
-                            it.toIntOrNull()?.coerceIn(-1..100)?.let { onOverlaySettings(overlaySettings.copy(positionY = it)) }
-                        },
-                        modifier = Modifier.align(Alignment.CenterEnd).fillMaxWidth(.5f),
-                        textStyle = TextStyle(
-                            color = Color.DarkGray,
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Medium
-                        ),
-                        colors = TextFieldDefaults.textFieldColors(
-                            backgroundColor = Color.Transparent,
-                            unfocusedIndicatorColor = Color.Transparent,
-                            focusedIndicatorColor = Color.Transparent,
-                        )
-                    )
-                }
             )
 
             // placeholders so the custom card above dont occupy all the space
             Box(modifier = Modifier.weight(.3f))
             Box(modifier = Modifier.weight(.3f))
+        }
+    }
+
+    AnimatedVisibility(overlaySettings.positionIndex == 6) {
+        Section("CUSTOM POSITION") {
+            Row(horizontalArrangement = Arrangement.SpaceBetween) {
+                TextField(
+                    value = overlaySettings.positionX.toString(),
+                    onValueChange = {
+                        it.toIntOrNull()?.coerceIn(0..100)
+                            ?.let { onOverlaySettings(overlaySettings.copy(positionX = it)) }
+                    },
+                    textStyle = TextStyle(
+                        color = Color.DarkGray,
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Medium
+                    ),
+                    colors = TextFieldDefaults.textFieldColors(
+                        backgroundColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        focusedIndicatorColor = Color.Transparent,
+                    ),
+                    label = {
+                        Text(
+                            text = "X",
+                            fontSize = 10.sp,
+                            color = Color.DarkGray,
+                            lineHeight = 0.sp,
+                            fontWeight = FontWeight(550),
+                            letterSpacing = 0.14.sp,
+                        )
+                    }
+                )
+
+                TextField(
+                    value = overlaySettings.positionY.toString(),
+                    onValueChange = {
+                        it.toIntOrNull()?.coerceIn(-1..100)
+                            ?.let { onOverlaySettings(overlaySettings.copy(positionY = it)) }
+                    },
+                    textStyle = TextStyle(
+                        color = Color.DarkGray,
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Medium
+                    ),
+                    colors = TextFieldDefaults.textFieldColors(
+                        backgroundColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        focusedIndicatorColor = Color.Transparent,
+                    ),
+                    label = {
+                        Text(
+                            text = "Y",
+                            fontSize = 10.sp,
+                            color = Color.DarkGray,
+                            lineHeight = 0.sp,
+                            fontWeight = FontWeight(550),
+                            letterSpacing = 0.14.sp,
+                        )
+                    }
+                )
+            }
         }
     }
 
