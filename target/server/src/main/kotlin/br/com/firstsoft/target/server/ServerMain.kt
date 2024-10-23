@@ -121,38 +121,46 @@ private fun ApplicationScope.OverlayWindow(
         enabled = false,
     ) {
         LaunchedEffect(overlaySettings) {
-            val alignment = positions[overlaySettings.positionIndex]
-            val location = when (alignment) {
-                Alignment.TopStart -> IntSize(graphicsConfiguration.bounds.x, graphicsConfiguration.bounds.y)
-                Alignment.TopCenter -> IntSize(
-                    graphicsConfiguration.bounds.x + (graphicsConfiguration.bounds.width / 2) - (window.bounds.width / 2),
-                    graphicsConfiguration.bounds.y
-                )
+            if (overlaySettings.positionIndex < 6) {
+                val alignment = positions[overlaySettings.positionIndex]
+                val location = when (alignment) {
+                    Alignment.TopStart -> IntSize(graphicsConfiguration.bounds.x, graphicsConfiguration.bounds.y)
+                    Alignment.TopCenter -> IntSize(
+                        graphicsConfiguration.bounds.x + (graphicsConfiguration.bounds.width / 2) - (window.bounds.width / 2),
+                        graphicsConfiguration.bounds.y
+                    )
 
-                Alignment.TopEnd -> IntSize(
-                    graphicsConfiguration.bounds.x + graphicsConfiguration.bounds.width - window.bounds.width,
-                    graphicsConfiguration.bounds.y
-                )
+                    Alignment.TopEnd -> IntSize(
+                        graphicsConfiguration.bounds.x + graphicsConfiguration.bounds.width - window.bounds.width,
+                        graphicsConfiguration.bounds.y
+                    )
 
-                Alignment.BottomStart -> IntSize(
-                    graphicsConfiguration.bounds.x,
-                    graphicsConfiguration.bounds.y + graphicsConfiguration.bounds.height - window.bounds.height - taskbarHeight
-                )
+                    Alignment.BottomStart -> IntSize(
+                        graphicsConfiguration.bounds.x,
+                        graphicsConfiguration.bounds.y + graphicsConfiguration.bounds.height - window.bounds.height - taskbarHeight
+                    )
 
-                Alignment.BottomCenter -> IntSize(
-                    graphicsConfiguration.bounds.x + (graphicsConfiguration.bounds.width / 2) - (window.bounds.width / 2),
-                    graphicsConfiguration.bounds.y + graphicsConfiguration.bounds.height - window.bounds.height - taskbarHeight
-                )
+                    Alignment.BottomCenter -> IntSize(
+                        graphicsConfiguration.bounds.x + (graphicsConfiguration.bounds.width / 2) - (window.bounds.width / 2),
+                        graphicsConfiguration.bounds.y + graphicsConfiguration.bounds.height - window.bounds.height - taskbarHeight
+                    )
 
-                Alignment.BottomEnd -> IntSize(
-                    graphicsConfiguration.bounds.x + graphicsConfiguration.bounds.width - window.bounds.width,
-                    graphicsConfiguration.bounds.y + graphicsConfiguration.bounds.height - window.bounds.height - taskbarHeight
-                )
+                    Alignment.BottomEnd -> IntSize(
+                        graphicsConfiguration.bounds.x + graphicsConfiguration.bounds.width - window.bounds.width,
+                        graphicsConfiguration.bounds.y + graphicsConfiguration.bounds.height - window.bounds.height - taskbarHeight
+                    )
 
-                else -> IntSize.Zero
+                    else -> IntSize.Zero
+                }
+                overlayState.position = WindowPosition.Aligned(alignment)
+                window.setLocation(location.width, location.height)
+            } else {
+                val x = graphicsConfiguration.bounds.x + (graphicsConfiguration.bounds.width * (overlaySettings.positionX / 100f)) - (window.bounds.width / 2)
+                val y = graphicsConfiguration.bounds.y + (graphicsConfiguration.bounds.height * (overlaySettings.positionY / 100f))
+                overlayState.position = WindowPosition.Absolute(x.dp,y.dp)
             }
-            overlayState.position = WindowPosition.Aligned(alignment)
-            window.setLocation(location.width, location.height)
+
+
             window.toFront()
         }
 

@@ -233,6 +233,8 @@ data class OverlaySettings(
     val vramUsage: Boolean = false,
     val ramUsage: Boolean = false,
     val progressType: ProgressType = ProgressType.Circular,
+    val positionX: Int = 0,
+    val positionY: Int = 0,
 ) {
     @Serializable
     enum class ProgressType {
