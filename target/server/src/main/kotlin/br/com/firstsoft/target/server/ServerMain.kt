@@ -35,6 +35,7 @@ import ui.app.Settings
 import win32.WindowsService
 import java.awt.GraphicsEnvironment
 import java.awt.Toolkit
+import kotlin.math.floor
 
 val positions = listOf(
     Alignment.TopStart,
@@ -155,8 +156,10 @@ private fun ApplicationScope.OverlayWindow(
                 overlayState.position = WindowPosition.Aligned(alignment)
                 window.setLocation(location.width, location.height)
             } else {
-                val x = graphicsConfiguration.bounds.x + (graphicsConfiguration.bounds.width * (overlaySettings.positionX / 100f)) - (window.bounds.width / 2)
-                val y = graphicsConfiguration.bounds.y + (graphicsConfiguration.bounds.height * (overlaySettings.positionY / 100f))
+                val relativeX = graphicsConfiguration.bounds.x + (graphicsConfiguration.bounds.width * (overlaySettings.positionX / 100f)) - (window.bounds.width / 2)
+                val relativeY = graphicsConfiguration.bounds.y + (graphicsConfiguration.bounds.height * (overlaySettings.positionY / 100f)) - window.bounds.height - taskbarHeight
+                val x = relativeX.coerceIn(graphicsConfiguration.bounds.x.toFloat(), (graphicsConfiguration.bounds.x + graphicsConfiguration.bounds.width - window.bounds.width).toFloat())
+                val y = relativeY.coerceIn(graphicsConfiguration.bounds.y.toFloat(), (graphicsConfiguration.bounds.y + graphicsConfiguration.bounds.height - window.bounds.height - taskbarHeight).toFloat())
                 overlayState.position = WindowPosition.Absolute(x.dp,y.dp)
             }
 
