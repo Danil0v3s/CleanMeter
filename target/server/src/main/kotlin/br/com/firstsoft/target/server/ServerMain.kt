@@ -160,9 +160,10 @@ private fun ApplicationScope.OverlayWindow(
                 val relativeY = graphicsConfiguration.bounds.y + (graphicsConfiguration.bounds.height * (overlaySettings.positionY / 100f)) - window.bounds.height - taskbarHeight
                 val x = relativeX.coerceIn(graphicsConfiguration.bounds.x.toFloat(), (graphicsConfiguration.bounds.x + graphicsConfiguration.bounds.width - window.bounds.width).toFloat())
                 val y = relativeY.coerceIn(graphicsConfiguration.bounds.y.toFloat(), (graphicsConfiguration.bounds.y + graphicsConfiguration.bounds.height - window.bounds.height - taskbarHeight).toFloat())
-                overlayState.position = WindowPosition.Absolute(x.dp,y.dp)
-            }
 
+                overlayState.position = WindowPosition.PlatformDefault
+                window.setLocation(x.toInt(),y.toInt())
+            }
 
             window.toFront()
         }
