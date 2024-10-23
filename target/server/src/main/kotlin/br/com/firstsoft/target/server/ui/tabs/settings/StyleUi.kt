@@ -1,5 +1,6 @@
 package br.com.firstsoft.target.server.ui.tabs.settings
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -20,11 +21,14 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
+import androidx.compose.material.TextField
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -33,6 +37,7 @@ import br.com.firstsoft.target.server.ui.ColorTokens.BarelyVisibleGray
 import br.com.firstsoft.target.server.ui.ColorTokens.DarkGray
 import br.com.firstsoft.target.server.ui.ColorTokens.MutedGray
 import br.com.firstsoft.target.server.ui.components.CollapsibleSection
+import br.com.firstsoft.target.server.ui.components.Section
 import br.com.firstsoft.target.server.ui.components.ToggleSection
 import ui.app.OverlaySettings
 import ui.conditional
@@ -101,7 +106,7 @@ fun StyleUi(
                             .width(50.dp)
                             .height(20.dp)
                             .background(
-                                if (overlaySettings.positionIndex == 1) DarkGray else MutedGray,
+                                if (overlaySettings.positionIndex == 2) DarkGray else MutedGray,
                                 RoundedCornerShape(50)
                             )
                             .align(Alignment.TopEnd)
@@ -120,7 +125,7 @@ fun StyleUi(
                             .width(50.dp)
                             .height(20.dp)
                             .background(
-                                if (overlaySettings.positionIndex == 1) DarkGray else MutedGray,
+                                if (overlaySettings.positionIndex == 3) DarkGray else MutedGray,
                                 RoundedCornerShape(50)
                             )
                             .align(Alignment.BottomStart)
@@ -139,7 +144,7 @@ fun StyleUi(
                             .width(50.dp)
                             .height(20.dp)
                             .background(
-                                if (overlaySettings.positionIndex == 1) DarkGray else MutedGray,
+                                if (overlaySettings.positionIndex == 4) DarkGray else MutedGray,
                                 RoundedCornerShape(50)
                             )
                             .align(Alignment.BottomCenter)
@@ -158,13 +163,108 @@ fun StyleUi(
                             .width(50.dp)
                             .height(20.dp)
                             .background(
-                                if (overlaySettings.positionIndex == 1) DarkGray else MutedGray,
+                                if (overlaySettings.positionIndex == 5) DarkGray else MutedGray,
                                 RoundedCornerShape(50)
                             )
                             .align(Alignment.BottomEnd)
                     )
                 }
             )
+
+            StyleCard(
+                label = "Custom (%)",
+                isSelected = overlaySettings.positionIndex == 6,
+                modifier = Modifier.weight(.3f),
+                onClick = { onOverlaySettings(overlaySettings.copy(positionIndex = 6)) },
+                content = {
+                    Box(
+                        modifier = Modifier
+                            .width(80.dp)
+                            .height(40.dp)
+                            .background(
+                                if (overlaySettings.positionIndex == 6) DarkGray else MutedGray,
+                                RoundedCornerShape(50)
+                            )
+                            .align(Alignment.Center),
+                    ) {
+                        Text(
+                            text = "Custom",
+                            fontSize = 10.sp,
+                            color = Color.White,
+                            lineHeight = 0.sp,
+                            fontWeight = FontWeight(550),
+                            letterSpacing = 0.14.sp,
+                            modifier = Modifier.align(Alignment.Center)
+                        )
+                    }
+                },
+            )
+
+            // placeholders so the custom card above dont occupy all the space
+            Box(modifier = Modifier.weight(.3f))
+            Box(modifier = Modifier.weight(.3f))
+        }
+    }
+
+    AnimatedVisibility(overlaySettings.positionIndex == 6) {
+        Section("CUSTOM POSITION") {
+            Row(horizontalArrangement = Arrangement.SpaceBetween) {
+                TextField(
+                    value = overlaySettings.positionX.toString(),
+                    onValueChange = {
+                        it.toIntOrNull()?.coerceIn(0..100)
+                            ?.let { onOverlaySettings(overlaySettings.copy(positionX = it)) }
+                    },
+                    textStyle = TextStyle(
+                        color = Color.DarkGray,
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Medium
+                    ),
+                    colors = TextFieldDefaults.textFieldColors(
+                        backgroundColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        focusedIndicatorColor = Color.Transparent,
+                    ),
+                    label = {
+                        Text(
+                            text = "X",
+                            fontSize = 10.sp,
+                            color = Color.DarkGray,
+                            lineHeight = 0.sp,
+                            fontWeight = FontWeight(550),
+                            letterSpacing = 0.14.sp,
+                        )
+                    }
+                )
+
+                TextField(
+                    value = overlaySettings.positionY.toString(),
+                    onValueChange = {
+                        it.toIntOrNull()?.coerceIn(-1..100)
+                            ?.let { onOverlaySettings(overlaySettings.copy(positionY = it)) }
+                    },
+                    textStyle = TextStyle(
+                        color = Color.DarkGray,
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Medium
+                    ),
+                    colors = TextFieldDefaults.textFieldColors(
+                        backgroundColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        focusedIndicatorColor = Color.Transparent,
+                    ),
+                    label = {
+                        Text(
+                            text = "Y",
+                            fontSize = 10.sp,
+                            color = Color.DarkGray,
+                            lineHeight = 0.sp,
+                            fontWeight = FontWeight(550),
+                            letterSpacing = 0.14.sp,
+                        )
+                    }
+                )
+            }
         }
     }
 
@@ -249,6 +349,7 @@ private fun StyleCard(
     isSelected: Boolean,
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
+    customLabel: @Composable (BoxScope.() -> Unit)? = null,
     content: @Composable BoxScope.() -> Unit,
 ) = Column(
     modifier = modifier
@@ -273,15 +374,19 @@ private fun StyleCard(
     )
 
     Box(modifier = Modifier.weight(1f).fillMaxWidth().padding(12.dp)) {
-        Text(
-            text = label,
-            fontSize = 14.sp,
-            color = DarkGray,
-            lineHeight = 0.sp,
-            fontWeight = FontWeight(550),
-            letterSpacing = 0.14.sp,
-            modifier = Modifier.align(Alignment.CenterStart)
-        )
+        if (customLabel != null) {
+            customLabel()
+        } else {
+            Text(
+                text = label,
+                fontSize = 14.sp,
+                color = DarkGray,
+                lineHeight = 0.sp,
+                fontWeight = FontWeight(550),
+                letterSpacing = 0.14.sp,
+                modifier = Modifier.align(Alignment.CenterStart)
+            )
+        }
     }
 }
 
