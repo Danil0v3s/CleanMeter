@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class SensorReadingElement(
-    val tReading: SensorReadingType,
+    val readingType: SensorReadingType,
     val dwSensorIndex: Int,
     val dwReadingID: Int,
     val szLabelOrig: String,

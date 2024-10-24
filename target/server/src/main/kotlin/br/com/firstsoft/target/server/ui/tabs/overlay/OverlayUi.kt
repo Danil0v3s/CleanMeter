@@ -45,22 +45,22 @@ import androidx.compose.ui.util.fastForEachIndexed
 import br.com.firstsoft.target.server.ui.ColorTokens.OffWhite
 import br.com.firstsoft.target.server.ui.components.Pill
 import br.com.firstsoft.target.server.ui.components.Progress
-import mahm.CpuTemp
-import mahm.CpuTempUnit
-import mahm.CpuUsage
-import mahm.Data
-import mahm.FPS
-import mahm.Frametime
-import mahm.GpuTemp
-import mahm.GpuTempUnit
-import mahm.GpuUsage
-import mahm.MahmReader
-import mahm.RamUsage
-import mahm.RamUsagePercent
-import mahm.VramUsage
-import mahm.VramUsagePercent
+import hwinfo.CpuTemp
+import hwinfo.CpuTempUnit
+import hwinfo.CpuUsage
+import hwinfo.FPS
+import hwinfo.Frametime
+import hwinfo.GpuTemp
+import hwinfo.GpuTempUnit
+import hwinfo.GpuUsage
+import hwinfo.HwInfoData
+import hwinfo.HwInfoReader
+import hwinfo.RamUsage
+import hwinfo.RamUsagePercent
+import hwinfo.VramUsage
+import hwinfo.VramUsagePercent
 import ui.app.OverlaySettings
-
+import java.util.*
 
 
 inline fun Modifier.conditional(
@@ -71,10 +71,9 @@ inline fun Modifier.conditional(
 
 @Composable
 fun OverlayUi(
-    reader: MahmReader,
+    reader: HwInfoReader,
     overlaySettings: OverlaySettings,
 ) {
-
     val data by reader.currentData.collectAsState(null)
 
     if (data == null) {
@@ -115,7 +114,7 @@ fun OverlayUi(
 }
 
 @Composable
-fun Content(data: Data, overlaySettings: OverlaySettings) {
+fun Content(data: HwInfoData, overlaySettings: OverlaySettings) {
     if (overlaySettings.isHorizontal) {
         Row(
             modifier = Modifier.fillMaxHeight(),
@@ -168,7 +167,7 @@ fun Content(data: Data, overlaySettings: OverlaySettings) {
 }
 
 @Composable
-private fun ram(overlaySettings: OverlaySettings, data: Data) {
+private fun ram(overlaySettings: OverlaySettings, data: HwInfoData) {
     if (overlaySettings.ramUsage) {
         Pill(
             title = "RAM",
@@ -176,7 +175,7 @@ private fun ram(overlaySettings: OverlaySettings, data: Data) {
         ) {
             Progress(
                 value = data.RamUsagePercent / 100f,
-                label = String.format("%02.1f", data.RamUsage / 1000),
+                label = String.format("%02.1f", data.RamUsage / 1000, Locale.US),
                 unit = "GB",
                 progressType = overlaySettings.progressType
             )
@@ -185,7 +184,7 @@ private fun ram(overlaySettings: OverlaySettings, data: Data) {
 }
 
 @Composable
-private fun cpu(overlaySettings: OverlaySettings, data: Data) {
+private fun cpu(overlaySettings: OverlaySettings, data: HwInfoData) {
     if (overlaySettings.cpuTemp || overlaySettings.cpuUsage) {
         Pill(
             title = "CPU",
@@ -202,7 +201,7 @@ private fun cpu(overlaySettings: OverlaySettings, data: Data) {
             if (overlaySettings.cpuUsage) {
                 Progress(
                     value = data.CpuUsage / 100f,
-                    label = String.format("%02d", data.CpuUsage),
+                    label = String.format("%02d", data.CpuUsage, Locale.US),
                     unit = "%",
                     progressType = overlaySettings.progressType
                 )
@@ -212,7 +211,7 @@ private fun cpu(overlaySettings: OverlaySettings, data: Data) {
 }
 
 @Composable
-private fun gpu(overlaySettings: OverlaySettings, data: Data) {
+private fun gpu(overlaySettings: OverlaySettings, data: HwInfoData) {
     if (overlaySettings.gpuTemp || overlaySettings.gpuUsage || overlaySettings.vramUsage) {
         Pill(
             title = "GPU",
@@ -229,7 +228,7 @@ private fun gpu(overlaySettings: OverlaySettings, data: Data) {
             if (overlaySettings.gpuUsage) {
                 Progress(
                     value = data.GpuUsage / 100f,
-                    label = String.format("%02d", data.GpuUsage),
+                    label = String.format("%02d", data.GpuUsage, Locale.US),
                     unit = "%",
                     progressType = overlaySettings.progressType
                 )
@@ -237,7 +236,7 @@ private fun gpu(overlaySettings: OverlaySettings, data: Data) {
             if (overlaySettings.vramUsage) {
                 Progress(
                     value = data.VramUsagePercent / 100f,
-                    label = String.format("%02.1f", data.VramUsage / 1000),
+                    label = String.format("%02.1f", data.VramUsage / 1000, Locale.US),
                     unit = "GB",
                     progressType = overlaySettings.progressType
                 )
@@ -247,13 +246,12 @@ private fun gpu(overlaySettings: OverlaySettings, data: Data) {
 }
 
 @Composable
-private fun fps(overlaySettings: OverlaySettings, data: Data) {
+private fun fps(overlaySettings: OverlaySettings, data: HwInfoData) {
     if (overlaySettings.fps || overlaySettings.frametime) {
-
         if (overlaySettings.isHorizontal) {
             Pill(
                 title = "FPS",
-                isHorizontal = overlaySettings.isHorizontal,
+                isHorizontal = true,
             ) {
                 if (overlaySettings.fps) {
                     Text(
@@ -266,9 +264,9 @@ private fun fps(overlaySettings: OverlaySettings, data: Data) {
                 }
 
                 if (overlaySettings.frametime) {
-                    FrametimeGraph(data, overlaySettings.isHorizontal)
+                    FrametimeGraph(data, true)
                     Text(
-                        text = "${String.format("%02.01f", data.Frametime)} ms",
+                        text = "${String.format("%02.01f", data.Frametime, Locale.US)} ms",
                         color = Color.White,
                         fontSize = 12.sp,
                         lineHeight = 0.sp,
@@ -312,7 +310,7 @@ private fun fps(overlaySettings: OverlaySettings, data: Data) {
 
                         if (overlaySettings.frametime) {
                             Text(
-                                text = "${String.format("%02.01f", data.Frametime)} ms",
+                                text = "${String.format("%02.01f", data.Frametime, Locale.US)} ms",
                                 color = Color.White,
                                 fontSize = 12.sp,
                                 lineHeight = 0.sp,
@@ -322,14 +320,14 @@ private fun fps(overlaySettings: OverlaySettings, data: Data) {
                     }
                 }
 
-                FrametimeGraph(data,overlaySettings.isHorizontal)
+                FrametimeGraph(data = data, isHorizontal = false)
             }
         }
     }
 }
 
 @Composable
-private fun FrametimeGraph(data: Data, isHorizontal: Boolean) {
+private fun FrametimeGraph(data: HwInfoData, isHorizontal: Boolean) {
     val largestFrametime = remember { mutableFloatStateOf(0f) }
     val listSize = 30
     val frametimePoints = remember { mutableStateListOf<Float>() }

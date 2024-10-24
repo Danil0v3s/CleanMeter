@@ -1,26 +1,26 @@
 package util
 
 import com.sun.jna.Pointer
-import mahm.MAHMSizes.MAX_STRING_LENGTH
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
+import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets
 
-internal fun getByteBuffer(pointer: Pointer, size: Int, skip: Int = 0): ByteBuffer {
+internal fun getByteBuffer(pointer: Pointer, size: Int, offset: Int = 0): ByteBuffer {
     val buffer = ByteBuffer.allocateDirect(size)
     buffer.put(pointer.getByteArray(0, size))
     buffer.order(ByteOrder.LITTLE_ENDIAN)
     buffer.rewind()
-    buffer.position(skip)
+    buffer.position(offset)
 
     return buffer
 }
 
-internal fun ByteBuffer.readString(): String {
-    val array = ByteArray(MAX_STRING_LENGTH)
-    get(array, 0, MAX_STRING_LENGTH)
+internal fun ByteBuffer.readString(maxLength: Int, charset: Charset = StandardCharsets.ISO_8859_1): String {
+    val array = ByteArray(maxLength)
+    get(array, 0, maxLength)
 
-    return String(trim(array), StandardCharsets.ISO_8859_1)
+    return String(trim(array), charset)
 }
 
 internal fun trim(bytes: ByteArray): ByteArray {

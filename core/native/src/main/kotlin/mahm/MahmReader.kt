@@ -90,11 +90,11 @@ class MahmReader {
         for (i in 0 until numEntries) {
             add(
                 GPUEntry(
-                    szGpuId = buffer.readString(),
-                    szFamily = buffer.readString(),
-                    szDevice = buffer.readString(),
-                    szDriver = buffer.readString(),
-                    szBios = buffer.readString(),
+                    szGpuId = buffer.readString(MAX_STRING_LENGTH),
+                    szFamily = buffer.readString(MAX_STRING_LENGTH),
+                    szDevice = buffer.readString(MAX_STRING_LENGTH),
+                    szDriver = buffer.readString(MAX_STRING_LENGTH),
+                    szBios = buffer.readString(MAX_STRING_LENGTH),
                     dwMemAmount = buffer.int
                 )
             )
@@ -105,11 +105,11 @@ class MahmReader {
         for (i in 0 until numEntries) {
             add(
                 Entry(
-                    szSrcName = buffer.readString(),
-                    szSrcUnits = buffer.readString(),
-                    szLocalisedSrcName = buffer.readString(),
-                    szLocalisedSrcUnits = buffer.readString(),
-                    szRecommendedFormat = buffer.readString(),
+                    szSrcName = buffer.readString(MAX_STRING_LENGTH),
+                    szSrcUnits = buffer.readString(MAX_STRING_LENGTH),
+                    szLocalisedSrcName = buffer.readString(MAX_STRING_LENGTH),
+                    szLocalisedSrcUnits = buffer.readString(MAX_STRING_LENGTH),
+                    szRecommendedFormat = buffer.readString(MAX_STRING_LENGTH),
                     data = buffer.float,
                     minLimit = buffer.float,
                     maxLimit = buffer.float,
