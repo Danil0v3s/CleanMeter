@@ -7,6 +7,8 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
 import mahm.MAHMSizes.MAX_STRING_LENGTH
+import util.getByteBuffer
+import util.readString
 import win32.WindowsService
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -59,7 +61,16 @@ class MahmReader {
     private fun readHeader(pointer: Pointer): Header {
         val buffer = getByteBuffer(pointer, MAHMSizes.HEADER_SIZE)
 
-        return readHeader(buffer)
+        return Header(
+            dwSignature = buffer.int,
+            dwVersion = buffer.int,
+            dwHeaderSize = buffer.int,
+            dwNumEntries = buffer.int,
+            dwEntrySize = buffer.int,
+            lastCheck = buffer.int,
+            dwNumGpuEntries = buffer.int,
+            dwGpuEntrySize = buffer.int
+        )
     }
 
     private fun readData(pointer: Pointer): Data {
@@ -74,27 +85,6 @@ class MahmReader {
             gpuEntries = gpuEntries
         )
     }
-
-    private fun getByteBuffer(pointer: Pointer, size: Int, skip: Int = 0): ByteBuffer {
-        val buffer = ByteBuffer.allocateDirect(size)
-        buffer.put(pointer.getByteArray(0, size))
-        buffer.order(ByteOrder.LITTLE_ENDIAN)
-        buffer.rewind()
-        buffer.position(skip)
-
-        return buffer
-    }
-
-    private fun readHeader(buffer: ByteBuffer) = Header(
-        dwSignature = buffer.int,
-        dwVersion = buffer.int,
-        dwHeaderSize = buffer.int,
-        dwNumEntries = buffer.int,
-        dwEntrySize = buffer.int,
-        lastCheck = buffer.int,
-        dwNumGpuEntries = buffer.int,
-        dwGpuEntrySize = buffer.int
-    )
 
     private fun readGpuEntries(buffer: ByteBuffer, numEntries: Int) = buildList {
         for (i in 0 until numEntries) {
@@ -129,20 +119,5 @@ class MahmReader {
                 )
             )
         }
-    }
-
-    private fun ByteBuffer.readString(): String {
-        val array = ByteArray(MAX_STRING_LENGTH)
-        get(array, 0, MAX_STRING_LENGTH)
-
-        return String(trim(array), StandardCharsets.ISO_8859_1)
-    }
-
-    private fun trim(bytes: ByteArray): ByteArray {
-        var i = bytes.size - 1
-        while (i >= 0 && bytes[i].toInt() == 0) {
-            --i
-        }
-        return bytes.copyOf(i + 1)
     }
 }

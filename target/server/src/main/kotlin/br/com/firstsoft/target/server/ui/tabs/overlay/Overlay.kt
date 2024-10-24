@@ -6,12 +6,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import br.com.firstsoft.target.server.ui.AppTheme
+import hwinfo.HwInfoReader
 import mahm.MahmReader
 import ui.OverlayUi
 
 
 @Composable
 fun Overlay(
+    hwInfoReader: HwInfoReader = HwInfoReader(),
     mahmReader: MahmReader = MahmReader(),
     overlaySettings: OverlaySettings,
 ) = AppTheme {
