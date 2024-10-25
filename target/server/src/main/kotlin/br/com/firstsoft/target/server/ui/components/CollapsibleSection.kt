@@ -1,8 +1,9 @@
 package br.com.firstsoft.target.server.ui.components
 
-import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -39,14 +40,19 @@ fun CollapsibleSection(
 
     Column(
         modifier = Modifier
+            .animateContentSize()
             .background(Color.White, RoundedCornerShape(12.dp))
-            .clickable { expanded = !expanded }
             .padding(20.dp),
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
-
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                    onClick = { expanded = !expanded }
+                ),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -69,7 +75,7 @@ fun CollapsibleSection(
             }
         }
 
-        AnimatedVisibility(expanded) {
+        if (expanded) {
             content()
         }
     }
