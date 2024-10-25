@@ -1,14 +1,30 @@
 package br.com.firstsoft.target.server.ui.tabs.settings
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Icon
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import br.com.firstsoft.target.server.ui.ColorTokens.BorderGray
+import br.com.firstsoft.target.server.ui.ColorTokens.LabelGray
 import br.com.firstsoft.target.server.ui.components.CheckboxSection
 import br.com.firstsoft.target.server.ui.components.DropdownSection
 import ui.app.OverlaySettings
@@ -86,6 +102,31 @@ fun OverlaySettingsUi(
         onOverlaySettings(newSettings)
     }
 
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.Transparent, RoundedCornerShape(12.dp))
+            .border(1.dp, BorderGray, RoundedCornerShape(12.dp))
+            .padding(20.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Icon(painterResource("icons/info.svg"), "")
+            Text(
+                text = "Hot key for showing/hiding the overlay",
+                color = Color.DarkGray,
+                fontSize = 14.sp,
+                fontWeight = FontWeight(600),
+                modifier = Modifier.padding(bottom = 2.5.dp),
+            )
+        }
+        Image(painterResource("icons/hotkey.png"), "")
+    }
+
     CheckboxSection(title = "FPS",
         options = availableOptions.filterOptions(SettingsOptionType.Framerate, SettingsOptionType.Frametime),
         onOptionToggle = ::onOptionsToggle,
@@ -120,5 +161,16 @@ fun OverlaySettingsUi(
         options = screenDevices.map { it.defaultConfiguration.device.iDstring },
         selectedIndex = overlaySettings.selectedDisplayIndex,
         onValueChanged = { onOverlaySettings(overlaySettings.copy(selectedDisplayIndex = it)) }
+    )
+
+    Text(
+        text = "May your frames be high, and temps be low.",
+        fontSize = 12.sp,
+        color = LabelGray,
+        lineHeight = 0.sp,
+        fontWeight = FontWeight(550),
+        letterSpacing = 0.14.sp,
+        textAlign = TextAlign.Right,
+        modifier = Modifier.fillMaxWidth()
     )
 }

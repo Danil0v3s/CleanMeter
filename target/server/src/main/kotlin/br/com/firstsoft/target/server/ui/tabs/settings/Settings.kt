@@ -1,6 +1,8 @@
 package ui.app
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.TooltipArea
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -168,6 +170,7 @@ private fun SettingsTab(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun TopBar(
     onCloseRequest: () -> Unit,
@@ -191,7 +194,7 @@ private fun TopBar(
     ) {
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
             Image(
-                painter = painterResource("imgs/logo.png"),
+                painter = painterResource("imgs/favicon.ico"),
                 contentDescription = "logo",
                 modifier = Modifier.size(25.dp),
             )
@@ -209,12 +212,21 @@ private fun TopBar(
                 colorFilter = ColorFilter.tint(MutedGray),
                 modifier = Modifier.clickable { onMinimizeRequest() }
             )
-            Image(
-                imageVector = Icons.Rounded.Close,
-                contentDescription = "Close",
-                colorFilter = ColorFilter.tint(MutedGray),
-                modifier = Modifier.clickable { onCloseRequest() }
-            )
+            TooltipArea({
+                Text(
+                    text = "Closing will minimize to the Tray",
+                    fontWeight = FontWeight.Medium,
+                    color = DarkGray,
+                    fontSize = 14.sp
+                )
+            }) {
+                Image(
+                    imageVector = Icons.Rounded.Close,
+                    contentDescription = "Close",
+                    colorFilter = ColorFilter.tint(MutedGray),
+                    modifier = Modifier.clickable { onCloseRequest() }
+                )
+            }
         }
     }
 }
