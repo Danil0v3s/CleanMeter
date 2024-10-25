@@ -206,7 +206,7 @@ fun StyleUi(
                     ) {
                         Column(modifier = Modifier.weight(.5f), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                             Text(
-                                text = "Y-axis",
+                                text = "X-axis",
                                 fontSize = 14.sp,
                                 color = Color.DarkGray,
                                 lineHeight = 0.sp,
@@ -238,7 +238,7 @@ fun StyleUi(
 
                         Column(modifier = Modifier.weight(.5f), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                             Text(
-                                text = "X-axis",
+                                text = "Y-axis",
                                 fontSize = 14.sp,
                                 color = Color.DarkGray,
                                 lineHeight = 0.sp,
