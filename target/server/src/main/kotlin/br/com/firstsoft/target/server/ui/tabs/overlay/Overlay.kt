@@ -15,6 +15,20 @@ fun Overlay(
     hwInfoReader: HwInfoReader = HwInfoReader(),
     overlaySettings: OverlaySettings,
 ) = AppTheme {
+    if (listOf(
+            overlaySettings.fps,
+            overlaySettings.frametime,
+            overlaySettings.cpuTemp,
+            overlaySettings.gpuTemp,
+            overlaySettings.cpuUsage,
+            overlaySettings.gpuUsage,
+            overlaySettings.vramUsage,
+            overlaySettings.ramUsage
+        ).all { !it }
+    ) {
+        return@AppTheme
+    }
+
     val arrangement = when (overlaySettings.positionIndex) {
         0 -> Alignment.TopStart
         1 -> Alignment.TopCenter
