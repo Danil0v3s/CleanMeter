@@ -183,11 +183,11 @@ fun StyleUi(
                 ) {
                     Text(
                         text = "Set a custom position",
-                        fontSize = 13.sp,
-                        color = MutedGray,
+                        fontSize = 14.sp,
+                        color = DarkGray,
                         lineHeight = 0.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        letterSpacing = 1.sp
+                        fontWeight = FontWeight(550),
+                        letterSpacing = 0.14.sp,
                     )
                     Toggle(
                         checked = overlaySettings.positionIndex == 6,
@@ -238,70 +238,6 @@ fun StyleUi(
                                 },
                             )
                         }
-
-//                        Column(modifier = Modifier.weight(.5f), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-//                            Text(
-//                                text = "X-axis",
-//                                fontSize = 14.sp,
-//                                color = Color.DarkGray,
-//                                lineHeight = 0.sp,
-//                                fontWeight = FontWeight(550),
-//                                letterSpacing = 0.14.sp,
-//                            )
-//                            TextField(
-//                                modifier = Modifier
-//                                    .height(48.dp)
-//                                    .clip(RoundedCornerShape(8.dp))
-//                                    .border(1.dp, AlmostVisibleGray, RoundedCornerShape(8.dp)),
-//                                value = overlaySettings.positionX.toString(),
-//                                onValueChange = {
-//                                    it.toIntOrNull()?.coerceIn(0..100)
-//                                        ?.let { onOverlaySettings(overlaySettings.copy(positionX = it)) }
-//                                },
-//                                textStyle = TextStyle(
-//                                    color = Color.DarkGray,
-//                                    fontSize = 12.sp,
-//                                    fontWeight = FontWeight.Medium
-//                                ),
-//                                colors = TextFieldDefaults.textFieldColors(
-//                                    backgroundColor = Color.White,
-//                                    unfocusedIndicatorColor = Color.Transparent,
-//                                    focusedIndicatorColor = Color.Transparent,
-//                                )
-//                            )
-//                        }
-//
-//                        Column(modifier = Modifier.weight(.5f), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-//                            Text(
-//                                text = "Y-axis",
-//                                fontSize = 14.sp,
-//                                color = Color.DarkGray,
-//                                lineHeight = 0.sp,
-//                                fontWeight = FontWeight(550),
-//                                letterSpacing = 0.14.sp,
-//                            )
-//                            TextField(
-//                                modifier = Modifier
-//                                    .height(48.dp)
-//                                    .clip(RoundedCornerShape(8.dp))
-//                                    .border(1.dp, AlmostVisibleGray, RoundedCornerShape(8.dp)),
-//                                value = overlaySettings.positionY.toString(),
-//                                onValueChange = {
-//                                    it.toIntOrNull()?.coerceIn(-1..100)
-//                                        ?.let { onOverlaySettings(overlaySettings.copy(positionY = it)) }
-//                                },
-//                                textStyle = TextStyle(
-//                                    color = Color.DarkGray,
-//                                    fontSize = 12.sp,
-//                                    fontWeight = FontWeight.Medium
-//                                ),
-//                                colors = TextFieldDefaults.textFieldColors(
-//                                    backgroundColor = Color.White,
-//                                    unfocusedIndicatorColor = Color.Transparent,
-//                                    focusedIndicatorColor = Color.Transparent,
-//                                )
-//                            )
-//                        }
                     }
                 }
             }
