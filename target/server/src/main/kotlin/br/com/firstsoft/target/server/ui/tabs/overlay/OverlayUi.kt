@@ -10,8 +10,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -23,11 +25,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Canvas
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Paint
+import androidx.compose.ui.graphics.drawscope.ContentDrawScope
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.IntrinsicMeasurable
@@ -37,17 +42,24 @@ import androidx.compose.ui.layout.Measurable
 import androidx.compose.ui.layout.MeasurePolicy
 import androidx.compose.ui.layout.MeasureResult
 import androidx.compose.ui.layout.MeasureScope
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.fastForEachIndexed
+import br.com.firstsoft.target.server.ui.ColorTokens.Cyan
 import br.com.firstsoft.target.server.ui.ColorTokens.OffWhite
+import br.com.firstsoft.target.server.ui.ColorTokens.Purple
 import br.com.firstsoft.target.server.ui.components.Pill
 import br.com.firstsoft.target.server.ui.components.Progress
+import br.com.firstsoft.target.server.ui.components.ProgressLabel
+import br.com.firstsoft.target.server.ui.components.ProgressUnit
 import hwinfo.CpuTemp
 import hwinfo.CpuTempUnit
 import hwinfo.CpuUsage
+import hwinfo.DlRate
+import hwinfo.DlRateUnit
 import hwinfo.FPS
 import hwinfo.Frametime
 import hwinfo.GpuTemp
@@ -57,6 +69,8 @@ import hwinfo.HwInfoData
 import hwinfo.HwInfoReader
 import hwinfo.RamUsage
 import hwinfo.RamUsagePercent
+import hwinfo.UpRate
+import hwinfo.UpRateUnit
 import hwinfo.VramUsage
 import hwinfo.VramUsagePercent
 import ui.app.OverlaySettings
@@ -124,6 +138,7 @@ fun Content(data: HwInfoData, overlaySettings: OverlaySettings) {
             gpu(overlaySettings, data)
             cpu(overlaySettings, data)
             ram(overlaySettings, data)
+            net(overlaySettings, data)
         }
     } else {
         Column(
@@ -136,6 +151,7 @@ fun Content(data: HwInfoData, overlaySettings: OverlaySettings) {
                     gpu(overlaySettings, data)
                     cpu(overlaySettings, data)
                     ram(overlaySettings, data)
+                    net(overlaySettings, data)
                 },
                 measurePolicy = object : MeasurePolicy {
                     override fun MeasureScope.measure(
@@ -162,6 +178,104 @@ fun Content(data: HwInfoData, overlaySettings: OverlaySettings) {
                         return measurables.map { it.maxIntrinsicWidth(height) }.maxOf { it }
                     }
                 })
+        }
+    }
+}
+
+@Composable
+private fun net(overlaySettings: OverlaySettings, data: HwInfoData) {
+    if (overlaySettings.upRate || overlaySettings.downRate) {
+        if (overlaySettings.isHorizontal) {
+            Pill(
+                title = "NET",
+                isHorizontal = true,
+            ) {
+                if (overlaySettings.downRate) {
+                    Row(verticalAlignment = Alignment.Bottom, modifier = Modifier.widthIn(min = 35.dp)) {
+                        Icon(
+                            painterResource("icons/arrow_down.svg"),
+                            "",
+                            tint = Cyan,
+                            modifier = Modifier.padding(end = 4.dp, bottom = 3.dp)
+                        )
+                        ProgressLabel(String.format("%02.2f", data.DlRate, Locale.US))
+                        ProgressUnit(data.DlRateUnit)
+                    }
+                }
+
+                if (overlaySettings.upRate) {
+                    Row(verticalAlignment = Alignment.Bottom, modifier = Modifier.widthIn(min = 35.dp)) {
+                        Icon(
+                            painterResource("icons/arrow_down.svg"),
+                            "",
+                            tint = Purple,
+                            modifier = Modifier.padding(end = 4.dp, bottom = 3.dp).rotate(180f)
+                        )
+                        ProgressLabel(String.format("%02.2f", data.UpRate, Locale.US))
+                        ProgressUnit(data.UpRateUnit)
+                    }
+                }
+
+                if (overlaySettings.netGraph) {
+                    NetGraph(data = data, isHorizontal = false, overlaySettings = overlaySettings)
+                }
+            }
+        } else {
+            Column(
+                modifier = Modifier
+                    .background(
+                        Color.Black.copy(alpha = 0.3f),
+                        RoundedCornerShape(8.dp)
+                    )
+                    .padding(vertical = 8.dp, horizontal = 12.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        text = "NET",
+                        fontSize = 10.sp,
+                        color = OffWhite,
+                        lineHeight = 0.sp,
+                        fontWeight = FontWeight.Normal,
+                        letterSpacing = 1.sp
+                    )
+
+                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                        if (overlaySettings.downRate) {
+                            Row(verticalAlignment = Alignment.Bottom, modifier = Modifier.widthIn(min = 35.dp)) {
+                                Icon(
+                                    painterResource("icons/arrow_down.svg"),
+                                    "",
+                                    tint = Cyan,
+                                    modifier = Modifier.padding(end = 4.dp, bottom = 3.dp)
+                                )
+                                ProgressLabel(String.format("%02.2f", data.DlRate, Locale.US))
+                                ProgressUnit(data.DlRateUnit)
+                            }
+                        }
+
+                        if (overlaySettings.upRate) {
+                            Row(verticalAlignment = Alignment.Bottom, modifier = Modifier.widthIn(min = 35.dp)) {
+                                Icon(
+                                    painterResource("icons/arrow_down.svg"),
+                                    "",
+                                    tint = Purple,
+                                    modifier = Modifier.padding(end = 4.dp, bottom = 3.dp).rotate(180f)
+                                )
+                                ProgressLabel(String.format("%02.2f", data.UpRate, Locale.US))
+                                ProgressUnit(data.UpRateUnit)
+                            }
+                        }
+                    }
+                }
+
+                if (overlaySettings.netGraph) {
+                    NetGraph(data = data, isHorizontal = false, overlaySettings = overlaySettings)
+                }
+            }
         }
     }
 }
@@ -337,7 +451,7 @@ private fun FrametimeGraph(data: HwInfoData, isHorizontal: Boolean) {
             isAntiAlias = true
             color = Color.White
             strokeWidth = 1f
-            blendMode = BlendMode.Plus
+            blendMode = BlendMode.DstAtop
         }
     }
 
@@ -355,23 +469,97 @@ private fun FrametimeGraph(data: HwInfoData, isHorizontal: Boolean) {
             ifTrue = { width(100.dp).height(45.dp) },
             ifFalse = { fillMaxWidth().height(30.dp) },
         )
-
         .graphicsLayer { alpha = 0.99f }
         .drawWithContent {
-            val colors = listOf(Color.Transparent, Color.Black, Color.Black, Color.Transparent)
+            val colors = listOf(Color.Transparent, Color.Black, Color.Black, Color.Black, Color.Transparent)
             val frametimeZip = frametimePoints.zipWithNext()
 
             drawIntoCanvas { canvas ->
-                frametimeZip.fastForEachIndexed { index, pair ->
-                    val x0 = size.width * (1f / listSize * (index))
-                    val y0 = (size.height * (1f - pair.first))
-                    val x1 = size.width * (1f / listSize * (index + 1))
-                    val y1 = (size.height * (1f - pair.second))
+                drawLine(frametimeZip, listSize, canvas, frametimePaint)
+            }
 
-                    canvas.drawLine(Offset(x0, y0), Offset(x1, y1), frametimePaint)
+            drawRect(brush = Brush.horizontalGradient(colors), blendMode = BlendMode.DstIn)
+        })
+}
+
+@Composable
+private fun NetGraph(data: HwInfoData, isHorizontal: Boolean, overlaySettings: OverlaySettings) {
+    if (!overlaySettings.upRate && !overlaySettings.downRate) return
+
+    val largestUp = remember { mutableFloatStateOf(0f) }
+    val largestDown = remember { mutableFloatStateOf(0f) }
+    val listSize = 30
+    val upRatePoints = remember { mutableStateListOf<Float>() }
+    val downRatePoints = remember { mutableStateListOf<Float>() }
+
+    val upRatePaint = remember {
+        Paint().apply {
+            isAntiAlias = true
+            color = Purple
+            strokeWidth = 1f
+            blendMode = BlendMode.DstAtop
+        }
+    }
+    val downRatePaint = remember {
+        Paint().apply {
+            isAntiAlias = true
+            color = Cyan
+            strokeWidth = 1f
+            blendMode = BlendMode.DstAtop
+        }
+    }
+
+    LaunchedEffect(data) {
+        if (data.UpRate > largestUp.floatValue) {
+            largestUp.floatValue = data.UpRate
+        }
+        if (data.DlRate > largestDown.floatValue) {
+            largestDown.floatValue = data.DlRate + .2f
+        }
+
+        upRatePoints.add(data.UpRate / largestUp.floatValue)
+        downRatePoints.add(data.DlRate / largestDown.floatValue + .2f)
+        if (upRatePoints.size > listSize) upRatePoints.removeFirst()
+        if (downRatePoints.size > listSize) downRatePoints.removeFirst()
+    }
+
+    Box(modifier = Modifier
+        .conditional(
+            predicate = isHorizontal,
+            ifTrue = { width(100.dp).height(45.dp) },
+            ifFalse = { fillMaxWidth().height(30.dp) },
+        )
+        .graphicsLayer { alpha = 0.99f }
+        .drawWithContent {
+            val colors = listOf(Color.Transparent, Color.Black, Color.Black, Color.Black, Color.Transparent)
+            val upRateZip = upRatePoints.zipWithNext()
+            val downRateZip = downRatePoints.zipWithNext()
+
+            drawIntoCanvas { canvas ->
+                if (overlaySettings.upRate) {
+                    drawLine(upRateZip, listSize, canvas, upRatePaint)
+                }
+                if (overlaySettings.downRate) {
+                    drawLine(downRateZip, listSize, canvas, downRatePaint)
                 }
             }
             drawRect(brush = Brush.horizontalGradient(colors), blendMode = BlendMode.DstIn)
         })
+}
+
+private fun ContentDrawScope.drawLine(
+    pairs: List<Pair<Float, Float>>,
+    listSize: Int,
+    canvas: Canvas,
+    paint: Paint
+) {
+    pairs.fastForEachIndexed { index, pair ->
+        val x0 = size.width * (1f / listSize * (index))
+        val y0 = (size.height * (1f - pair.first))
+        val x1 = size.width * (1f / listSize * (index + 1))
+        val y1 = (size.height * (1f - pair.second))
+
+        canvas.drawLine(Offset(x0, y0), Offset(x1, y1), paint)
+    }
 }
 

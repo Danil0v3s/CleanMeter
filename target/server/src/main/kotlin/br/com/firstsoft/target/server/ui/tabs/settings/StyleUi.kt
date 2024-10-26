@@ -283,6 +283,8 @@ fun StyleUi(
         onSwitchToggle = {
             if (!it) {
                 onOverlaySettings(overlaySettings.copy(progressType = OverlaySettings.ProgressType.None))
+            } else {
+                onOverlaySettings(overlaySettings.copy(progressType = OverlaySettings.ProgressType.Circular))
             }
         }
     ) {

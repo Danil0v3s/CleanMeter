@@ -128,7 +128,7 @@ private fun ApplicationScope.OverlayWindow(
     }
 
     val overlayState = rememberWindowState().apply {
-        size = if (overlaySettings.isHorizontal) DpSize(1024.dp, 80.dp) else DpSize(350.dp, 1024.dp)
+        size = if (overlaySettings.isHorizontal) DpSize(1280.dp, 80.dp) else DpSize(350.dp, 1280.dp)
         placement = WindowPlacement.Floating
         position = WindowPosition.Absolute(overlaySettings.positionX.dp,overlaySettings.positionY.dp)
     }

@@ -4,51 +4,23 @@
 > https://ko-fi.com/danil0v3s
 
 > [!IMPORTANT]  
-> We're about to release 0.0.4 which will DROP the need of MSI Afterburner and rely entirely on HWInfo alone. We heard some of you dislike Afterburner so we opted to go the least friction route.
+> We released 0.0.4 which DROPPED the need of MSI Afterburner and rely entirely on HWInfo alone. We heard some of you dislike Afterburner so we opted to go the least friction route.
 
 ## What is this?
 
-A small desktop companion app to display sleek graphs overlays from Afterburner. Designs were made by [/u/Violetmars](https://www.reddit.com/user/Violetmars/)
+A small desktop companion app to display sleek graphs overlays from HWInfo. Designs were made by [/u/Violetmars](https://www.reddit.com/user/Violetmars/)
 
 <img align="right" src="https://github.com/user-attachments/assets/5e797f42-bebc-4d8f-82c8-837fc4b58a07">
 <img align="center" src="https://github.com/user-attachments/assets/6c7bd91a-7e9a-4c38-a450-d6e2ce26bcd4">
 
 ## Getting started
-1. Make sure you have MSI Afterburner up and running and RTSS overlay turned off
-2. Configure the Afterburner Graphs
-   1. Open Afterburner
-   2. Cogwheel
-   3. Monitoring
-   4. Select plugins (3 dots next to "Active Hardware monitoring graphs")
-   5. Select HwInfo.dll
-   6. Click setup
-   7. Click add
-   8. Search for "Physical Memory Load" and "GPU Memory Usage"
-   
-   ![image](https://github.com/user-attachments/assets/0ad19f39-0fe6-4cb4-95f8-edd343e75e54)
-   ![image](https://github.com/user-attachments/assets/3fdb68ad-0f81-42f7-bb0f-5d35ca08fac3)
-   
-   9. Ok > Ok
-   10. Back to Monitoring tab, _**check every sensor**_
-4. Download the latest release, run it
+1. Make sure you have HWInfo up and running and RTSS overlay turned off
+2. Enable Shared Memory Support in HWInfo
+![image](images/qa_clean_meter.png)
+3. Download the latest release, run it
 
 ## Current Limitations
 - Doesn't work with exclusive fullscreen
-
-## FAQ
-
-Q: Framerate/Frametime isn't showing
-
-A: Make sure you checked the sensors at the monitoring tab
-![image](https://github.com/user-attachments/assets/34566585-6279-40a0-a099-34167b0f34c7)
-
-Q: There is no available HwInfo sensors in Afterburner plugins
-![image](images/qa_clean_meter2.png)
-
-A: Make sure you enable Shared Memory Support in HwInfo settings 
-![image](images/qa_clean_meter.png)
-
-
 
 ## More Images
 

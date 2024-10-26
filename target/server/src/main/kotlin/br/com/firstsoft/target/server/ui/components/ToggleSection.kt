@@ -1,5 +1,6 @@
 package br.com.firstsoft.target.server.ui.components
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -24,7 +25,7 @@ fun ToggleSection(
     onSwitchToggle: (Boolean) -> Unit,
     content: @Composable () -> Unit
 ) = Column(
-    modifier = Modifier.background(Color.White, RoundedCornerShape(12.dp)).padding(20.dp),
+    modifier = Modifier.animateContentSize().background(Color.White, RoundedCornerShape(12.dp)).padding(20.dp),
     verticalArrangement = Arrangement.spacedBy(20.dp)
 ) {
     Row(
@@ -46,5 +47,7 @@ fun ToggleSection(
         )
     }
 
-    content()
+    if (isEnabled) {
+        content()
+    }
 }
