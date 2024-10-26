@@ -38,6 +38,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.WindowScope
@@ -55,21 +56,13 @@ import ui.AppSettingsUi
 
 const val OVERLAY_SETTINGS_PREFERENCE_KEY = "OVERLAY_SETTINGS_PREFERENCE_KEY"
 
-val positionsLabels = listOf(
-    "Top Start",
-    "Top Center",
-    "Top End",
-    "Bottom Start",
-    "Bottom Center",
-    "Bottom End",
-)
-
 @Composable
 fun WindowScope.Settings(
     overlaySettings: OverlaySettings,
     onCloseRequest: () -> Unit,
     onMinimizeRequest: () -> Unit,
     onOverlaySettings: (OverlaySettings) -> Unit,
+    getOverlayPosition: () -> IntOffset
 ) = AppTheme {
     LaunchedEffect(overlaySettings) {
         PreferencesRepository.setPreference(OVERLAY_SETTINGS_PREFERENCE_KEY, Json.encodeToString(overlaySettings))
@@ -121,7 +114,7 @@ fun WindowScope.Settings(
 
             when (selectedTabIndex) {
                 0 -> OverlaySettingsUi(overlaySettings, onOverlaySettings)
-                1 -> StyleUi(overlaySettings, onOverlaySettings)
+                1 -> StyleUi(overlaySettings, onOverlaySettings, getOverlayPosition)
                 2 -> AppSettingsUi()
                 else -> Unit
             }
@@ -247,6 +240,7 @@ data class OverlaySettings(
     val progressType: ProgressType = ProgressType.Circular,
     val positionX: Int = 0,
     val positionY: Int = 0,
+    val isPositionLocked: Boolean = true,
 ) {
     @Serializable
     enum class ProgressType {

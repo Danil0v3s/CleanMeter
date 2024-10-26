@@ -7,8 +7,14 @@ import kotlinx.coroutines.flow.flow
 import util.getByteBuffer
 import util.readString
 import win32.WindowsService
+import java.lang.foreign.Arena
+import java.lang.foreign.MemorySegment
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
+import java.nio.channels.FileChannel
+import java.nio.file.Path
+import java.nio.file.Paths
+import java.nio.file.StandardOpenOption
 import kotlin.coroutines.cancellation.CancellationException
 
 private const val MEMORY_MAP_FILE_NAME = "Global\\HWiNFO_SENS_SM2"

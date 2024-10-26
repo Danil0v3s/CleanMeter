@@ -1,6 +1,7 @@
 package br.com.firstsoft.target.server
 
 import PreferencesRepository
+import androidx.compose.foundation.window.WindowDraggableArea
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -10,6 +11,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.DpSize
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.ApplicationScope
@@ -35,7 +37,8 @@ import ui.app.Settings
 import win32.WindowsService
 import java.awt.GraphicsEnvironment
 import java.awt.Toolkit
-import kotlin.math.floor
+import java.awt.event.ComponentAdapter
+import java.awt.event.ComponentEvent
 
 val positions = listOf(
     Alignment.TopStart,
@@ -60,9 +63,7 @@ private fun loadOverlaySettings(): OverlaySettings {
     return settings
 }
 
-fun main() {
-    val channel = Channel<Unit>()
-
+private fun registerKeyboardHook(onHotkey: () -> Unit) {
     GlobalScreen.registerNativeHook()
     GlobalScreen.addNativeKeyListener(object : NativeKeyListener {
         override fun nativeKeyReleased(nativeEvent: NativeKeyEvent) {
@@ -71,26 +72,53 @@ fun main() {
             val isF10 = nativeEvent.keyCode == NativeKeyEvent.VC_F10
 
             if (isCtrl && isAlt && isF10) {
-                channel.trySend(Unit)
+                onHotkey()
             }
         }
     })
+}
+
+fun main() {
+    val channel = Channel<Unit>()
+
+    registerKeyboardHook { channel.trySend(Unit) }
 
     application {
         var overlaySettings by remember { mutableStateOf(loadOverlaySettings()) }
+        var overlayPosition by remember {
+            mutableStateOf(
+                IntOffset(
+                    overlaySettings.positionX,
+                    overlaySettings.positionY
+                )
+            )
+        }
 
-        OverlayWindow(channel, overlaySettings)
+        OverlayWindow(
+            channel = channel,
+            overlaySettings = overlaySettings,
+            onPositionChanged = {
+                if (!overlaySettings.isPositionLocked) {
+                    overlayPosition = it
+                }
+            },
+        )
 
-        SettingsWindow(overlaySettings, {
-            overlaySettings = it
-        })
+        SettingsWindow(
+            overlaySettings = overlaySettings,
+            onOverlaySettings = {
+                overlaySettings = it
+            },
+            getOverlayPosition = { overlayPosition }
+        )
     }
 }
 
 @Composable
 private fun ApplicationScope.OverlayWindow(
     channel: Channel<Unit>,
-    overlaySettings: OverlaySettings
+    overlaySettings: OverlaySettings,
+    onPositionChanged: (IntOffset) -> Unit
 ) {
     var isVisible by remember { mutableStateOf(true) }
     LaunchedEffect(Unit) {
@@ -102,6 +130,7 @@ private fun ApplicationScope.OverlayWindow(
     val overlayState = rememberWindowState().apply {
         size = if (overlaySettings.isHorizontal) DpSize(1024.dp, 80.dp) else DpSize(350.dp, 1024.dp)
         placement = WindowPlacement.Floating
+        position = WindowPosition.Absolute(overlaySettings.positionX.dp,overlaySettings.positionY.dp)
     }
 
     val graphicsEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment()
@@ -118,9 +147,15 @@ private fun ApplicationScope.OverlayWindow(
         alwaysOnTop = true,
         transparent = true,
         undecorated = true,
-        focusable = false,
-        enabled = false,
+        focusable = !overlaySettings.isPositionLocked,
+        enabled = !overlaySettings.isPositionLocked,
     ) {
+        window.addComponentListener(object : ComponentAdapter() {
+            override fun componentMoved(e: ComponentEvent) {
+                onPositionChanged(IntOffset(e.component.x, e.component.y))
+            }
+        })
+
         LaunchedEffect(overlaySettings) {
             if (overlaySettings.positionIndex < 6) {
                 val alignment = positions[overlaySettings.positionIndex]
@@ -156,27 +191,25 @@ private fun ApplicationScope.OverlayWindow(
                 overlayState.position = WindowPosition.Aligned(alignment)
                 window.setLocation(location.width, location.height)
             } else {
-                val relativeX = graphicsConfiguration.bounds.x + (graphicsConfiguration.bounds.width * (overlaySettings.positionX / 100f)) - (window.bounds.width / 2)
-                val relativeY = graphicsConfiguration.bounds.y + (graphicsConfiguration.bounds.height * (overlaySettings.positionY / 100f)) - window.bounds.height - taskbarHeight
-                val x = relativeX.coerceIn(graphicsConfiguration.bounds.x.toFloat(), (graphicsConfiguration.bounds.x + graphicsConfiguration.bounds.width - window.bounds.width).toFloat())
-                val y = relativeY.coerceIn(graphicsConfiguration.bounds.y.toFloat(), (graphicsConfiguration.bounds.y + graphicsConfiguration.bounds.height - window.bounds.height - taskbarHeight).toFloat())
-
-                overlayState.position = WindowPosition.PlatformDefault
-                window.setLocation(x.toInt(),y.toInt())
+                overlayState.position = WindowPosition.Absolute(overlaySettings.positionX.dp,overlaySettings.positionY.dp)
             }
 
             window.toFront()
         }
 
-        WindowsService.makeComponentTransparent(window)
-        Overlay(overlaySettings = overlaySettings)
+        WindowsService.changeWindowTransparency(window, overlaySettings.isPositionLocked)
+
+        WindowDraggableArea {
+            Overlay(overlaySettings = overlaySettings)
+        }
     }
 }
 
 @Composable
 private fun ApplicationScope.SettingsWindow(
     overlaySettings: OverlaySettings,
-    onOverlaySettings: (OverlaySettings) -> Unit
+    onOverlaySettings: (OverlaySettings) -> Unit,
+    getOverlayPosition: () -> IntOffset,
 ) {
     var isVisible by remember {
         mutableStateOf(
@@ -204,7 +237,8 @@ private fun ApplicationScope.SettingsWindow(
             overlaySettings = overlaySettings,
             onOverlaySettings = onOverlaySettings,
             onCloseRequest = { isVisible = false },
-            onMinimizeRequest = { state.isMinimized = true }
+            onMinimizeRequest = { state.isMinimized = true },
+            getOverlayPosition = getOverlayPosition
         )
     }
 

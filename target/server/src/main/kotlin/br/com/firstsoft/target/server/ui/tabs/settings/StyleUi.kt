@@ -21,21 +21,19 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
-import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.com.firstsoft.target.server.ui.ColorTokens.AlmostVisibleGray
 import br.com.firstsoft.target.server.ui.ColorTokens.BarelyVisibleGray
 import br.com.firstsoft.target.server.ui.ColorTokens.DarkGray
+import br.com.firstsoft.target.server.ui.ColorTokens.LabelGray
 import br.com.firstsoft.target.server.ui.ColorTokens.MutedGray
 import br.com.firstsoft.target.server.ui.components.CollapsibleSection
 import br.com.firstsoft.target.server.ui.components.Toggle
@@ -47,7 +45,8 @@ import ui.conditional
 @Composable
 fun StyleUi(
     overlaySettings: OverlaySettings,
-    onOverlaySettings: (OverlaySettings) -> Unit
+    onOverlaySettings: (OverlaySettings) -> Unit,
+    getOverlayPosition: () -> IntOffset,
 ) = Column(
     modifier = Modifier.padding(bottom = 8.dp, top = 20.dp).verticalScroll(rememberScrollState()),
     verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -192,81 +191,117 @@ fun StyleUi(
                     )
                     Toggle(
                         checked = overlaySettings.positionIndex == 6,
-                        onCheckedChange = { onOverlaySettings(overlaySettings.copy(positionIndex = if (it) 6 else 0)) },
+                        onCheckedChange = { onOverlaySettings(overlaySettings.copy(positionIndex = if (it) 6 else 0, isPositionLocked = true)) },
                     )
                 }
 
                 if (overlaySettings.positionIndex == 6) {
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally),
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
                         modifier = Modifier
                             .fillMaxWidth()
                             .background(BarelyVisibleGray, RoundedCornerShape(12.dp))
                             .padding(20.dp)
                     ) {
-                        Column(modifier = Modifier.weight(.5f), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                            Text(
-                                text = "X-axis",
-                                fontSize = 14.sp,
-                                color = Color.DarkGray,
-                                lineHeight = 0.sp,
-                                fontWeight = FontWeight(550),
-                                letterSpacing = 0.14.sp,
-                            )
-                            TextField(
-                                modifier = Modifier
-                                    .height(48.dp)
-                                    .clip(RoundedCornerShape(8.dp))
-                                    .border(1.dp, AlmostVisibleGray, RoundedCornerShape(8.dp)),
-                                value = overlaySettings.positionX.toString(),
-                                onValueChange = {
-                                    it.toIntOrNull()?.coerceIn(0..100)
-                                        ?.let { onOverlaySettings(overlaySettings.copy(positionX = it)) }
-                                },
-                                textStyle = TextStyle(
-                                    color = Color.DarkGray,
-                                    fontSize = 12.sp,
-                                    fontWeight = FontWeight.Medium
-                                ),
-                                colors = TextFieldDefaults.textFieldColors(
-                                    backgroundColor = Color.White,
-                                    unfocusedIndicatorColor = Color.Transparent,
-                                    focusedIndicatorColor = Color.Transparent,
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Column {
+                                Text(
+                                    text = "Window lock",
+                                    fontSize = 13.sp,
+                                    color = MutedGray,
+                                    lineHeight = 0.sp,
+                                    fontWeight = FontWeight.Normal,
                                 )
+                                Text(
+                                    text = "Remember to lock again after you finish moving it around.",
+                                    fontSize = 12.sp,
+                                    color = LabelGray,
+                                    lineHeight = 0.sp,
+                                    fontWeight = FontWeight.Normal,
+                                )
+                            }
+                            Toggle(
+                                checked = overlaySettings.isPositionLocked,
+                                onCheckedChange = {
+                                    val position = getOverlayPosition()
+                                    onOverlaySettings(
+                                        overlaySettings.copy(
+                                            isPositionLocked = it,
+                                            positionX = position.x,
+                                            positionY = position.y
+                                        )
+                                    )
+                                },
                             )
                         }
 
-                        Column(modifier = Modifier.weight(.5f), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                            Text(
-                                text = "Y-axis",
-                                fontSize = 14.sp,
-                                color = Color.DarkGray,
-                                lineHeight = 0.sp,
-                                fontWeight = FontWeight(550),
-                                letterSpacing = 0.14.sp,
-                            )
-                            TextField(
-                                modifier = Modifier
-                                    .height(48.dp)
-                                    .clip(RoundedCornerShape(8.dp))
-                                    .border(1.dp, AlmostVisibleGray, RoundedCornerShape(8.dp)),
-                                value = overlaySettings.positionY.toString(),
-                                onValueChange = {
-                                    it.toIntOrNull()?.coerceIn(-1..100)
-                                        ?.let { onOverlaySettings(overlaySettings.copy(positionY = it)) }
-                                },
-                                textStyle = TextStyle(
-                                    color = Color.DarkGray,
-                                    fontSize = 12.sp,
-                                    fontWeight = FontWeight.Medium
-                                ),
-                                colors = TextFieldDefaults.textFieldColors(
-                                    backgroundColor = Color.White,
-                                    unfocusedIndicatorColor = Color.Transparent,
-                                    focusedIndicatorColor = Color.Transparent,
-                                )
-                            )
-                        }
+//                        Column(modifier = Modifier.weight(.5f), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+//                            Text(
+//                                text = "X-axis",
+//                                fontSize = 14.sp,
+//                                color = Color.DarkGray,
+//                                lineHeight = 0.sp,
+//                                fontWeight = FontWeight(550),
+//                                letterSpacing = 0.14.sp,
+//                            )
+//                            TextField(
+//                                modifier = Modifier
+//                                    .height(48.dp)
+//                                    .clip(RoundedCornerShape(8.dp))
+//                                    .border(1.dp, AlmostVisibleGray, RoundedCornerShape(8.dp)),
+//                                value = overlaySettings.positionX.toString(),
+//                                onValueChange = {
+//                                    it.toIntOrNull()?.coerceIn(0..100)
+//                                        ?.let { onOverlaySettings(overlaySettings.copy(positionX = it)) }
+//                                },
+//                                textStyle = TextStyle(
+//                                    color = Color.DarkGray,
+//                                    fontSize = 12.sp,
+//                                    fontWeight = FontWeight.Medium
+//                                ),
+//                                colors = TextFieldDefaults.textFieldColors(
+//                                    backgroundColor = Color.White,
+//                                    unfocusedIndicatorColor = Color.Transparent,
+//                                    focusedIndicatorColor = Color.Transparent,
+//                                )
+//                            )
+//                        }
+//
+//                        Column(modifier = Modifier.weight(.5f), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+//                            Text(
+//                                text = "Y-axis",
+//                                fontSize = 14.sp,
+//                                color = Color.DarkGray,
+//                                lineHeight = 0.sp,
+//                                fontWeight = FontWeight(550),
+//                                letterSpacing = 0.14.sp,
+//                            )
+//                            TextField(
+//                                modifier = Modifier
+//                                    .height(48.dp)
+//                                    .clip(RoundedCornerShape(8.dp))
+//                                    .border(1.dp, AlmostVisibleGray, RoundedCornerShape(8.dp)),
+//                                value = overlaySettings.positionY.toString(),
+//                                onValueChange = {
+//                                    it.toIntOrNull()?.coerceIn(-1..100)
+//                                        ?.let { onOverlaySettings(overlaySettings.copy(positionY = it)) }
+//                                },
+//                                textStyle = TextStyle(
+//                                    color = Color.DarkGray,
+//                                    fontSize = 12.sp,
+//                                    fontWeight = FontWeight.Medium
+//                                ),
+//                                colors = TextFieldDefaults.textFieldColors(
+//                                    backgroundColor = Color.White,
+//                                    unfocusedIndicatorColor = Color.Transparent,
+//                                    focusedIndicatorColor = Color.Transparent,
+//                                )
+//                            )
+//                        }
                     }
                 }
             }

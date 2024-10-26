@@ -10,7 +10,7 @@ data class HwInfoData(
 )
 
 val HwInfoData.FPS: Int
-    get() = (readings.firstOrNull { it.readingType == SensorReadingType.Other && it.szLabelOrig == "Framerate" }?.value?.toInt()
+    get() = (readings.firstOrNull { it.readingType == SensorReadingType.Other && it.szLabelOrig == "Framerate (Presented)" }?.value?.toInt()
         ?: 0).coerceAtMost(480)
 
 val HwInfoData.Frametime: Float

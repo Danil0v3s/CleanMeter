@@ -49,10 +49,16 @@ class WindowsService {
     }
 
     companion object {
-        fun makeComponentTransparent(w: Component) {
+        fun changeWindowTransparency(w: Component, isTransparent: Boolean) {
             val hwnd = HWND().apply { pointer = Native.getComponentPointer(w) }
-            val wl =
-                User32.INSTANCE.GetWindowLong(hwnd, WinUser.GWL_EXSTYLE) or WinUser.WS_EX_LAYERED or WinUser.WS_EX_TRANSPARENT
+            val wl = if (isTransparent) {
+                User32.INSTANCE.GetWindowLong(
+                    hwnd,
+                    WinUser.GWL_EXSTYLE
+                ) or WinUser.WS_EX_LAYERED or WinUser.WS_EX_TRANSPARENT
+            } else {
+                User32.INSTANCE.GetWindowLong(hwnd, WinUser.GWL_EXSTYLE) or WinUser.WS_EX_LAYERED and WinUser.WS_EX_TRANSPARENT.inv()
+            }
             User32.INSTANCE.SetWindowLong(hwnd, WinUser.GWL_EXSTYLE, wl)
         }
     }
