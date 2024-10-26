@@ -1,5 +1,6 @@
 package ui.app
 
+import PreferencesRepository
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.TooltipArea
@@ -247,6 +248,9 @@ data class OverlaySettings(
     val progressType: ProgressType = ProgressType.Circular,
     val positionX: Int = 0,
     val positionY: Int = 0,
+    val upRate: Boolean = false,
+    val downRate: Boolean = false,
+    val netGraph: Boolean = false,
 ) {
     @Serializable
     enum class ProgressType {

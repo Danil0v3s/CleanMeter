@@ -77,13 +77,28 @@ fun OverlaySettingsUi(
             ),
             CheckboxSectionOption(
                 isSelected = overlaySettings.vramUsage,
-                name = "Vram usage",
+                name = "VRAM usage",
                 type = SettingsOptionType.VramUsage
             ),
             CheckboxSectionOption(
                 isSelected = overlaySettings.ramUsage,
-                name = "Ram usage",
+                name = "RAM usage",
                 type = SettingsOptionType.RamUsage
+            ),
+            CheckboxSectionOption(
+                isSelected = overlaySettings.downRate,
+                name = "Receive speed",
+                type = SettingsOptionType.DownRate
+            ),
+            CheckboxSectionOption(
+                isSelected = overlaySettings.upRate,
+                name = "Send speed",
+                type = SettingsOptionType.UpRate
+            ),
+            CheckboxSectionOption(
+                isSelected = overlaySettings.netGraph,
+                name = "Network graph",
+                type = SettingsOptionType.NetGraph
             ),
         )
     }
@@ -98,6 +113,9 @@ fun OverlaySettingsUi(
             SettingsOptionType.GpuUsage -> overlaySettings.copy(gpuUsage = option.isSelected)
             SettingsOptionType.VramUsage -> overlaySettings.copy(vramUsage = option.isSelected)
             SettingsOptionType.RamUsage -> overlaySettings.copy(ramUsage = option.isSelected)
+            SettingsOptionType.UpRate -> overlaySettings.copy(upRate = option.isSelected)
+            SettingsOptionType.DownRate -> overlaySettings.copy(downRate = option.isSelected)
+            SettingsOptionType.NetGraph -> overlaySettings.copy(netGraph = option.isSelected)
         }
         onOverlaySettings(newSettings)
     }
@@ -155,6 +173,16 @@ fun OverlaySettingsUi(
         options = availableOptions.filterOptions(SettingsOptionType.RamUsage),
         onOptionToggle = ::onOptionsToggle,
         onSwitchToggle = { onOverlaySettings(overlaySettings.copy(ramUsage = it)) }
+    )
+
+    CheckboxSection(title = "NETWORK",
+        options = availableOptions.filterOptions(
+            SettingsOptionType.DownRate,
+            SettingsOptionType.UpRate,
+            SettingsOptionType.NetGraph
+        ),
+        onOptionToggle = ::onOptionsToggle,
+        onSwitchToggle = { onOverlaySettings(overlaySettings.copy(downRate = it, upRate = it, netGraph = it)) }
     )
 
     DropdownSection(title = "MONITOR",

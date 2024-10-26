@@ -10,7 +10,7 @@ data class HwInfoData(
 )
 
 val HwInfoData.FPS: Int
-    get() = (readings.firstOrNull { it.readingType == SensorReadingType.Other && it.szLabelOrig == "Framerate" }?.value?.toInt()
+    get() = (readings.firstOrNull { it.readingType == SensorReadingType.Other && it.szLabelOrig == "Framerate (Presented)" }?.value?.toInt()
         ?: 0).coerceAtMost(480)
 
 val HwInfoData.Frametime: Float
@@ -54,3 +54,29 @@ val HwInfoData.RamUsage: Float
 val HwInfoData.RamUsagePercent: Float
     get() = (readings.firstOrNull { it.readingType == SensorReadingType.Other && it.szLabelOrig == "Physical Memory Load" }?.value?.toFloat()
         ?: 0f).coerceAtLeast(0f).coerceAtMost(100f)
+
+val HwInfoData.UpRate: Float
+    get() = (readings.firstOrNull { it.readingType == SensorReadingType.Other && it.szLabelOrig == "Current UP rate" }?.value?.toFloat()
+        ?: 0f).coerceAtLeast(0f)
+
+val HwInfoData.UpRateUnit
+    get() = readings.firstOrNull { it.readingType == SensorReadingType.Other && it.szLabelOrig == "Current UP rate" }?.szUnit.orEmpty()
+
+val HwInfoData.DlRate: Float
+    get() = (readings.firstOrNull { it.readingType == SensorReadingType.Other && it.szLabelOrig == "Current DL rate" }?.value?.toFloat()
+        ?: 0f).coerceAtLeast(0f)
+
+val HwInfoData.DlRateUnit
+    get() = readings.firstOrNull { it.readingType == SensorReadingType.Other && it.szLabelOrig == "Current DL rate" }?.szUnit.orEmpty()
+
+val HwInfoData.UpTotal: Float
+    get() = (readings.firstOrNull { it.readingType == SensorReadingType.Other && it.szLabelOrig == "Total UP" }?.value?.toFloat()
+        ?: 0f).coerceAtLeast(0f)
+
+val HwInfoData.DlTotal: Float
+    get() = (readings.firstOrNull { it.readingType == SensorReadingType.Other && it.szLabelOrig == "Total DL" }?.value?.toFloat()
+        ?: 0f).coerceAtLeast(0f)
+
+val HwInfoData.UpRateReading
+    get() = readings.firstOrNull { it.readingType == SensorReadingType.Other && it.szLabelOrig == "Current UP rate" }
+

@@ -35,7 +35,6 @@ import ui.app.Settings
 import win32.WindowsService
 import java.awt.GraphicsEnvironment
 import java.awt.Toolkit
-import kotlin.math.floor
 
 val positions = listOf(
     Alignment.TopStart,
@@ -100,7 +99,7 @@ private fun ApplicationScope.OverlayWindow(
     }
 
     val overlayState = rememberWindowState().apply {
-        size = if (overlaySettings.isHorizontal) DpSize(1024.dp, 80.dp) else DpSize(350.dp, 1024.dp)
+        size = if (overlaySettings.isHorizontal) DpSize(1280.dp, 80.dp) else DpSize(350.dp, 1280.dp)
         placement = WindowPlacement.Floating
     }
 

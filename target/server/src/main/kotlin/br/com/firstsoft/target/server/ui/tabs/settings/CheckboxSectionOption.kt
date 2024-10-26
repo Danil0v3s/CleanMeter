@@ -5,5 +5,5 @@ data class CheckboxSectionOption(
 )
 
 enum class SettingsOptionType {
-    Framerate, Frametime, CpuTemp, CpuUsage, GpuTemp, GpuUsage, VramUsage, RamUsage,
+    Framerate, Frametime, CpuTemp, CpuUsage, GpuTemp, GpuUsage, VramUsage, RamUsage, UpRate, DownRate, NetGraph
 }
