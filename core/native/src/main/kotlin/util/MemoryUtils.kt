@@ -4,7 +4,7 @@ import com.sun.jna.Pointer
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.charset.Charset
-import java.nio.charset.StandardCharsets
+import java.util.Locale
 
 internal fun getByteBuffer(pointer: Pointer, size: Int, offset: Int = 0): ByteBuffer {
     val buffer = ByteBuffer.allocateDirect(size)
@@ -16,7 +16,16 @@ internal fun getByteBuffer(pointer: Pointer, size: Int, offset: Int = 0): ByteBu
     return buffer
 }
 
-internal fun ByteBuffer.readString(maxLength: Int, charset: Charset = StandardCharsets.ISO_8859_1): String {
+internal val systemCharset: Charset by lazy {
+    val osName = System.getProperty("os.name").lowercase(Locale.getDefault())
+    when {
+        "win" in osName -> Charset.forName(System.getProperty("sun.jnu.encoding"))
+        "mac" in osName -> Charset.forName(System.getenv("LC_CTYPE") ?: "UTF-8")
+        else -> Charset.forName(System.getenv("LANG")?.substringAfter('.') ?: "UTF-8")
+    }
+}
+
+internal fun ByteBuffer.readString(maxLength: Int, charset: Charset = systemCharset): String {
     val array = ByteArray(maxLength)
     get(array, 0, maxLength)
 
