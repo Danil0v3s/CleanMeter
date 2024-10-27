@@ -192,7 +192,7 @@ fun StyleUi(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Row(horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
                         Icon(
                             modifier = Modifier.size(40.dp).border(1.dp, LabelGray, CircleShape).padding(10.dp),
                             painter = painterResource("icons/drag_pan.svg"),
@@ -260,7 +260,7 @@ fun StyleUi(
                                     val icon = if (!overlaySettings.isPositionLocked) {
                                         "icons/lock_open.svg"
                                     } else {
-                                        "icons/drag_pan.svg"
+                                        "icons/lock_closed.svg"
                                     }
                                     Icon(painterResource(icon), "")
                                 }
