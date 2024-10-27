@@ -10,22 +10,31 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import br.com.firstsoft.target.server.ui.ColorTokens.AlmostVisibleGray
 import br.com.firstsoft.target.server.ui.ColorTokens.Green
+import ui.conditional
 
 @Composable
 fun Toggle(
     checked: Boolean,
-    onCheckedChange: (Boolean) -> Unit
+    thumbContent: (@Composable () -> Unit)? = null,
+    checkedTrackColor: Color = Green,
+    customSize: Boolean = false,
+    modifier: Modifier = Modifier,
+    onCheckedChange: (Boolean) -> Unit,
 ) =
     Switch(
         checked = checked,
         onCheckedChange = onCheckedChange,
         colors = SwitchDefaults.colors(
             checkedThumbColor = Color.White,
-            checkedTrackColor = Green,
+            checkedTrackColor = checkedTrackColor,
             checkedBorderColor = Color.Transparent,
             uncheckedThumbColor = Color.White,
             uncheckedTrackColor = AlmostVisibleGray,
             uncheckedBorderColor = Color.Transparent,
         ),
-        modifier = Modifier.scale(0.7f).height(20.dp),
+        modifier = modifier.conditional(
+            predicate = customSize,
+            ifTrue = { this },
+            ifFalse = { scale(0.7f).height(20.dp) }),
+        thumbContent = thumbContent
     )

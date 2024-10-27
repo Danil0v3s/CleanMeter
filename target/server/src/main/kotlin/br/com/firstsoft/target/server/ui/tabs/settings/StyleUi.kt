@@ -16,11 +16,14 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
+import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Slider
@@ -189,14 +192,30 @@ fun StyleUi(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(
-                        text = "Set a custom position",
-                        fontSize = 14.sp,
-                        color = DarkGray,
-                        lineHeight = 0.sp,
-                        fontWeight = FontWeight(550),
-                        letterSpacing = 0.14.sp,
-                    )
+                    Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                        Icon(
+                            modifier = Modifier.size(40.dp).border(1.dp, LabelGray, CircleShape).padding(10.dp),
+                            painter = painterResource("icons/drag_pan.svg"),
+                            tint = MutedGray,
+                            contentDescription = "",
+                        )
+                        Column {
+                            Text(
+                                text = "Use custom position",
+                                fontSize = 13.sp,
+                                color = DarkGray,
+                                lineHeight = 0.sp,
+                                fontWeight = FontWeight.Normal,
+                            )
+                            Text(
+                                text = "Unlock to move around the overlay, lock it again to fix it's position.",
+                                fontSize = 12.sp,
+                                color = LabelGray,
+                                lineHeight = 0.sp,
+                                fontWeight = FontWeight.Normal,
+                            )
+                        }
+                    }
                     Toggle(
                         checked = overlaySettings.positionIndex == 6,
                         onCheckedChange = { onOverlaySettings(overlaySettings.copy(positionIndex = if (it) 6 else 0, isPositionLocked = true)) },
@@ -213,37 +232,45 @@ fun StyleUi(
                     ) {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween,
+                            horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterHorizontally),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Column {
-                                Text(
-                                    text = "Window lock",
-                                    fontSize = 13.sp,
-                                    color = MutedGray,
-                                    lineHeight = 0.sp,
-                                    fontWeight = FontWeight.Normal,
-                                )
-                                Text(
-                                    text = "Remember to lock again after you finish moving it around.",
-                                    fontSize = 12.sp,
-                                    color = LabelGray,
-                                    lineHeight = 0.sp,
-                                    fontWeight = FontWeight.Normal,
-                                )
-                            }
+                            Text(
+                                text = "Locked",
+                                fontSize = 13.sp,
+                                color = if (!overlaySettings.isPositionLocked) AlmostVisibleGray else DarkGray,
+                                lineHeight = 0.sp,
+                                fontWeight = FontWeight.Normal,
+                            )
                             Toggle(
-                                checked = overlaySettings.isPositionLocked,
+                                customSize = true,
+                                checked = !overlaySettings.isPositionLocked,
+                                checkedTrackColor = DarkGray,
                                 onCheckedChange = {
                                     val position = getOverlayPosition()
                                     onOverlaySettings(
                                         overlaySettings.copy(
-                                            isPositionLocked = it,
+                                            isPositionLocked = !it,
                                             positionX = position.x,
                                             positionY = position.y
                                         )
                                     )
                                 },
+                                thumbContent = {
+                                    val icon = if (!overlaySettings.isPositionLocked) {
+                                        "icons/lock_open.svg"
+                                    } else {
+                                        "icons/drag_pan.svg"
+                                    }
+                                    Icon(painterResource(icon), "")
+                                }
+                            )
+                            Text(
+                                text = "Unlocked",
+                                fontSize = 13.sp,
+                                color = if (!overlaySettings.isPositionLocked) DarkGray else AlmostVisibleGray,
+                                lineHeight = 0.sp,
+                                fontWeight = FontWeight.Normal,
                             )
                         }
                     }
