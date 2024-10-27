@@ -39,6 +39,7 @@ import java.awt.GraphicsEnvironment
 import java.awt.Toolkit
 import java.awt.event.ComponentAdapter
 import java.awt.event.ComponentEvent
+import java.io.File
 
 val positions = listOf(
     Alignment.TopStart,
@@ -78,7 +79,17 @@ private fun registerKeyboardHook(onHotkey: () -> Unit) {
     })
 }
 
+private fun writeToFile(exception: Throwable) {
+    try {
+        File("cleanmeter.error.${System.currentTimeMillis()}.log").printWriter().use { it.print(exception.stackTraceToString()) }
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
+}
+
 fun main() {
+    Thread.setDefaultUncaughtExceptionHandler { thread, throwable -> writeToFile(throwable) }
+
     val channel = Channel<Unit>()
 
     registerKeyboardHook { channel.trySend(Unit) }
