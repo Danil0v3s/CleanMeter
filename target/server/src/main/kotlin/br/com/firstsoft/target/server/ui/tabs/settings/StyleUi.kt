@@ -1,5 +1,6 @@
 package br.com.firstsoft.target.server.ui.tabs.settings
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -21,27 +22,34 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Slider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.com.firstsoft.target.server.ui.ColorTokens.AlmostVisibleGray
+import br.com.firstsoft.target.server.ui.ColorTokens.BackgroundOffWhite
 import br.com.firstsoft.target.server.ui.ColorTokens.BarelyVisibleGray
 import br.com.firstsoft.target.server.ui.ColorTokens.DarkGray
 import br.com.firstsoft.target.server.ui.ColorTokens.LabelGray
 import br.com.firstsoft.target.server.ui.ColorTokens.MutedGray
 import br.com.firstsoft.target.server.ui.components.CollapsibleSection
+import br.com.firstsoft.target.server.ui.components.SliderThumb
 import br.com.firstsoft.target.server.ui.components.Toggle
 import br.com.firstsoft.target.server.ui.components.ToggleSection
+import br.com.firstsoft.target.server.ui.components.coercedValueAsFraction
+import br.com.firstsoft.target.server.ui.components.drawTrack
 import ui.app.OverlaySettings
 import ui.conditional
 
-@OptIn(ExperimentalLayoutApi::class)
+@OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun StyleUi(
     overlaySettings: OverlaySettings,
@@ -272,6 +280,44 @@ fun StyleUi(
                         contentDescription = "Vertical image",
                         modifier = Modifier.align(Alignment.Center)
                     )
+                }
+            )
+        }
+    }
+
+    CollapsibleSection(title = "OPACITY") {
+        Column(
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            Slider(
+                value = overlaySettings.opacity,
+                onValueChange = {
+                    println(it)
+                    onOverlaySettings(overlaySettings.copy(opacity = it.coerceIn(0f, 1f)))
+                },
+                steps = 9,
+                track = { sliderState ->
+                    val textMeasurer = rememberTextMeasurer()
+
+                    Canvas(
+                        Modifier
+                            .fillMaxWidth()
+                            .height(60.dp)
+                    ) {
+                        drawTrack(
+                            FloatArray(sliderState.steps + 2) { it.toFloat() / (sliderState.steps + 1) },
+                            0f,
+                            sliderState.coercedValueAsFraction,
+                            BackgroundOffWhite,
+                            DarkGray,
+                            AlmostVisibleGray,
+                            Color.White,
+                            textMeasurer
+                        )
+                    }
+                },
+                thumb = {
+                    SliderThumb()
                 }
             )
         }

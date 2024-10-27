@@ -245,6 +245,7 @@ data class OverlaySettings(
     val upRate: Boolean = false,
     val downRate: Boolean = false,
     val netGraph: Boolean = false,
+    val opacity: Float = 1f,
 ) {
     @Serializable
     enum class ProgressType {

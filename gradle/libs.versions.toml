@@ -10,7 +10,7 @@ compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "
 
 [libraries]
 compose-material-icons = "org.jetbrains.compose.material:material-icons-extended-desktop:1.3.1"
-compose-material = "org.jetbrains.compose.material3:material3-desktop:1.2.1"
+compose-material = "org.jetbrains.compose.material3:material3-desktop:1.6.11"
 
 ktor-client-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktor" }
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }

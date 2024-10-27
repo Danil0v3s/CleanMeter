@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import br.com.firstsoft.target.server.ui.AppTheme
 import hwinfo.HwInfoReader
 import ui.OverlayUi
@@ -44,7 +45,7 @@ fun Overlay(
         else -> Alignment.Center
     }
 
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = alignment) {
+    Box(modifier = Modifier.fillMaxSize().alpha(overlaySettings.opacity), contentAlignment = alignment) {
         OverlayUi(
             reader = hwInfoReader,
             overlaySettings = overlaySettings
