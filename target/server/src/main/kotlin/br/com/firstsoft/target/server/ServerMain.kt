@@ -92,7 +92,7 @@ fun main() {
 
     val channel = Channel<Unit>()
 
-    registerKeyboardHook { channel.trySend(Unit) }
+    //registerKeyboardHook { channel.trySend(Unit) }
 
     application {
         var overlaySettings by remember { mutableStateOf(loadOverlaySettings()) }

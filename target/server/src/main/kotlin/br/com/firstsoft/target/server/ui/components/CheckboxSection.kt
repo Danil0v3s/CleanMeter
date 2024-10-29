@@ -20,7 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.com.firstsoft.target.server.ui.ColorTokens.MutedGray
-import br.com.firstsoft.target.server.ui.tabs.settings.CheckboxSectionOption
+import br.com.firstsoft.target.server.ui.settings.CheckboxSectionOption
 
 @Composable
 fun CheckboxSection(
@@ -62,5 +62,41 @@ fun CheckboxSection(
                 )
             }
         }
+    }
+}
+
+@Composable
+fun CustomBodyCheckboxSection(
+    title: String,
+    options: List<CheckboxSectionOption>,
+    onSwitchToggle: (Boolean) -> Unit,
+    body: @Composable () -> Unit,
+) = Column(
+    modifier = Modifier.animateContentSize().background(Color.White, RoundedCornerShape(12.dp)).padding(20.dp),
+    verticalArrangement = Arrangement.spacedBy(20.dp)
+) {
+    val isAnySelected by remember(options) { derivedStateOf { options.any { it.isSelected } } }
+
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = title,
+            fontSize = 13.sp,
+            color = MutedGray,
+            lineHeight = 0.sp,
+            fontWeight = FontWeight.SemiBold,
+            letterSpacing = 1.sp
+        )
+        Toggle(
+            checked = isAnySelected,
+            onCheckedChange = onSwitchToggle
+        )
+    }
+
+    if (isAnySelected) {
+        body()
     }
 }

@@ -4,8 +4,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class SensorElement(
-    val dwSensorId: Int,
-    val dwSensorInst: Int,
+    val dwSensorId: Long,
+    val dwSensorInst: Long,
     val szSensorNameOrig: String,
     val szSensorNameUser: String,
 )

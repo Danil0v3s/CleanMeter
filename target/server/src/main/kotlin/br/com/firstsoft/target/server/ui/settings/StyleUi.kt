@@ -1,4 +1,4 @@
-package br.com.firstsoft.target.server.ui.tabs.settings
+package br.com.firstsoft.target.server.ui.settings
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image

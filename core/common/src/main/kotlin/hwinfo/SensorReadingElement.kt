@@ -10,8 +10,8 @@ data class SensorReadingElement(
     val szLabelOrig: String,
     val szLabelUser: String,
     val szUnit: String,
-    val value: Double,
-    val valueMin: Double,
-    val valueMax: Double,
-    val valueAvg: Double,
+    val value: Float,
+    val valueMin: Float,
+    val valueMax: Float,
+    val valueAvg: Float,
 )

@@ -26,6 +26,7 @@ import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Minimize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -48,8 +49,11 @@ import br.com.firstsoft.target.server.ui.ColorTokens.BackgroundOffWhite
 import br.com.firstsoft.target.server.ui.ColorTokens.BarelyVisibleGray
 import br.com.firstsoft.target.server.ui.ColorTokens.DarkGray
 import br.com.firstsoft.target.server.ui.ColorTokens.MutedGray
-import br.com.firstsoft.target.server.ui.tabs.settings.OverlaySettingsUi
-import br.com.firstsoft.target.server.ui.tabs.settings.StyleUi
+import br.com.firstsoft.target.server.ui.settings.OverlaySettingsUi
+import br.com.firstsoft.target.server.ui.settings.StyleUi
+import hwinfo.HwInfoReader
+import hwinfo.cpuReadings
+import hwinfo.gpuReadings
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -65,6 +69,9 @@ fun WindowScope.Settings(
     onOverlaySettings: (OverlaySettings) -> Unit,
     getOverlayPosition: () -> IntOffset
 ) = AppTheme {
+
+    val hwInfoData = remember { HwInfoReader() }.currentData.collectAsState(null)
+
     LaunchedEffect(overlaySettings) {
         PreferencesRepository.setPreference(OVERLAY_SETTINGS_PREFERENCE_KEY, Json.encodeToString(overlaySettings))
         onOverlaySettings(overlaySettings)
@@ -114,7 +121,11 @@ fun WindowScope.Settings(
             }
 
             when (selectedTabIndex) {
-                0 -> OverlaySettingsUi(overlaySettings, onOverlaySettings)
+                0 -> OverlaySettingsUi(
+                    overlaySettings, onOverlaySettings,
+                    getCpuSensorReadings = { hwInfoData.value?.cpuReadings() ?: emptyList() },
+                    getGpuSensorReadings = { hwInfoData.value?.gpuReadings() ?: emptyList() }
+                )
                 1 -> StyleUi(overlaySettings, onOverlaySettings, getOverlayPosition)
                 2 -> AppSettingsUi()
                 else -> Unit
@@ -246,6 +257,10 @@ data class OverlaySettings(
     val downRate: Boolean = false,
     val netGraph: Boolean = false,
     val opacity: Float = 1f,
+    val cpuTempReadingId: Int = 0,
+    val cpuUsageReadingId: Int = 0,
+    val gpuTempReadingId: Int = 0,
+    val gpuUsageReadingId: Int = 0,
 ) {
     @Serializable
     enum class ProgressType {

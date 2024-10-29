@@ -9,6 +9,15 @@ data class HwInfoData(
     val readings: List<SensorReadingElement>
 )
 
+private fun HwInfoData.readings(namePart: String): List<SensorReadingElement> {
+    val indexes = sensors.mapIndexed { index, sensorElement -> if (sensorElement.szSensorNameOrig.contains(namePart)) index else null }.filterNotNull()
+    return readings.filter { indexes.contains(it.dwSensorIndex) }
+}
+
+fun HwInfoData.cpuReadings() = readings("CPU")
+fun HwInfoData.gpuReadings() = readings("GPU")
+fun HwInfoData.getReading(readingId: Int) = readings.firstOrNull { it.dwReadingID == readingId }
+
 val HwInfoData.FPS: Int
     get() = (readings.firstOrNull { it.readingType == SensorReadingType.Other && it.szLabelOrig == "Framerate (Presented)" }?.value?.toInt()
         ?: 0).coerceAtMost(480)
@@ -36,13 +45,6 @@ val HwInfoData.VramUsagePercent: Float
     get() = (readings.firstOrNull { it.readingType == SensorReadingType.Usage && it.szLabelOrig == "GPU Memory Usage" }?.value?.toFloat()
         ?: 0f).coerceAtLeast(0f).coerceAtMost(100f)
 
-val HwInfoData.CpuTemp: Int
-    get() = (readings.firstOrNull { it.readingType == SensorReadingType.Temp && it.szLabelOrig == "CPU" }?.value?.toInt()
-        ?: 0).coerceAtLeast(1)
-
-val HwInfoData.CpuTempUnit: String
-    get() = readings.firstOrNull { it.readingType == SensorReadingType.Temp && it.szLabelOrig == "CPU" }?.szUnit.orEmpty()
-
 val HwInfoData.CpuUsage: Int
     get() = (readings.firstOrNull { it.readingType == SensorReadingType.Usage && it.szLabelOrig == "Total CPU Usage" }?.value?.toInt()
         ?: 0).coerceAtLeast(1)
@@ -68,15 +70,4 @@ val HwInfoData.DlRate: Float
 
 val HwInfoData.DlRateUnit
     get() = readings.firstOrNull { it.readingType == SensorReadingType.Other && it.szLabelOrig == "Current DL rate" }?.szUnit.orEmpty()
-
-val HwInfoData.UpTotal: Float
-    get() = (readings.firstOrNull { it.readingType == SensorReadingType.Other && it.szLabelOrig == "Total UP" }?.value?.toFloat()
-        ?: 0f).coerceAtLeast(0f)
-
-val HwInfoData.DlTotal: Float
-    get() = (readings.firstOrNull { it.readingType == SensorReadingType.Other && it.szLabelOrig == "Total DL" }?.value?.toFloat()
-        ?: 0f).coerceAtLeast(0f)
-
-val HwInfoData.UpRateReading
-    get() = readings.firstOrNull { it.readingType == SensorReadingType.Other && it.szLabelOrig == "Current UP rate" }
 

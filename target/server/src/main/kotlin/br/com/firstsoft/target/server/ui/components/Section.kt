@@ -18,7 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.com.firstsoft.target.server.ui.ColorTokens.MutedGray
-import br.com.firstsoft.target.server.ui.tabs.settings.CheckboxSectionOption
+import br.com.firstsoft.target.server.ui.settings.CheckboxSectionOption
 
 @Composable
 fun Section(

@@ -7,14 +7,8 @@ import kotlinx.coroutines.flow.flow
 import util.getByteBuffer
 import util.readString
 import win32.WindowsService
-import java.lang.foreign.Arena
-import java.lang.foreign.MemorySegment
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
-import java.nio.channels.FileChannel
-import java.nio.file.Path
-import java.nio.file.Paths
-import java.nio.file.StandardOpenOption
 import kotlin.coroutines.cancellation.CancellationException
 
 private const val MEMORY_MAP_FILE_NAME = "Global\\HWiNFO_SENS_SM2"
@@ -78,6 +72,7 @@ class HwInfoReader {
     }
 
     private fun readSensors(pointer: Pointer, header: SensorSharedMem): List<SensorElement> {
+        val longBuffer = ByteArray(8)
         return buildList {
             for (i in 0 until header.dwNumSensorElements) {
                 val buffer = pointer.getByteArray(
@@ -91,8 +86,12 @@ class HwInfoReader {
 
                 add(
                     SensorElement(
-                        dwSensorId = buffer.int,
-                        dwSensorInst = buffer.int,
+                        dwSensorId = buffer.get(longBuffer).let {
+                            ByteBuffer.wrap(longBuffer).order(ByteOrder.LITTLE_ENDIAN).long
+                        },
+                        dwSensorInst = buffer.get(longBuffer).let {
+                            ByteBuffer.wrap(longBuffer).order(ByteOrder.LITTLE_ENDIAN).long
+                        },
                         szSensorNameOrig = buffer.readString(SENSOR_STRING_LEN),
                         szSensorNameUser = buffer.readString(SENSOR_STRING_LEN)
                     )
@@ -121,10 +120,10 @@ class HwInfoReader {
                         szLabelOrig = buffer.readString(SENSOR_STRING_LEN),
                         szLabelUser = buffer.readString(SENSOR_STRING_LEN),
                         szUnit = buffer.readString(UNIT_STRING_LEN),
-                        value = buffer.double,
-                        valueMin = buffer.double,
-                        valueMax = buffer.double,
-                        valueAvg = buffer.double
+                        value = buffer.double.toFloat(),
+                        valueMin = buffer.double.toFloat(),
+                        valueMax = buffer.double.toFloat(),
+                        valueAvg = buffer.double.toFloat()
                     )
                 )
             }

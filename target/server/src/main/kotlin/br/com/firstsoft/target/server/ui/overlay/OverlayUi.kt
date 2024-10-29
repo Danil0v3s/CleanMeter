@@ -55,8 +55,6 @@ import br.com.firstsoft.target.server.ui.components.Pill
 import br.com.firstsoft.target.server.ui.components.Progress
 import br.com.firstsoft.target.server.ui.components.ProgressLabel
 import br.com.firstsoft.target.server.ui.components.ProgressUnit
-import hwinfo.CpuTemp
-import hwinfo.CpuTempUnit
 import hwinfo.CpuUsage
 import hwinfo.DlRate
 import hwinfo.DlRateUnit
@@ -73,6 +71,7 @@ import hwinfo.UpRate
 import hwinfo.UpRateUnit
 import hwinfo.VramUsage
 import hwinfo.VramUsagePercent
+import hwinfo.getReading
 import ui.app.OverlaySettings
 import java.util.*
 
@@ -305,18 +304,23 @@ private fun cpu(overlaySettings: OverlaySettings, data: HwInfoData) {
             isHorizontal = overlaySettings.isHorizontal,
         ) {
             if (overlaySettings.cpuTemp) {
+                val cpuTemp = data.getReading(overlaySettings.cpuTempReadingId)
+                val cpuTempValue = (cpuTemp?.value ?: 1f).coerceAtLeast(1f).toInt()
+
                 Progress(
-                    value = data.CpuTemp / 100f,
-                    label = "${data.CpuTemp}",
-                    unit = data.CpuTempUnit,
+                    value = cpuTempValue / 100f,
+                    label = "$cpuTempValue",
+                    unit = cpuTemp?.szUnit.orEmpty(),
                     progressType = overlaySettings.progressType
                 )
             }
             if (overlaySettings.cpuUsage) {
+                val cpuUsage = data.getReading(overlaySettings.cpuUsageReadingId)
+                val cpuUsageValue = (cpuUsage?.value ?: 1f).coerceAtLeast(1f)
                 Progress(
-                    value = data.CpuUsage / 100f,
-                    label = String.format("%02d", data.CpuUsage, Locale.US),
-                    unit = "%",
+                    value = cpuUsageValue / 100f,
+                    label = String.format("%02d", cpuUsageValue.toInt(), Locale.US),
+                    unit = cpuUsage?.szUnit.orEmpty(),
                     progressType = overlaySettings.progressType
                 )
             }

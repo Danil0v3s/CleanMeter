@@ -1,4 +1,4 @@
-package br.com.firstsoft.target.server.ui.tabs.settings
+package br.com.firstsoft.target.server.ui.settings
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -24,9 +24,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.com.firstsoft.target.server.ui.ColorTokens.BorderGray
+import br.com.firstsoft.target.server.ui.ColorTokens.DarkGray
 import br.com.firstsoft.target.server.ui.ColorTokens.LabelGray
 import br.com.firstsoft.target.server.ui.components.CheckboxSection
+import br.com.firstsoft.target.server.ui.components.CheckboxWithLabel
+import br.com.firstsoft.target.server.ui.components.CustomBodyCheckboxSection
 import br.com.firstsoft.target.server.ui.components.DropdownSection
+import br.com.firstsoft.target.server.ui.components.StealthDropdownMenu
+import hwinfo.SensorReadingElement
 import ui.app.OverlaySettings
 import java.awt.GraphicsEnvironment
 
@@ -37,6 +42,8 @@ private fun List<CheckboxSectionOption>.filterOptions(vararg optionType: Setting
 fun OverlaySettingsUi(
     overlaySettings: OverlaySettings,
     onOverlaySettings: (OverlaySettings) -> Unit,
+    getCpuSensorReadings: () -> List<SensorReadingElement>,
+    getGpuSensorReadings: () -> List<SensorReadingElement>,
 ) = Column(
     modifier = Modifier.padding(bottom = 8.dp, top = 20.dp).verticalScroll(rememberScrollState()),
     verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -58,22 +65,30 @@ fun OverlaySettingsUi(
             CheckboxSectionOption(
                 isSelected = overlaySettings.cpuTemp,
                 name = "CPU temperature",
-                type = SettingsOptionType.CpuTemp
+                type = SettingsOptionType.CpuTemp,
+                optionReadingId = overlaySettings.cpuTempReadingId,
+                useCustomSensor = true
             ),
             CheckboxSectionOption(
                 isSelected = overlaySettings.cpuUsage,
                 name = "CPU usage",
-                type = SettingsOptionType.CpuUsage
+                type = SettingsOptionType.CpuUsage,
+                optionReadingId = overlaySettings.cpuUsageReadingId,
+                useCustomSensor = true
             ),
             CheckboxSectionOption(
                 isSelected = overlaySettings.gpuTemp,
                 name = "GPU temperature",
-                type = SettingsOptionType.GpuTemp
+                type = SettingsOptionType.GpuTemp,
+                optionReadingId = overlaySettings.gpuTempReadingId,
+                useCustomSensor = true
             ),
             CheckboxSectionOption(
                 isSelected = overlaySettings.gpuUsage,
                 name = "GPU usage",
-                type = SettingsOptionType.GpuUsage
+                type = SettingsOptionType.GpuUsage,
+                optionReadingId = overlaySettings.gpuUsageReadingId,
+                useCustomSensor = true
             ),
             CheckboxSectionOption(
                 isSelected = overlaySettings.vramUsage,
@@ -153,20 +168,124 @@ fun OverlaySettingsUi(
         }
     )
 
-    CheckboxSection(title = "GPU",
+    CustomBodyCheckboxSection(
+        title = "GPU",
         options = availableOptions.filterOptions(
             SettingsOptionType.GpuUsage,
             SettingsOptionType.GpuTemp,
             SettingsOptionType.VramUsage
         ),
-        onOptionToggle = ::onOptionsToggle,
-        onSwitchToggle = { onOverlaySettings(overlaySettings.copy(gpuTemp = it, gpuUsage = it, vramUsage = it)) }
+        onSwitchToggle = { onOverlaySettings(overlaySettings.copy(gpuTemp = it, gpuUsage = it, vramUsage = it)) },
+        body = {
+            Column(modifier = Modifier, verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                val readings = getGpuSensorReadings()
+                availableOptions.filterOptions(
+                    SettingsOptionType.GpuUsage,
+                    SettingsOptionType.GpuTemp,
+                    SettingsOptionType.VramUsage
+                )
+                    .forEach { option ->
+                        Column(horizontalAlignment = Alignment.Start, modifier = Modifier.fillMaxWidth()) {
+                            CheckboxWithLabel(
+                                label = option.name,
+                                onCheckedChange = { onOptionsToggle(option.copy(isSelected = !option.isSelected)) },
+                                checked = option.isSelected,
+                            )
+                            if (readings.isNotEmpty() && option.isSelected && option.useCustomSensor) {
+                                StealthDropdownMenu(
+                                    modifier = Modifier.padding(start = 18.dp),
+                                    options = readings.map { "${it.szLabelOrig} (${it.value}${it.szUnit})" },
+                                    onValueChanged = {
+                                        val reading = readings[it].dwReadingID
+                                        when (option.type) {
+                                            SettingsOptionType.GpuTemp -> onOverlaySettings(
+                                                overlaySettings.copy(
+                                                    gpuTempReadingId = reading
+                                                )
+                                            )
+
+                                            SettingsOptionType.GpuUsage -> onOverlaySettings(
+                                                overlaySettings.copy(
+                                                    gpuUsageReadingId = reading
+                                                )
+                                            )
+
+                                            else -> Unit
+                                        }
+                                    },
+                                    selectedIndex = readings
+                                        .indexOfFirst { it.dwReadingID == option.optionReadingId }
+                                        .coerceAtLeast(0),
+                                    label = {
+                                        Text(
+                                            text = "Selected sensor",
+                                            color = DarkGray,
+                                            fontSize = 12.sp,
+                                            fontWeight = FontWeight.Medium
+                                        )
+                                    }
+                                )
+                            }
+                        }
+                    }
+            }
+        }
     )
 
-    CheckboxSection(title = "CPU",
+    CustomBodyCheckboxSection(
+        title = "CPU",
         options = availableOptions.filterOptions(SettingsOptionType.CpuUsage, SettingsOptionType.CpuTemp),
-        onOptionToggle = ::onOptionsToggle,
-        onSwitchToggle = { onOverlaySettings(overlaySettings.copy(cpuTemp = it, cpuUsage = it)) }
+        onSwitchToggle = { onOverlaySettings(overlaySettings.copy(cpuTemp = it, cpuUsage = it)) },
+        body = {
+            Column(modifier = Modifier, verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                val readings = getCpuSensorReadings()
+                availableOptions.filterOptions(SettingsOptionType.CpuUsage, SettingsOptionType.CpuTemp)
+                    .forEach { option ->
+                        Column(horizontalAlignment = Alignment.Start, modifier = Modifier.fillMaxWidth()) {
+                            CheckboxWithLabel(
+                                label = option.name,
+                                onCheckedChange = { onOptionsToggle(option.copy(isSelected = !option.isSelected)) },
+                                checked = option.isSelected,
+                            )
+                            if (readings.isNotEmpty() && option.isSelected && option.useCustomSensor) {
+                                StealthDropdownMenu(
+                                    modifier = Modifier.padding(start = 18.dp),
+                                    options = readings.map { "${it.szLabelOrig} (${it.value}${it.szUnit})" },
+                                    onValueChanged = {
+                                        val reading = readings[it].dwReadingID
+                                        when (option.type) {
+                                            SettingsOptionType.CpuTemp -> onOverlaySettings(
+                                                overlaySettings.copy(
+                                                    cpuTempReadingId = reading
+                                                )
+                                            )
+
+                                            SettingsOptionType.CpuUsage -> onOverlaySettings(
+                                                overlaySettings.copy(
+                                                    cpuUsageReadingId = reading
+                                                )
+                                            )
+
+                                            else -> Unit
+                                        }
+                                    },
+                                    selectedIndex = readings
+                                        .indexOfFirst { it.dwReadingID == option.optionReadingId }
+                                        .coerceAtLeast(0),
+                                    label = {
+                                        Text(
+                                            text = "Selected sensor",
+                                            color = DarkGray,
+                                            fontSize = 12.sp,
+                                            fontWeight = FontWeight.Medium
+                                        )
+                                    }
+                                )
+                            }
+                        }
+                    }
+            }
+        }
     )
 
     CheckboxSection(title = "RAM",
