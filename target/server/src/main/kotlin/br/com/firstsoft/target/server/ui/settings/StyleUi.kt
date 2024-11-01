@@ -313,13 +313,10 @@ fun StyleUi(
     }
 
     CollapsibleSection(title = "OPACITY") {
-        Column(
-//            verticalArrangement = Arrangement.spacedBy(16.dp),
-        ) {
+        Column {
             Slider(
                 value = overlaySettings.opacity,
                 onValueChange = {
-                    println(it)
                     onOverlaySettings(overlaySettings.copy(opacity = it.coerceIn(0f, 1f)))
                 },
                 steps = 9,
@@ -345,9 +342,9 @@ fun StyleUi(
                 }
             )
             Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
-                Icon(painterResource("icons/no_brightness.svg"), "")
-                Icon(painterResource("icons/mid_brightness.svg"), "")
-                Icon(painterResource("icons/full_brightness.svg"), "")
+                Icon(painterResource("icons/no_brightness.svg"), "", tint = LabelGray)
+                Icon(painterResource("icons/mid_brightness.svg"), "", tint = LabelGray)
+                Icon(painterResource("icons/full_brightness.svg"), "", tint = LabelGray)
             }
         }
     }

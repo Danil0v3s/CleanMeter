@@ -216,14 +216,7 @@ fun OverlaySettingsUi(
                                     selectedIndex = readings
                                         .indexOfFirst { it.dwReadingID == option.optionReadingId }
                                         .coerceAtLeast(0),
-                                    label = {
-                                        Text(
-                                            text = "Selected sensor",
-                                            color = DarkGray,
-                                            fontSize = 12.sp,
-                                            fontWeight = FontWeight.Medium
-                                        )
-                                    }
+                                    label = "Sensor:"
                                 )
                             }
                         }
@@ -272,14 +265,7 @@ fun OverlaySettingsUi(
                                     selectedIndex = readings
                                         .indexOfFirst { it.dwReadingID == option.optionReadingId }
                                         .coerceAtLeast(0),
-                                    label = {
-                                        Text(
-                                            text = "Selected sensor",
-                                            color = DarkGray,
-                                            fontSize = 12.sp,
-                                            fontWeight = FontWeight.Medium
-                                        )
-                                    }
+                                    label = "Sensor:"
                                 )
                             }
                         }

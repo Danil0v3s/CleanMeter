@@ -2,9 +2,13 @@ package br.com.firstsoft.target.server.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.ExperimentalMaterialApi
@@ -21,6 +25,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
@@ -30,6 +35,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.com.firstsoft.target.server.ui.ColorTokens.AlmostVisibleGray
+import br.com.firstsoft.target.server.ui.ColorTokens.BarelyVisibleGray
 import br.com.firstsoft.target.server.ui.ColorTokens.DarkGray
 import br.com.firstsoft.target.server.ui.ColorTokens.LabelGray
 import br.com.firstsoft.target.server.ui.ColorTokens.MutedGray
@@ -110,7 +116,7 @@ fun StealthDropdownMenu(
     selectedIndex: Int,
     onValueChanged: (Int) -> Unit,
     leadingIcon: @Composable (() -> Unit)? = null,
-    label: @Composable (() -> Unit)? = null,
+    label: String? = null,
     modifier: Modifier = Modifier
 ) {
     var expanded by remember { mutableStateOf(false) }
@@ -121,41 +127,54 @@ fun StealthDropdownMenu(
         onExpandedChange = { expanded = !expanded },
         modifier = modifier.fillMaxWidth(),
     ) {
-        TextField(
-            leadingIcon = leadingIcon,
-            value = selectedOption,
-            onValueChange = {},
-            readOnly = true,
-            label = label,
-            trailingIcon = {
-                IconButton(onClick = { }, modifier = Modifier.clearAndSetSemantics { }) {
-                    Icon(
-                        Icons.Rounded.ChevronRight,
-                        "Trailing icon for exposed dropdown menu",
-                        Modifier.rotate(
-                            if (expanded)
-                                270f
-                            else
-                                90f
-                        )
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier
+                .padding(start = 12.dp, top = 16.dp)
+                .fillMaxWidth()
+                .background(BarelyVisibleGray, RoundedCornerShape(8.dp))
+                .padding(16.dp)
+                .border(1.dp, AlmostVisibleGray, RoundedCornerShape(8.dp))
+                .background(Color.White)
+                .padding(12.dp)
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                if (label != null) {
+                    Text(
+                        text = label,
+                        color = LabelGray,
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Normal,
+                        lineHeight = 0.sp,
+                        modifier =  Modifier.align(Alignment.CenterVertically)
                     )
                 }
-            },
-            modifier = Modifier.fillMaxWidth(),
-            textStyle = TextStyle(
-                color = LabelGray,
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Medium,
-                lineHeight = 0.sp,
-            ),
-            colors = ExposedDropdownMenuDefaults.textFieldColors(
-                backgroundColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                focusedIndicatorColor = Color.Transparent,
-                trailingIconColor = MutedGray,
-                focusedTrailingIconColor = MutedGray,
-            )
-        )
+
+                Text(
+                    text = selectedOption,
+                    color = DarkGray,
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Medium,
+                    lineHeight = 0.sp,
+                    modifier = Modifier.align(Alignment.CenterVertically)
+                )
+            }
+
+            IconButton(onClick = { }, modifier = Modifier.size(20.dp).clearAndSetSemantics { }) {
+                Icon(
+                    Icons.Rounded.ChevronRight,
+                    "Trailing icon for exposed dropdown menu",
+                    Modifier.rotate(
+                        if (expanded)
+                            270f
+                        else
+                            90f
+                    )
+                )
+            }
+        }
+
 
         ExposedDropdownMenu(
             expanded = expanded,
