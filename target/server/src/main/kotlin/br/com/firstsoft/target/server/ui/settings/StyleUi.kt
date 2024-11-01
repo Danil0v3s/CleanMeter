@@ -314,7 +314,7 @@ fun StyleUi(
 
     CollapsibleSection(title = "OPACITY") {
         Column(
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+//            verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             Slider(
                 value = overlaySettings.opacity,
@@ -324,12 +324,10 @@ fun StyleUi(
                 },
                 steps = 9,
                 track = { sliderState ->
-                    val textMeasurer = rememberTextMeasurer()
-
                     Canvas(
                         Modifier
                             .fillMaxWidth()
-                            .height(60.dp)
+                            .height(24.dp)
                     ) {
                         drawTrack(
                             FloatArray(sliderState.steps + 2) { it.toFloat() / (sliderState.steps + 1) },
@@ -339,7 +337,6 @@ fun StyleUi(
                             DarkGray,
                             AlmostVisibleGray,
                             Color.White,
-                            textMeasurer
                         )
                     }
                 },
@@ -347,6 +344,11 @@ fun StyleUi(
                     SliderThumb()
                 }
             )
+            Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
+                Icon(painterResource("icons/no_brightness.svg"), "")
+                Icon(painterResource("icons/mid_brightness.svg"), "")
+                Icon(painterResource("icons/full_brightness.svg"), "")
+            }
         }
     }
 

@@ -92,7 +92,7 @@ fun main() {
 
     val channel = Channel<Unit>()
 
-    //registerKeyboardHook { channel.trySend(Unit) }
+    registerKeyboardHook { channel.trySend(Unit) }
 
     application {
         var overlaySettings by remember { mutableStateOf(loadOverlaySettings()) }
@@ -231,7 +231,7 @@ private fun ApplicationScope.SettingsWindow(
     }
     val icon = painterResource("imgs/logo.png")
     val state = rememberWindowState().apply {
-        size = DpSize(650.dp, 900.dp)
+        size = DpSize(650.dp, 650.dp)
     }
 
     Window(

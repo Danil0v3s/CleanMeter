@@ -65,7 +65,6 @@ fun DrawScope.drawTrack(
     activeTrackColor: Color,
     inactiveTickColor: Color,
     activeTickColor: Color,
-    textMeasurer: TextMeasurer
 ) {
     val isRtl = layoutDirection == LayoutDirection.Rtl
     val sliderLeft = Offset(0f, center.y)
@@ -102,30 +101,12 @@ fun DrawScope.drawTrack(
         StrokeCap.Round
     )
 
-    val style = TextStyle(
-        fontSize = 13.sp,
-        color = AlmostVisibleGray,
-        lineHeight = 0.sp,
-        fontWeight = FontWeight.Normal,
-    )
-
-    for ((i, tick) in tickFractions.withIndex()) {
+    for (tick in tickFractions) {
         val outsideFraction = tick > activeRangeEnd || tick < activeRangeStart
         drawCircle(
             color = if (outsideFraction) inactiveTickColor else activeTickColor,
             center = Offset(lerp(sliderStart, sliderEnd, tick).x, center.y),
             radius = tickSize / 2f
-        )
-        val layoutResult = textMeasurer.measure("${i.times(10)}", style)
-        val lastOffset = if (i == tickFractions.size - 1) 10.5f else 0f
-        drawText(
-            textMeasurer = textMeasurer,
-            text = "${i.times(10)}",
-            style = if (tick != activeRangeEnd) style else style.copy(color = DarkGray),
-            topLeft = Offset(
-                (lerp(sliderStart, sliderEnd, tick).x - layoutResult.size.width / 2) - lastOffset,
-                center.y + 12
-            )
         )
     }
 }
