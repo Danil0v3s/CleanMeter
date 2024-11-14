@@ -17,24 +17,24 @@ class WindowsService {
         private set
 
     fun openMemoryMapFile(filename: String): WinNT.HANDLE? {
-        val memMapFile = Kernel32Impl.KERNEL_32.OpenFileMapping(WinNT.SECTION_MAP_READ, false, filename)
-        lastError = Kernel32Impl.KERNEL_32.GetLastError()
+        val memMapFile = Kernel32Impl.INSTANCE.OpenFileMapping(WinNT.SECTION_MAP_READ, false, filename)
+        lastError = Kernel32Impl.INSTANCE.GetLastError()
 
         return memMapFile
     }
 
     fun openEventFile(filename: String): WinNT.HANDLE? {
-        val memMapFile = Kernel32Impl.KERNEL_32.OpenEvent(WinNT.SYNCHRONIZE, false, filename)
-        lastError = Kernel32Impl.KERNEL_32.GetLastError()
+        val memMapFile = Kernel32Impl.INSTANCE.OpenEvent(WinNT.SYNCHRONIZE, false, filename)
+        lastError = Kernel32Impl.INSTANCE.GetLastError()
         return memMapFile
     }
 
     fun waitForEvent(handle: HANDLE): Boolean {
-        return Kernel32Impl.KERNEL_32.WaitForSingleObject(handle, 500) == WinBase.WAIT_OBJECT_0
+        return Kernel32Impl.INSTANCE.WaitForSingleObject(handle, 500) == WinBase.WAIT_OBJECT_0
     }
 
     fun closeHandle(handle: WinNT.HANDLE) {
-        Kernel32Impl.KERNEL_32.CloseHandle(handle)
+        Kernel32Impl.INSTANCE.CloseHandle(handle)
     }
 
     fun mapViewOfFile(handle: WinNT.HANDLE?): Pointer? {
@@ -44,7 +44,7 @@ class WindowsService {
     }
 
     fun unmapViewOfFile(pointer: Pointer) {
-        Kernel32Impl.KERNEL_32.UnmapViewOfFile(pointer)
+        Kernel32Impl.INSTANCE.UnmapViewOfFile(pointer)
         lastError = Kernel32Impl.INSTANCE.GetLastError()
     }
 

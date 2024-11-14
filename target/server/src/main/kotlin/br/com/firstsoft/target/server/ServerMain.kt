@@ -24,7 +24,10 @@ import androidx.compose.ui.window.rememberWindowState
 import com.github.kwhat.jnativehook.GlobalScreen
 import com.github.kwhat.jnativehook.keyboard.NativeKeyEvent
 import com.github.kwhat.jnativehook.keyboard.NativeKeyListener
+import com.sun.jna.platform.win32.User32
 import com.sun.jna.platform.win32.WinDef.HWND
+import com.sun.jna.platform.win32.WinNT.HANDLEByReference
+import com.sun.jna.ptr.IntByReference
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -36,13 +39,13 @@ import ui.app.OVERLAY_SETTINGS_PREFERENCE_KEY
 import ui.app.Overlay
 import ui.app.OverlaySettings
 import ui.app.Settings
+import win32.Kernel32Impl
 import win32.Shell32Impl
 import win32.WindowsService
 import java.awt.GraphicsEnvironment
 import java.awt.Toolkit
 import java.awt.event.ComponentAdapter
 import java.awt.event.ComponentEvent
-import java.io.File
 import java.nio.file.Path
 
 val positions = listOf(
@@ -83,12 +86,20 @@ private fun registerKeyboardHook(channel: Channel<Unit>) {
     })
 }
 
-object HWInfo {
+class HWInfo {
+    private var process: Process? = null
+
     fun start() {
-        val hwnd = HWND()
         val currentDir = Path.of("").toAbsolutePath().toString()
         val file = "$currentDir\\app\\resources\\HWiNFO64.exe"
-        Shell32Impl.INSTANCE.ShellExecuteW(hwnd, "runas", file, null, null, 0)
+        process = ProcessBuilder().apply {
+            command("cmd.exe", "/c", file)
+
+        }.start()
+    }
+
+    fun stop() {
+        process?.destroy()
     }
 }
 
@@ -98,7 +109,7 @@ fun main() {
     val channel = Channel<Unit>()
     registerKeyboardHook(channel)
 
-    HWInfo.start()
+    HWInfo().start()
 
     application {
         var overlaySettings by remember { mutableStateOf(loadOverlaySettings()) }
