@@ -36,6 +36,8 @@ plugins {
 
 rootProject.name = "CleanMeter"
 
-include("core:common")
-include("core:native")
-include("target:server")
+include(
+    "core:common",
+    "core:native",
+    "target:server"
+)

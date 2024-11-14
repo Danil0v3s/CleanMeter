@@ -24,16 +24,19 @@ import androidx.compose.ui.window.rememberWindowState
 import com.github.kwhat.jnativehook.GlobalScreen
 import com.github.kwhat.jnativehook.keyboard.NativeKeyEvent
 import com.github.kwhat.jnativehook.keyboard.NativeKeyListener
+import com.sun.jna.platform.win32.WinDef.HWND
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
+import reporting.setDefaultUncaughtExceptionHandler
 import ui.PREFERENCE_START_MINIMIZED
 import ui.app.OVERLAY_SETTINGS_PREFERENCE_KEY
 import ui.app.Overlay
 import ui.app.OverlaySettings
 import ui.app.Settings
+import win32.Shell32Impl
 import win32.WindowsService
 import java.awt.GraphicsEnvironment
 import java.awt.Toolkit
@@ -64,7 +67,7 @@ private fun loadOverlaySettings(): OverlaySettings {
     return settings
 }
 
-private fun registerKeyboardHook(onHotkey: () -> Unit) {
+private fun registerKeyboardHook(channel: Channel<Unit>) {
     GlobalScreen.registerNativeHook()
     GlobalScreen.addNativeKeyListener(object : NativeKeyListener {
         override fun nativeKeyReleased(nativeEvent: NativeKeyEvent) {
@@ -73,26 +76,27 @@ private fun registerKeyboardHook(onHotkey: () -> Unit) {
             val isF10 = nativeEvent.keyCode == NativeKeyEvent.VC_F10
 
             if (isCtrl && isAlt && isF10) {
-                onHotkey()
+                channel.trySend(Unit)
             }
         }
     })
 }
 
-private fun writeToFile(exception: Throwable) {
-    try {
-        File("cleanmeter.error.${System.currentTimeMillis()}.log").printWriter().use { it.print(exception.stackTraceToString()) }
-    } catch (e: Exception) {
-        e.printStackTrace()
+object HWInfo {
+    fun start() {
+        val hwnd = HWND()
+        val file = "D:\\Projetos\\Personal\\PCMonitoR\\target\\server\\src\\main\\resources\\hwinfo\\HWiNFO64.exe"
+        Shell32Impl.INSTANCE.ShellExecuteW(hwnd, "runas", file, null, null, 0)
     }
 }
 
 fun main() {
-    Thread.setDefaultUncaughtExceptionHandler { thread, throwable -> writeToFile(throwable) }
+    setDefaultUncaughtExceptionHandler()
 
     val channel = Channel<Unit>()
+    registerKeyboardHook(channel)
 
-    registerKeyboardHook { channel.trySend(Unit) }
+    HWInfo.start()
 
     application {
         var overlaySettings by remember { mutableStateOf(loadOverlaySettings()) }
