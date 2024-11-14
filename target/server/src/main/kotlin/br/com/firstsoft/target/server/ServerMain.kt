@@ -43,6 +43,7 @@ import java.awt.Toolkit
 import java.awt.event.ComponentAdapter
 import java.awt.event.ComponentEvent
 import java.io.File
+import java.nio.file.Path
 
 val positions = listOf(
     Alignment.TopStart,
@@ -85,7 +86,8 @@ private fun registerKeyboardHook(channel: Channel<Unit>) {
 object HWInfo {
     fun start() {
         val hwnd = HWND()
-        val file = "D:\\Projetos\\Personal\\PCMonitoR\\target\\server\\src\\main\\resources\\hwinfo\\HWiNFO64.exe"
+        val currentDir = Path.of("").toAbsolutePath().toString()
+        val file = "$currentDir\\app\\resources\\HWiNFO64.exe"
         Shell32Impl.INSTANCE.ShellExecuteW(hwnd, "runas", file, null, null, 0)
     }
 }

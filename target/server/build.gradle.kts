@@ -9,20 +9,23 @@ val createShortcut = tasks.register<Exec>("createShortcut") {
         layout.buildDirectory.file("compose/binaries/main/app/cleanmeter/app/resources/Launcher.exe").get().asFile.absolutePath
     )
 }
+
 val copyLauncherFiles = tasks.register<Copy>("copyLauncherFiles") {
     finalizedBy(createShortcut)
     from("../../Launcher/Launcher/bin/Release/net8.0")
     into(layout.buildDirectory.dir("compose/binaries/main/app/cleanmeter/app/resources"))
 }
+
 val compileLauncher = tasks.register<Exec>("compileLauncher") {
     finalizedBy(copyLauncherFiles)
     workingDir("../../Launcher/")
     commandLine("dotnet", "build", "--configuration", "Release")
 }
+
 val copyHwinfoToResources = tasks.register<Copy>("copyHwinfoToResources") {
     finalizedBy(compileLauncher)
 
-    from("src/main/resources/hwinfo")
+    from("../../hwinfo")
     into(layout.buildDirectory.dir("compose/binaries/main/app/cleanmeter/app/resources"))
 }
 
