@@ -1,4 +1,4 @@
-package br.com.firstsoft.core.native.win32
+package br.com.firstsoft.core.os.win32
 
 import com.sun.jna.Native
 import com.sun.jna.Pointer
@@ -9,7 +9,6 @@ import com.sun.jna.platform.win32.WinDef.HWND
 import com.sun.jna.platform.win32.WinNT
 import com.sun.jna.platform.win32.WinNT.HANDLE
 import com.sun.jna.platform.win32.WinUser
-import win32.Kernel32Impl
 import java.awt.Component
 
 class WindowsService {

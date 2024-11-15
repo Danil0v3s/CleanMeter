@@ -26,7 +26,7 @@ import br.com.firstsoft.target.server.ui.components.CheckboxWithLabel
 import br.com.firstsoft.target.server.ui.components.Label
 import br.com.firstsoft.target.server.ui.components.Section
 import br.com.firstsoft.target.server.ui.settings.FooterUi
-import br.com.firstsoft.core.native.win32.WinRegistry
+import br.com.firstsoft.core.os.win32.WinRegistry
 
 @Composable
 fun AppSettingsUi() = Box(modifier = Modifier.fillMaxSize().padding(top = 20.dp)) {

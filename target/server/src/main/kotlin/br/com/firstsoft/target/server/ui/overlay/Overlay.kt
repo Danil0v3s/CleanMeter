@@ -8,7 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import br.com.firstsoft.target.server.ui.AppTheme
 import br.com.firstsoft.target.server.ui.models.OverlaySettings
-import br.com.firstsoft.core.native.hwinfo.HwInfoReader
+import br.com.firstsoft.core.os.hwinfo.HwInfoReader
 
 @Composable
 fun Overlay(

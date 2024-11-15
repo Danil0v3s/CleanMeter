@@ -1,4 +1,4 @@
-package br.com.firstsoft.core.native.util
+package br.com.firstsoft.core.os.util
 
 import com.sun.jna.Pointer
 import java.nio.ByteBuffer

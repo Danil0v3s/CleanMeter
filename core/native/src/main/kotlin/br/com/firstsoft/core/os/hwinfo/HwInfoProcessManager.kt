@@ -1,4 +1,4 @@
-package br.com.firstsoft.core.native.hwinfo
+package br.com.firstsoft.core.os.hwinfo
 
 import java.nio.file.Path
 

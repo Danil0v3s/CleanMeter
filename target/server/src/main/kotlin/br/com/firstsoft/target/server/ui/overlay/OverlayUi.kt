@@ -64,7 +64,7 @@ import br.com.firstsoft.core.common.hwinfo.GpuTemp
 import br.com.firstsoft.core.common.hwinfo.GpuTempUnit
 import br.com.firstsoft.core.common.hwinfo.GpuUsage
 import br.com.firstsoft.core.common.hwinfo.HwInfoData
-import br.com.firstsoft.core.native.hwinfo.HwInfoReader
+import br.com.firstsoft.core.os.hwinfo.HwInfoReader
 import br.com.firstsoft.core.common.hwinfo.RamUsage
 import br.com.firstsoft.core.common.hwinfo.RamUsagePercent
 import br.com.firstsoft.core.common.hwinfo.UpRate

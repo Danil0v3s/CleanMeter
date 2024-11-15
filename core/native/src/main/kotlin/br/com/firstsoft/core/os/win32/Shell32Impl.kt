@@ -1,4 +1,4 @@
-package br.com.firstsoft.core.native.win32
+package br.com.firstsoft.core.os.win32
 
 import com.sun.jna.Native
 import com.sun.jna.WString

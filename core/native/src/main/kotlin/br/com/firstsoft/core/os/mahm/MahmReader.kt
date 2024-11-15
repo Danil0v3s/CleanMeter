@@ -1,4 +1,4 @@
-package br.com.firstsoft.core.native.mahm
+package br.com.firstsoft.core.os.mahm
 
 import br.com.firstsoft.core.common.mahm.Data
 import br.com.firstsoft.core.common.mahm.Entry
@@ -12,10 +12,10 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
-import br.com.firstsoft.core.native.mahm.MAHMSizes.MAX_STRING_LENGTH
-import br.com.firstsoft.core.native.util.getByteBuffer
-import br.com.firstsoft.core.native.util.readString
-import br.com.firstsoft.core.native.win32.WindowsService
+import br.com.firstsoft.core.os.mahm.MAHMSizes.MAX_STRING_LENGTH
+import br.com.firstsoft.core.os.util.getByteBuffer
+import br.com.firstsoft.core.os.util.readString
+import br.com.firstsoft.core.os.win32.WindowsService
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.charset.StandardCharsets

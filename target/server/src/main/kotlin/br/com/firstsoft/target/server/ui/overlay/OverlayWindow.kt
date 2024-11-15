@@ -21,7 +21,7 @@ import br.com.firstsoft.target.server.ui.models.OverlaySettings
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.receiveAsFlow
-import br.com.firstsoft.core.native.win32.WindowsService
+import br.com.firstsoft.core.os.win32.WindowsService
 import java.awt.GraphicsEnvironment
 import java.awt.Toolkit
 import java.awt.event.ComponentAdapter

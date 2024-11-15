@@ -1,4 +1,4 @@
-package br.com.firstsoft.core.native.hwinfo
+package br.com.firstsoft.core.os.hwinfo
 
 import br.com.firstsoft.core.common.hwinfo.HwInfoData
 import br.com.firstsoft.core.common.hwinfo.SensorElement
@@ -9,9 +9,9 @@ import com.sun.jna.Pointer
 import com.sun.jna.platform.win32.WinNT
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
-import br.com.firstsoft.core.native.util.getByteBuffer
-import br.com.firstsoft.core.native.util.readString
-import br.com.firstsoft.core.native.win32.WindowsService
+import br.com.firstsoft.core.os.util.getByteBuffer
+import br.com.firstsoft.core.os.util.readString
+import br.com.firstsoft.core.os.win32.WindowsService
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import kotlin.coroutines.cancellation.CancellationException
