@@ -10,12 +10,15 @@ import br.com.firstsoft.target.server.ui.overlay.OverlayWindow
 import br.com.firstsoft.target.server.ui.settings.SettingsWindow
 import kotlinx.coroutines.channels.Channel
 import br.com.firstsoft.core.common.reporting.setDefaultUncaughtExceptionHandler
+import br.com.firstsoft.core.os.hwinfo.HwInfoProcessManager
 
 fun main() {
     setDefaultUncaughtExceptionHandler()
 
     val channel = Channel<Unit>()
     registerKeyboardHook(channel)
+
+    HwInfoProcessManager.start()
 
     application {
         var overlaySettings by remember { mutableStateOf(PreferencesRepository.loadOverlaySettings()) }

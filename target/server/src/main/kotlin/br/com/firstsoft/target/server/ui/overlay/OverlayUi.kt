@@ -89,7 +89,6 @@ fun OverlayUi(
     val data by reader.currentData.collectAsState(null)
 
     if (data == null) {
-        Text("Unable to read data...")
         return
     }
 
@@ -520,18 +519,15 @@ private fun NetGraph(data: HwInfoData, isHorizontal: Boolean, overlaySettings: O
             largestDown.floatValue = data.DlRate + .2f
         }
 
-        upRatePoints.add(data.UpRate / largestUp.floatValue)
-        downRatePoints.add(data.DlRate / largestDown.floatValue + .2f)
+        upRatePoints.add((data.UpRate / largestUp.floatValue).coerceIn(0f, 1f))
+        downRatePoints.add((data.DlRate / largestDown.floatValue + .2f).coerceIn(0f, 1f))
         if (upRatePoints.size > listSize) upRatePoints.removeFirst()
         if (downRatePoints.size > listSize) downRatePoints.removeFirst()
     }
 
     Box(modifier = Modifier
-        .conditional(
-            predicate = isHorizontal,
-            ifTrue = { width(100.dp).height(45.dp) },
-            ifFalse = { fillMaxWidth().height(30.dp) },
-        )
+        .width(100.dp)
+        .height(if (isHorizontal) 45.dp else 30.dp)
         .graphicsLayer { alpha = 0.99f }
         .drawWithContent {
             val colors = listOf(Color.Transparent, Color.Black, Color.Black, Color.Black, Color.Transparent)

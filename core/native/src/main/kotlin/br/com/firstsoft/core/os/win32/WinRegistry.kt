@@ -5,7 +5,7 @@ import java.io.InputStreamReader
 
 object WinRegistry {
     const val STARTUP_ITEMS_LOCATION = "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run"
-    const val REGISTRY_APP_NAME = "Launcher"
+    const val REGISTRY_APP_NAME = "cleanmeter"
 
     fun read(location: String, key: String): List<String> {
         val proc = ProcessBuilder("reg", "query", location, "/v", key)
@@ -43,7 +43,7 @@ object WinRegistry {
     }
 
     fun registerAppToStartWithWindows() {
-        write(STARTUP_ITEMS_LOCATION, REGISTRY_APP_NAME, "\"${System.getProperty("user.dir")}\\$REGISTRY_APP_NAME.exe\"")
+        write(STARTUP_ITEMS_LOCATION, REGISTRY_APP_NAME, "\\\"${System.getProperty("user.dir")}\\$REGISTRY_APP_NAME.exe\\\"")
     }
 
     fun removeAppFromStartWithWindows() {

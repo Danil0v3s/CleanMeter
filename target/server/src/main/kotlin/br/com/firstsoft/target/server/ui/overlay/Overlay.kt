@@ -12,7 +12,7 @@ import br.com.firstsoft.core.os.hwinfo.HwInfoReader
 
 @Composable
 fun Overlay(
-    hwInfoReader: HwInfoReader = HwInfoReader(),
+    hwInfoReader: HwInfoReader = HwInfoReader,
     overlaySettings: OverlaySettings,
 ) = AppTheme {
     if (listOf(

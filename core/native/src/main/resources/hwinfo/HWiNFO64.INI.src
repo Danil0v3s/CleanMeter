@@ -17,3 +17,4 @@ PersistentDriver=1
 GPUI2Cforce=1
 GPUI2CADL=1
 SensorsSM=1
+SensorInterval=500

@@ -21,15 +21,18 @@ private const val SENSOR_STRING_LEN = 128
 private const val UNIT_STRING_LEN = 16
 private const val HEADER_SIZE = 44
 
-class HwInfoReader {
+object HwInfoReader {
 
     private val windowsService = WindowsService()
     private var memoryMapFile: WinNT.HANDLE? = null
     private var pointer: Pointer? = null
 
-    var pollingInterval = 200L
+    var pollingInterval = 500L
     val currentData = flow {
-        tryOpenMemoryFile()
+        while (pointer == null) {
+            tryOpenMemoryFile()
+            delay(2000L)
+        }
         pointer?.let { pointer ->
             val header = readHeader(pointer)
             val sensors = readSensors(pointer, header)
@@ -41,7 +44,11 @@ class HwInfoReader {
 
             while (true) {
                 try {
-                    emit(data.copy(readings = readSensorReading(pointer, header)))
+                    val newHeader = readHeader(pointer)
+                    emit(data.copy(
+                        readings = readSensorReading(pointer, newHeader),
+                        header = newHeader,
+                    ))
                     delay(pollingInterval)
                 } catch (e: CancellationException) {
                     break

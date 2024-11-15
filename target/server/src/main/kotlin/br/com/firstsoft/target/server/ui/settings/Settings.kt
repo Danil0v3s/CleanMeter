@@ -69,7 +69,7 @@ fun WindowScope.Settings(
     getOverlayPosition: () -> IntOffset
 ) = AppTheme {
 
-    val hwInfoData = remember { HwInfoReader() }.currentData.collectAsState(null)
+    val hwInfoData = remember { HwInfoReader }.currentData.collectAsState(null)
 
     LaunchedEffect(overlaySettings) {
         PreferencesRepository.setPreference(OVERLAY_SETTINGS_PREFERENCE_KEY, Json.encodeToString(overlaySettings))
