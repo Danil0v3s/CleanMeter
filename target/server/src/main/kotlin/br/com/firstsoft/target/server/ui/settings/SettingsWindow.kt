@@ -23,6 +23,7 @@ fun ApplicationScope.SettingsWindow(
     overlaySettings: OverlaySettings,
     onOverlaySettings: (OverlaySettings) -> Unit,
     getOverlayPosition: () -> IntOffset,
+    onApplicationExit: () -> Unit,
 ) {
     var isVisible by remember {
         mutableStateOf(
@@ -65,6 +66,7 @@ fun ApplicationScope.SettingsWindow(
                         GlobalScreen.unregisterNativeHook()
                     } catch (e: Exception) {
                     }
+                    onApplicationExit()
                     exitApplication()
                 })
             }

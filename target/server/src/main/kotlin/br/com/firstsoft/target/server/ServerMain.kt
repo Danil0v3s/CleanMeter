@@ -46,7 +46,10 @@ fun main() {
             onOverlaySettings = {
                 overlaySettings = it
             },
-            getOverlayPosition = { overlayPosition }
+            getOverlayPosition = { overlayPosition },
+            onApplicationExit = {
+                HwInfoProcessManager.stop()
+            }
         )
     }
 }

@@ -32,7 +32,7 @@ object HwInfoProcessManager {
         observeHwInfoPollingTime()
     }
 
-    private fun stop() {
+    fun stop() {
         process?.apply {
             descendants().forEach(ProcessHandle::destroy)
             destroy()
