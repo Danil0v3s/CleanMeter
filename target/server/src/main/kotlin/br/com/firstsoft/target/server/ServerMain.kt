@@ -1,6 +1,5 @@
 package br.com.firstsoft.target.server
 
-import PreferencesRepository
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -10,8 +9,7 @@ import androidx.compose.ui.window.application
 import br.com.firstsoft.target.server.ui.overlay.OverlayWindow
 import br.com.firstsoft.target.server.ui.settings.SettingsWindow
 import kotlinx.coroutines.channels.Channel
-import loadOverlaySettings
-import reporting.setDefaultUncaughtExceptionHandler
+import br.com.firstsoft.core.common.reporting.setDefaultUncaughtExceptionHandler
 
 fun main() {
     setDefaultUncaughtExceptionHandler()

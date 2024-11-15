@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.com.firstsoft.target.server.ui.ColorTokens.OffWhite
-import ui.conditional
+import br.com.firstsoft.target.server.ui.overlay.conditional
 
 @Composable
 fun Pill(

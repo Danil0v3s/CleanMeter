@@ -1,3 +1,5 @@
+package br.com.firstsoft.target.server.ui.components
+
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable

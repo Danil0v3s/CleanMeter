@@ -1,6 +1,5 @@
 package br.com.firstsoft.target.server.ui.settings
 
-import PreferencesRepository
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -14,10 +13,10 @@ import androidx.compose.ui.window.ApplicationScope
 import androidx.compose.ui.window.Tray
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.rememberWindowState
+import br.com.firstsoft.target.server.PREFERENCE_START_MINIMIZED
+import br.com.firstsoft.target.server.PreferencesRepository
+import br.com.firstsoft.target.server.ui.models.OverlaySettings
 import com.github.kwhat.jnativehook.GlobalScreen
-import ui.PREFERENCE_START_MINIMIZED
-import ui.app.OverlaySettings
-import ui.app.Settings
 
 @Composable
 fun ApplicationScope.SettingsWindow(

@@ -1,4 +1,4 @@
-package ui
+package br.com.firstsoft.target.server.ui.overlay
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -55,25 +55,24 @@ import br.com.firstsoft.target.server.ui.components.Pill
 import br.com.firstsoft.target.server.ui.components.Progress
 import br.com.firstsoft.target.server.ui.components.ProgressLabel
 import br.com.firstsoft.target.server.ui.components.ProgressUnit
-import hwinfo.CpuUsage
-import hwinfo.DlRate
-import hwinfo.DlRateUnit
-import hwinfo.FPS
-import hwinfo.Frametime
-import hwinfo.GpuTemp
-import hwinfo.GpuTempUnit
-import hwinfo.GpuUsage
-import hwinfo.HwInfoData
-import hwinfo.HwInfoReader
-import hwinfo.RamUsage
-import hwinfo.RamUsagePercent
-import hwinfo.UpRate
-import hwinfo.UpRateUnit
-import hwinfo.VramUsage
-import hwinfo.VramUsagePercent
-import hwinfo.getReading
-import ui.app.OverlaySettings
-import java.util.*
+import br.com.firstsoft.target.server.ui.models.OverlaySettings
+import br.com.firstsoft.core.common.hwinfo.DlRate
+import br.com.firstsoft.core.common.hwinfo.DlRateUnit
+import br.com.firstsoft.core.common.hwinfo.FPS
+import br.com.firstsoft.core.common.hwinfo.Frametime
+import br.com.firstsoft.core.common.hwinfo.GpuTemp
+import br.com.firstsoft.core.common.hwinfo.GpuTempUnit
+import br.com.firstsoft.core.common.hwinfo.GpuUsage
+import br.com.firstsoft.core.common.hwinfo.HwInfoData
+import br.com.firstsoft.core.native.hwinfo.HwInfoReader
+import br.com.firstsoft.core.common.hwinfo.RamUsage
+import br.com.firstsoft.core.common.hwinfo.RamUsagePercent
+import br.com.firstsoft.core.common.hwinfo.UpRate
+import br.com.firstsoft.core.common.hwinfo.UpRateUnit
+import br.com.firstsoft.core.common.hwinfo.VramUsage
+import br.com.firstsoft.core.common.hwinfo.VramUsagePercent
+import br.com.firstsoft.core.common.hwinfo.getReading
+import java.util.Locale
 
 
 inline fun Modifier.conditional(

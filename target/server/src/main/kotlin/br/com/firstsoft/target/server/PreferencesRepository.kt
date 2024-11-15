@@ -1,8 +1,12 @@
+package br.com.firstsoft.target.server
+
+import br.com.firstsoft.target.server.ui.models.OverlaySettings
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
-import ui.app.OVERLAY_SETTINGS_PREFERENCE_KEY
-import ui.app.OverlaySettings
 import java.util.prefs.Preferences
+
+const val OVERLAY_SETTINGS_PREFERENCE_KEY = "OVERLAY_SETTINGS_PREFERENCE_KEY"
+const val PREFERENCE_START_MINIMIZED = "PREFERENCE_START_MINIMIZED"
 
 object PreferencesRepository {
 

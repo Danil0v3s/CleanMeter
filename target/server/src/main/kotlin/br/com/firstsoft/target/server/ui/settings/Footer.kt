@@ -1,4 +1,4 @@
-package ui
+package br.com.firstsoft.target.server.ui.settings
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -20,7 +20,6 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ChevronRight
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,7 +35,6 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import br.com.firstsoft.target.server.ui.ColorTokens.AlmostVisibleGray
 import br.com.firstsoft.target.server.ui.ColorTokens.BorderGray
 import br.com.firstsoft.target.server.ui.ColorTokens.LabelGray
 

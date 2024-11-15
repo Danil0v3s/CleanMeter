@@ -1,4 +1,4 @@
-package ui.app
+package br.com.firstsoft.target.server.ui.overlay
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -7,9 +7,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import br.com.firstsoft.target.server.ui.AppTheme
-import hwinfo.HwInfoReader
-import ui.OverlayUi
-
+import br.com.firstsoft.target.server.ui.models.OverlaySettings
+import br.com.firstsoft.core.native.hwinfo.HwInfoReader
 
 @Composable
 fun Overlay(

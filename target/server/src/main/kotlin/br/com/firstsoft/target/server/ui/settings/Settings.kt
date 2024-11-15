@@ -1,6 +1,5 @@
-package ui.app
+package br.com.firstsoft.target.server.ui.settings
 
-import PreferencesRepository
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.TooltipArea
@@ -44,22 +43,22 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.WindowScope
+import br.com.firstsoft.target.server.OVERLAY_SETTINGS_PREFERENCE_KEY
+import br.com.firstsoft.target.server.PreferencesRepository
 import br.com.firstsoft.target.server.ui.AppTheme
 import br.com.firstsoft.target.server.ui.ColorTokens.BackgroundOffWhite
 import br.com.firstsoft.target.server.ui.ColorTokens.BarelyVisibleGray
 import br.com.firstsoft.target.server.ui.ColorTokens.DarkGray
 import br.com.firstsoft.target.server.ui.ColorTokens.MutedGray
-import br.com.firstsoft.target.server.ui.settings.OverlaySettingsUi
-import br.com.firstsoft.target.server.ui.settings.StyleUi
-import hwinfo.HwInfoReader
-import hwinfo.cpuReadings
-import hwinfo.gpuReadings
-import kotlinx.serialization.Serializable
+import br.com.firstsoft.target.server.ui.models.OverlaySettings
+import br.com.firstsoft.target.server.ui.settings.tabs.OverlaySettingsUi
+import br.com.firstsoft.target.server.ui.settings.tabs.StyleUi
+import br.com.firstsoft.core.native.hwinfo.HwInfoReader
+import br.com.firstsoft.core.common.hwinfo.cpuReadings
+import br.com.firstsoft.core.common.hwinfo.gpuReadings
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import ui.AppSettingsUi
-
-const val OVERLAY_SETTINGS_PREFERENCE_KEY = "OVERLAY_SETTINGS_PREFERENCE_KEY"
+import br.com.firstsoft.target.server.ui.settings.tabs.AppSettingsUi
 
 @Composable
 fun WindowScope.Settings(
@@ -236,34 +235,4 @@ private fun TopBar(
     }
 }
 
-@Serializable
-data class OverlaySettings(
-    val isHorizontal: Boolean = true,
-    val positionIndex: Int = 0,
-    val selectedDisplayIndex: Int = 0,
-    val fps: Boolean = true,
-    val frametime: Boolean = false,
-    val cpuTemp: Boolean = true,
-    val cpuUsage: Boolean = true,
-    val gpuTemp: Boolean = true,
-    val gpuUsage: Boolean = true,
-    val vramUsage: Boolean = false,
-    val ramUsage: Boolean = false,
-    val progressType: ProgressType = ProgressType.Circular,
-    val positionX: Int = 0,
-    val positionY: Int = 0,
-    val isPositionLocked: Boolean = true,
-    val upRate: Boolean = false,
-    val downRate: Boolean = false,
-    val netGraph: Boolean = false,
-    val opacity: Float = 1f,
-    val cpuTempReadingId: Int = 0,
-    val cpuUsageReadingId: Int = 0,
-    val gpuTempReadingId: Int = 0,
-    val gpuUsageReadingId: Int = 0,
-) {
-    @Serializable
-    enum class ProgressType {
-        Circular, Bar, None
-    }
-}
+

@@ -3,9 +3,6 @@ plugins {
     kotlin("plugin.serialization")
 }
 
-group = "br.com.firstsoft.kracing"
-version = "0.0.1"
-
 repositories {
     mavenCentral()
 }

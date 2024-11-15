@@ -17,12 +17,11 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberWindowState
+import br.com.firstsoft.target.server.ui.models.OverlaySettings
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.receiveAsFlow
-import ui.app.Overlay
-import ui.app.OverlaySettings
-import win32.WindowsService
+import br.com.firstsoft.core.native.win32.WindowsService
 import java.awt.GraphicsEnvironment
 import java.awt.Toolkit
 import java.awt.event.ComponentAdapter

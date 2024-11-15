@@ -10,7 +10,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import br.com.firstsoft.target.server.ui.ColorTokens.AlmostVisibleGray
 import br.com.firstsoft.target.server.ui.ColorTokens.Green
-import ui.conditional
+import br.com.firstsoft.target.server.ui.overlay.conditional
 
 @Composable
 fun Toggle(
