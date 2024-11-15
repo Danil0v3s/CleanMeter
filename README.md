@@ -15,7 +15,9 @@ A small desktop companion app to display sleek graphs overlays from HWInfo. Desi
 
 ## Getting started
 1. If you have HWiNFO installed already, make sure that `Enable Shared Memory Support` is **enabled** at the settings.
-![image](images/qa_clean_meter.png)  
+![image](images/qa_clean_meter.png)
+> [!IMPORTANT]  
+> If you chose to have HWiNFO installed, _**you**_ will have to manage the `Shared Memory Support` limitation of 12 hours. Every 12 hours of uptime you will need to re-enable the setting. It seems the timer resets if you shutdown your computer before 12h uptime.
 2. If you didn't have HWiNFO installed, there's no need to do any additional setup. (We manage a portable version of it ourselves)
 3. Download the latest release, run it
 
