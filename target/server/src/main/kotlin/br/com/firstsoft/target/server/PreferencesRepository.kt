@@ -1,3 +1,7 @@
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
+import ui.app.OVERLAY_SETTINGS_PREFERENCE_KEY
+import ui.app.OverlaySettings
 import java.util.prefs.Preferences
 
 object PreferencesRepository {
@@ -16,4 +20,18 @@ object PreferencesRepository {
 
     fun setPreference(key: String, value: String) = prefs.put(key, value)
     fun setPreferenceBoolean(key: String, value: Boolean) = prefs.putBoolean(key, value)
+}
+
+fun PreferencesRepository.loadOverlaySettings(): OverlaySettings {
+    val json = getPreferenceString(OVERLAY_SETTINGS_PREFERENCE_KEY)
+    val settings = if (json != null) {
+        try {
+            Json.decodeFromString<OverlaySettings>(json)
+        } catch (e: Exception) {
+            OverlaySettings()
+        }
+    } else {
+        OverlaySettings()
+    }
+    return settings
 }
