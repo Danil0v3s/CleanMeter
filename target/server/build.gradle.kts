@@ -5,7 +5,7 @@ val createShortcut = tasks.register<Exec>("createShortcut") {
         "cmd.exe",
         "/c",
         "mklink",
-        layout.buildDirectory.file("compose/binaries/main/app/cleanmeter/Launcher.lnk").get().asFile.absolutePath,
+        layout.buildDirectory.file("compose/binaries/main/app/cleanmeter/Launcher.exe").get().asFile.absolutePath,
         layout.buildDirectory.file("compose/binaries/main/app/cleanmeter/app/resources/Launcher.exe").get().asFile.absolutePath
     )
 }
