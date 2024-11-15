@@ -32,8 +32,12 @@ object HwInfoProcessManager {
         observeHwInfoPollingTime()
     }
 
-    fun stop() {
-        process?.destroy()
+    private fun stop() {
+        process?.apply {
+            descendants().forEach(ProcessHandle::destroy)
+            destroy()
+        }
+        process = null
     }
 
     private fun overwriteSettings() {
