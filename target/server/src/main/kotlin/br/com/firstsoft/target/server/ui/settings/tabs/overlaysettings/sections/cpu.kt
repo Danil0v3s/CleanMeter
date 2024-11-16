@@ -11,7 +11,7 @@ import androidx.compose.ui.unit.dp
 import br.com.firstsoft.core.common.hwinfo.SensorReadingElement
 import br.com.firstsoft.target.server.ui.components.CheckboxWithLabel
 import br.com.firstsoft.target.server.ui.components.CustomBodyCheckboxSection
-import br.com.firstsoft.target.server.ui.components.StealthDropdownMenu
+import br.com.firstsoft.target.server.ui.components.SensorReadingDropdownMenu
 import br.com.firstsoft.target.server.ui.models.OverlaySettings
 import br.com.firstsoft.target.server.ui.settings.CheckboxSectionOption
 import br.com.firstsoft.target.server.ui.settings.SettingsOptionType
@@ -39,14 +39,13 @@ internal fun cpu(
                             checked = option.isSelected,
                         )
                         if (readings.isNotEmpty() && option.isSelected && option.useCustomSensor) {
-                            StealthDropdownMenu(
+                            SensorReadingDropdownMenu(
                                 modifier = Modifier.padding(start = 18.dp),
-                                options = readings.map { "${it.szLabelOrig} (${it.value}${it.szUnit})" },
+                                options = readings,
                                 onValueChanged = {
-                                    val reading = readings[it]
                                     val customReading = OverlaySettings.CustomReading(
-                                        reading.dwReadingID,
-                                        reading.dwSensorIndex
+                                        it.dwReadingID,
+                                        it.dwSensorIndex
                                     )
                                     when (option.type) {
                                         SettingsOptionType.CpuTemp -> onOverlaySettings(
@@ -67,7 +66,8 @@ internal fun cpu(
                                 selectedIndex = readings
                                     .indexOfFirst { it.dwReadingID == option.customOptionReading.readingId && it.dwSensorIndex == option.customOptionReading.sensorIndex }
                                     .coerceAtLeast(0),
-                                label = "Sensor:"
+                                label = "Sensor:",
+                                sensorName = option.name,
                             )
                         }
                     }

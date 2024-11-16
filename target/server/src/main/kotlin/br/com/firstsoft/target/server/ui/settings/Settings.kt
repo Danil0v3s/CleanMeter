@@ -122,7 +122,8 @@ fun WindowScope.Settings(
 
             when (selectedTabIndex) {
                 0 -> OverlaySettingsUi(
-                    overlaySettings, onOverlaySettings,
+                    overlaySettings = overlaySettings,
+                    onOverlaySettings = onOverlaySettings,
                     getCpuSensorReadings = { hwInfoData.value?.cpuReadings() ?: emptyList() },
                     getGpuSensorReadings = { hwInfoData.value?.gpuReadings() ?: emptyList() },
                     getPresentMonReadings = { hwInfoData.value?.presentMonReadings() ?: emptyList() },
