@@ -15,7 +15,7 @@ private fun HwInfoData.readings(namePart: String): List<SensorReadingElement> {
 }
 
 fun HwInfoData.cpuReadings() = readings("CPU")
-fun HwInfoData.gpuReadings() = readings("GPU")
+fun HwInfoData.gpuReadings() = readings("")
 fun HwInfoData.presentMonReadings() = readings("PresentMon")
 fun HwInfoData.getReading(readingId: Int, sensorIndex: Int) = readings.firstOrNull { it.dwReadingID == readingId && it.dwSensorIndex == sensorIndex }
 

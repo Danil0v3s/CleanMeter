@@ -44,10 +44,12 @@ internal fun gpu(overlaySettings: OverlaySettings, data: HwInfoData) {
                 val reading = data.getReading(overlaySettings.vramUsageReadingId.readingId, overlaySettings.vramUsageReadingId.sensorIndex)
                 val readingValue = (reading?.value ?: 1f).coerceAtLeast(1f).toInt()
 
+                val committedReading = data.getReading(overlaySettings.vramCommittedReadingId.readingId, overlaySettings.vramCommittedReadingId.sensorIndex)
+                val commitedReadingValue = (committedReading?.value ?: 1f).coerceAtLeast(1f).toInt()
 
                 Progress(
                     value = readingValue / 100f,
-                    label = String.format("%02.1f", data.VramUsage / 1000f, Locale.US),
+                    label = String.format("%02.1f", commitedReadingValue / 1000f, Locale.US),
                     unit = "GB",
                     progressType = overlaySettings.progressType
                 )

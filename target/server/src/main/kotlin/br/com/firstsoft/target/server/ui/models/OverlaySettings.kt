@@ -29,6 +29,7 @@ data class OverlaySettings(
     val gpuTempReadingId: CustomReading = CustomReading(),
     val gpuUsageReadingId: CustomReading = CustomReading(),
     val vramUsageReadingId: CustomReading = CustomReading(),
+    val vramCommittedReadingId: CustomReading = CustomReading(),
     val framerateReadingId: CustomReading = CustomReading(),
 ) {
     @Serializable

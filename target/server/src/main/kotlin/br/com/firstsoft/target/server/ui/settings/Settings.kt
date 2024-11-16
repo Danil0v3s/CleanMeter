@@ -51,7 +51,7 @@ import br.com.firstsoft.target.server.ui.ColorTokens.BarelyVisibleGray
 import br.com.firstsoft.target.server.ui.ColorTokens.DarkGray
 import br.com.firstsoft.target.server.ui.ColorTokens.MutedGray
 import br.com.firstsoft.target.server.ui.models.OverlaySettings
-import br.com.firstsoft.target.server.ui.settings.tabs.OverlaySettingsUi
+import br.com.firstsoft.target.server.ui.settings.tabs.overlaysettings.OverlaySettingsUi
 import br.com.firstsoft.target.server.ui.settings.tabs.StyleUi
 import br.com.firstsoft.core.os.hwinfo.HwInfoReader
 import br.com.firstsoft.core.common.hwinfo.cpuReadings
