@@ -3,6 +3,8 @@ package br.com.firstsoft.core.os.hwinfo
 import br.com.firstsoft.core.os.resource.NativeResourceLoader
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.cancellable
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -14,6 +16,7 @@ object HwInfoProcessManager {
     private var process: Process? = null
     private const val MAX_RETRIES = 1
     private var currentRetries = 0
+    private var pollingJob: Job? = null
 
     init {
         currentRetries = 0
@@ -29,7 +32,8 @@ object HwInfoProcessManager {
             command("cmd.exe", "/c", file)
         }.start()
 
-        observeHwInfoPollingTime()
+        pollingJob?.cancel()
+        pollingJob = observeHwInfoPollingTime()
     }
 
     fun stop() {
@@ -38,6 +42,11 @@ object HwInfoProcessManager {
             destroy()
         }
         process = null
+    }
+
+    private fun restart() {
+        stop()
+        start()
     }
 
     private fun overwriteSettings() {
@@ -55,21 +64,21 @@ object HwInfoProcessManager {
 
         HwInfoReader
             .currentData
+            .cancellable()
             .map { it.header }
             .collectLatest {
                 accumulator += 500
+                if (accumulator < TimeUnit.SECONDS.toMillis(5)) return@collectLatest
 
-                if (accumulator >= TimeUnit.SECONDS.toMillis(5)) {
-                    accumulator = 0
-
-                    if (lastPollTime != it.pollTime) {
+                accumulator = 0
+                when {
+                    lastPollTime != it.pollTime -> {
                         lastPollTime = it.pollTime
                         currentRetries = 0
-                    } else if (currentRetries < MAX_RETRIES) {
+                    }
+                    lastPollTime == it.pollTime && currentRetries < MAX_RETRIES -> {
                         currentRetries++
-                        stop()
-                        start()
-                        return@collectLatest
+                        restart()
                     }
                 }
             }
