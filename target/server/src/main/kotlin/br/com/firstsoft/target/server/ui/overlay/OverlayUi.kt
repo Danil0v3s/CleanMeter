@@ -524,7 +524,11 @@ private fun NetGraph(data: HwInfoData, isHorizontal: Boolean, overlaySettings: O
     }
 
     Box(modifier = Modifier
-        .width(100.dp)
+        .conditional(
+            predicate = isHorizontal,
+            ifTrue = { width(100.dp) },
+            ifFalse = { fillMaxWidth() },
+        )
         .height(if (isHorizontal) 45.dp else 30.dp)
         .graphicsLayer { alpha = 0.99f }
         .drawWithContent {
