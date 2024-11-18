@@ -5,8 +5,20 @@ val copyLauncherFiles = tasks.register<Copy>("copyLauncherFiles") {
     into(layout.buildDirectory.dir("compose/binaries/main/app/cleanmeter"))
 }
 
-val compileLauncher = tasks.register<Exec>("compileLauncher") {
+val moveBuildResult = tasks.register<Exec>("moveBuild") {
     finalizedBy(copyLauncherFiles)
+    workingDir(layout.buildDirectory.dir("compose/binaries/main/app/cleanmeter"))
+    commandLine("cmd.exe", "/c", "mkdir", "cleanmeter")
+
+    doLast {
+        file("build/compose/binaries/main/app/cleanmeter/cleanmeter.exe").renameTo(file("build/compose/binaries/main/app/cleanmeter/cleanmeter/cleanmeter.exe"))
+        file("build/compose/binaries/main/app/cleanmeter/runtime").renameTo(file("build/compose/binaries/main/app/cleanmeter/cleanmeter/runtime"))
+        file("build/compose/binaries/main/app/cleanmeter/app").renameTo(file("build/compose/binaries/main/app/cleanmeter/cleanmeter/app"))
+    }
+}
+
+val compileLauncher = tasks.register<Exec>("compileLauncher") {
+    finalizedBy(moveBuildResult)
     workingDir("../../Launcher/")
     commandLine("dotnet", "build", "--configuration", "Release")
 }

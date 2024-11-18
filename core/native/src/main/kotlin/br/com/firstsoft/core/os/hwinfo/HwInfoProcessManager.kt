@@ -24,7 +24,7 @@ object HwInfoProcessManager {
 
     fun start() {
         val currentDir = Path.of("").toAbsolutePath().toString()
-        val file = "$currentDir\\app\\resources\\HWiNFO64.exe"
+        val file = "$currentDir\\cleanmeter\\app\\resources\\HWiNFO64.exe"
 
         overwriteSettings()
 
@@ -52,7 +52,7 @@ object HwInfoProcessManager {
     private fun overwriteSettings() {
         try {
             val sourceSettings = NativeResourceLoader.load("/hwinfo/HWiNFO64.INI.src")
-            File("app/resources/HWiNFO64.INI").printWriter().use { it.print(sourceSettings) }
+            File("cleanmeter/app/resources/HWiNFO64.INI").printWriter().use { it.print(sourceSettings) }
         } catch (e: Exception) {
             e.printStackTrace()
         }

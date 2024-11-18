@@ -2,7 +2,7 @@
 
 try
 {
-    var startInfo = new ProcessStartInfo("cleanmeter.exe")
+    var startInfo = new ProcessStartInfo("cleanmeter\\cleanmeter.exe")
     {
         Verb = "runas",
         UseShellExecute = true,
