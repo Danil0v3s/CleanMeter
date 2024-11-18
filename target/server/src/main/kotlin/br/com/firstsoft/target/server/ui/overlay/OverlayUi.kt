@@ -24,6 +24,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
@@ -186,28 +187,24 @@ private fun net(overlaySettings: OverlaySettings, data: HwInfoData) {
                 isHorizontal = true,
             ) {
                 if (overlaySettings.sensors.downRate.isEnabled) {
-                    Row(verticalAlignment = Alignment.Bottom, modifier = Modifier.widthIn(min = 35.dp)) {
+                    Row(verticalAlignment = Alignment.Bottom) {
                         Icon(
                             painterResource("icons/arrow_down.svg"),
                             "",
                             tint = Cyan,
-                            modifier = Modifier.padding(end = 4.dp, bottom = 3.dp)
+                            modifier = Modifier.padding(end = 4.dp, bottom = 3.dp).alpha(data.DlRate.coerceAtMost(1f))
                         )
-                        ProgressLabel(String.format("%02.2f", data.DlRate, Locale.US))
-                        ProgressUnit(data.DlRateUnit)
                     }
                 }
 
                 if (overlaySettings.sensors.upRate.isEnabled) {
-                    Row(verticalAlignment = Alignment.Bottom, modifier = Modifier.widthIn(min = 35.dp)) {
+                    Row(verticalAlignment = Alignment.Bottom) {
                         Icon(
                             painterResource("icons/arrow_down.svg"),
                             "",
                             tint = Purple,
-                            modifier = Modifier.padding(end = 4.dp, bottom = 3.dp).rotate(180f)
+                            modifier = Modifier.padding(end = 4.dp, bottom = 3.dp).rotate(180f).alpha(data.UpRate.coerceAtMost(1f))
                         )
-                        ProgressLabel(String.format("%02.2f", data.UpRate, Locale.US))
-                        ProgressUnit(data.UpRateUnit)
                     }
                 }
 
@@ -240,28 +237,24 @@ private fun net(overlaySettings: OverlaySettings, data: HwInfoData) {
 
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                         if (overlaySettings.sensors.downRate.isEnabled) {
-                            Row(verticalAlignment = Alignment.Bottom, modifier = Modifier.widthIn(min = 35.dp)) {
+                            Row(verticalAlignment = Alignment.Bottom) {
                                 Icon(
                                     painterResource("icons/arrow_down.svg"),
                                     "",
                                     tint = Cyan,
-                                    modifier = Modifier.padding(end = 4.dp, bottom = 3.dp)
+                                    modifier = Modifier.padding(end = 4.dp, bottom = 3.dp).alpha(data.DlRate.coerceAtMost(1f))
                                 )
-                                ProgressLabel(String.format("%02.2f", data.DlRate, Locale.US))
-                                ProgressUnit(data.DlRateUnit)
                             }
                         }
 
                         if (overlaySettings.sensors.upRate.isEnabled) {
-                            Row(verticalAlignment = Alignment.Bottom, modifier = Modifier.widthIn(min = 35.dp)) {
+                            Row(verticalAlignment = Alignment.Bottom) {
                                 Icon(
                                     painterResource("icons/arrow_down.svg"),
                                     "",
                                     tint = Purple,
-                                    modifier = Modifier.padding(end = 4.dp, bottom = 3.dp).rotate(180f)
+                                    modifier = Modifier.padding(end = 4.dp, bottom = 3.dp).rotate(180f).alpha(data.UpRate.coerceAtMost(1f))
                                 )
-                                ProgressLabel(String.format("%02.2f", data.UpRate, Locale.US))
-                                ProgressUnit(data.UpRateUnit)
                             }
                         }
                     }
@@ -510,17 +503,12 @@ private fun NetGraph(data: HwInfoData, isHorizontal: Boolean, overlaySettings: O
     }
 
     LaunchedEffect(data) {
-        if (data.UpRate > largestUp.floatValue) {
-            largestUp.floatValue = data.UpRate
-        }
-        if (data.DlRate > largestDown.floatValue) {
-            largestDown.floatValue = data.DlRate + .2f
-        }
-
         upRatePoints.add((data.UpRate / largestUp.floatValue).coerceIn(0f, 1f))
         downRatePoints.add((data.DlRate / largestDown.floatValue + .2f).coerceIn(0f, 1f))
         if (upRatePoints.size > listSize) upRatePoints.removeFirst()
         if (downRatePoints.size > listSize) downRatePoints.removeFirst()
+        largestUp.floatValue = upRatePoints.max()
+        largestDown.floatValue = downRatePoints.max() + .2f
     }
 
     Box(modifier = Modifier
