@@ -45,7 +45,6 @@ import androidx.compose.ui.window.WindowScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import br.com.firstsoft.core.common.hwinfo.cpuReadings
 import br.com.firstsoft.core.common.hwinfo.gpuReadings
-import br.com.firstsoft.core.os.hwinfo.HwInfoReader
 import br.com.firstsoft.target.server.ui.AppTheme
 import br.com.firstsoft.target.server.ui.ColorTokens.BackgroundOffWhite
 import br.com.firstsoft.target.server.ui.ColorTokens.BarelyVisibleGray
@@ -53,18 +52,17 @@ import br.com.firstsoft.target.server.ui.ColorTokens.DarkGray
 import br.com.firstsoft.target.server.ui.ColorTokens.MutedGray
 import br.com.firstsoft.target.server.ui.settings.tabs.AppSettingsUi
 import br.com.firstsoft.target.server.ui.settings.tabs.OverlaySettingsUi
-import br.com.firstsoft.target.server.ui.settings.tabs.StyleUi
+import br.com.firstsoft.target.server.ui.settings.tabs.style.StyleUi
 
 @Composable
 fun WindowScope.Settings(
-    settingsViewModel: SettingsViewModel = viewModel(),
+    viewModel: SettingsViewModel = viewModel(),
     onCloseRequest: () -> Unit,
     onMinimizeRequest: () -> Unit,
     getOverlayPosition: () -> IntOffset
 ) = AppTheme {
 
-    val hwInfoData = remember { HwInfoReader }.currentData.collectAsState(null)
-    val settingsState by settingsViewModel.state.collectAsState(SettingsState())
+    val settingsState by viewModel.state.collectAsState(SettingsState())
 
     Column(
         modifier = Modifier
@@ -113,7 +111,7 @@ fun WindowScope.Settings(
                 0 -> OverlaySettingsUi(
                     overlaySettings = settingsState.overlaySettings,
                     onSectionSwitchToggle = { sectionType, isEnabled ->
-                        settingsViewModel.onEvent(
+                        viewModel.onEvent(
                             SettingsEvent.SwitchToggle(
                                 sectionType,
                                 isEnabled
@@ -121,23 +119,35 @@ fun WindowScope.Settings(
                         )
                     },
                     onOptionsToggle = {
-                        settingsViewModel.onEvent(SettingsEvent.OptionsToggle(it))
+                        viewModel.onEvent(SettingsEvent.OptionsToggle(it))
                     },
                     onCustomSensorSelect = { sensorType, sensorId ->
-                        settingsViewModel.onEvent(SettingsEvent.CustomSensorSelect(sensorType, sensorId))
+                        viewModel.onEvent(SettingsEvent.CustomSensorSelect(sensorType, sensorId))
                     },
                     onDisplaySelect = {
-                        settingsViewModel.onEvent(SettingsEvent.DisplaySelect(it))
+                        viewModel.onEvent(SettingsEvent.DisplaySelect(it))
                     },
-                    getCpuSensorReadings = { hwInfoData.value?.cpuReadings() ?: emptyList() },
-                    getGpuSensorReadings = { hwInfoData.value?.gpuReadings() ?: emptyList() }
+                    getCpuSensorReadings = { settingsState.hwInfoData?.cpuReadings() ?: emptyList() },
+                    getGpuSensorReadings = { settingsState.hwInfoData?.gpuReadings() ?: emptyList() }
                 )
 
                 1 -> StyleUi(
                     overlaySettings = settingsState.overlaySettings,
-                    onOverlaySettings = { TODO("remove me") },
-                    getOverlayPosition = getOverlayPosition
+                    getOverlayPosition = getOverlayPosition,
+                    onOverlayPositionIndex = { viewModel.onEvent(SettingsEvent.OverlayPositionIndexSelect(it)) },
+                    onOverlayCustomPosition = { offset, isPositionLocked ->
+                        viewModel.onEvent(
+                            SettingsEvent.OverlayCustomPositionSelect(
+                                offset,
+                                isPositionLocked
+                            )
+                        )
+                    },
+                    onLayoutChange = { viewModel.onEvent(SettingsEvent.OverlayOrientationSelect(it)) },
+                    onOpacityChange = { viewModel.onEvent(SettingsEvent.OverlayOpacityChange(it)) },
+                    onGraphTypeChange = { viewModel.onEvent(SettingsEvent.OverlayGraphChange(it)) }
                 )
+
                 2 -> AppSettingsUi()
                 else -> Unit
             }

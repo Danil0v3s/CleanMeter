@@ -1,6 +1,10 @@
 package br.com.firstsoft.target.server.ui.settings
 
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.unit.IntOffset
 import androidx.lifecycle.ViewModel
+import br.com.firstsoft.core.common.hwinfo.HwInfoData
+import br.com.firstsoft.core.os.hwinfo.HwInfoReader
 import br.com.firstsoft.target.server.data.OverlaySettingsRepository
 import br.com.firstsoft.target.server.model.OverlaySettings
 import kotlinx.coroutines.CoroutineScope
@@ -13,6 +17,7 @@ import kotlinx.coroutines.launch
 
 data class SettingsState(
     val overlaySettings: OverlaySettings = OverlaySettings(),
+    val hwInfoData: HwInfoData? = null
 )
 
 sealed class SettingsEvent {
@@ -20,6 +25,11 @@ sealed class SettingsEvent {
     data class SwitchToggle(val section: SectionType, val isEnabled: Boolean) : SettingsEvent()
     data class CustomSensorSelect(val sensor: SensorType, val sensorId: Int) : SettingsEvent()
     data class DisplaySelect(val displayIndex: Int) : SettingsEvent()
+    data class OverlayPositionIndexSelect(val index: Int) : SettingsEvent()
+    data class OverlayCustomPositionSelect(val offset: IntOffset, val isPositionLocked: Boolean) : SettingsEvent()
+    data class OverlayOrientationSelect(val isHorizontal: Boolean) : SettingsEvent()
+    data class OverlayOpacityChange(val opacity: Float) : SettingsEvent()
+    data class OverlayGraphChange(val progressType: OverlaySettings.ProgressType) : SettingsEvent()
 }
 
 class SettingsViewModel : ViewModel() {
@@ -29,6 +39,11 @@ class SettingsViewModel : ViewModel() {
         get() = _state
 
     init {
+        observeOverlaySettings()
+        observeHwInfo()
+    }
+
+    private fun observeOverlaySettings() {
         CoroutineScope(Dispatchers.IO).launch {
             OverlaySettingsRepository
                 .data
@@ -38,12 +53,88 @@ class SettingsViewModel : ViewModel() {
         }
     }
 
+    private fun observeHwInfo() {
+        CoroutineScope(Dispatchers.IO).launch {
+            HwInfoReader.currentData.collectLatest { hwInfoData ->
+                _state.update { it.copy(hwInfoData = hwInfoData) }
+            }
+        }
+    }
+
     fun onEvent(event: SettingsEvent) = with(_state.value) {
         when (event) {
             is SettingsEvent.OptionsToggle -> onOptionsToggle(event.data, this)
             is SettingsEvent.SwitchToggle -> onSwitchToggle(event.section, event.isEnabled, this)
             is SettingsEvent.CustomSensorSelect -> onCustomSensorSelect(event.sensor, event.sensorId, this)
             is SettingsEvent.DisplaySelect -> onDisplaySelect(event.displayIndex, this)
+            is SettingsEvent.OverlayPositionIndexSelect -> onOverlayPositionIndexSelect(event.index, this)
+            is SettingsEvent.OverlayCustomPositionSelect -> onOverlayCustomPositionSelect(event.offset, event.isPositionLocked, this)
+            is SettingsEvent.OverlayOrientationSelect -> onOverlayOrientationSelect(event.isHorizontal, this)
+            is SettingsEvent.OverlayOpacityChange -> onOverlayOpacityChange(event.opacity, this)
+            is SettingsEvent.OverlayGraphChange -> onOverlayGraphChange(event.progressType, this)
+        }
+    }
+
+    private fun onOverlayGraphChange(progressType: OverlaySettings.ProgressType, settingsState: SettingsState) {
+        with(settingsState) {
+            val newSettings = overlaySettings.copy(
+                progressType = progressType,
+            )
+
+            OverlaySettingsRepository.setOverlaySettings(newSettings)
+        }
+    }
+
+    private fun onOverlayOpacityChange(opacity: Float, settingsState: SettingsState) {
+        with(settingsState) {
+            val newSettings = overlaySettings.copy(
+                opacity = opacity,
+            )
+
+            OverlaySettingsRepository.setOverlaySettings(newSettings)
+        }
+    }
+
+    private fun onOverlayOrientationSelect(isHorizontal: Boolean, settingsState: SettingsState) {
+        with(settingsState) {
+            val newSettings = overlaySettings.copy(
+                isHorizontal = isHorizontal,
+            )
+
+            OverlaySettingsRepository.setOverlaySettings(newSettings)
+        }
+    }
+
+    private fun onOverlayCustomPositionSelect(
+        offset: IntOffset,
+        positionLocked: Boolean,
+        settingsState: SettingsState
+    ) {
+        with(settingsState) {
+            val newSettings = if (offset == IntOffset.Zero) {
+                overlaySettings.copy(
+                    positionIndex = if (positionLocked) 6 else 0,
+                    isPositionLocked = true
+                )
+            } else {
+                overlaySettings.copy(
+                    positionX = offset.x,
+                    positionY = offset.y,
+                    isPositionLocked = positionLocked
+                )
+            }
+
+            OverlaySettingsRepository.setOverlaySettings(newSettings)
+        }
+    }
+
+    private fun onOverlayPositionIndexSelect(index: Int, settingsState: SettingsState) {
+        with(settingsState) {
+            val newSettings = overlaySettings.copy(
+                positionIndex = index,
+            )
+
+            OverlaySettingsRepository.setOverlaySettings(newSettings)
         }
     }
 
