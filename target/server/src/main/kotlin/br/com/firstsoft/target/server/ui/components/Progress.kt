@@ -22,7 +22,7 @@ import br.com.firstsoft.target.server.ui.ColorTokens.ClearGray
 import br.com.firstsoft.target.server.ui.ColorTokens.Green
 import br.com.firstsoft.target.server.ui.ColorTokens.Red
 import br.com.firstsoft.target.server.ui.ColorTokens.Yellow
-import br.com.firstsoft.target.server.ui.models.OverlaySettings
+import br.com.firstsoft.target.server.model.OverlaySettings
 import kotlin.math.abs
 
 @Composable

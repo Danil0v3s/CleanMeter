@@ -6,25 +6,27 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import br.com.firstsoft.target.server.ui.AppTheme
-import br.com.firstsoft.target.server.ui.models.OverlaySettings
+import br.com.firstsoft.core.common.hwinfo.HwInfoData
 import br.com.firstsoft.core.os.hwinfo.HwInfoReader
+import br.com.firstsoft.target.server.model.OverlaySettings
+import br.com.firstsoft.target.server.ui.AppTheme
 
 @Composable
 fun Overlay(
-    hwInfoReader: HwInfoReader = HwInfoReader,
+    data: HwInfoData?,
     overlaySettings: OverlaySettings,
 ) = AppTheme {
-    if (listOf(
-            overlaySettings.fps,
-            overlaySettings.frametime,
-            overlaySettings.cpuTemp,
-            overlaySettings.gpuTemp,
-            overlaySettings.cpuUsage,
-            overlaySettings.gpuUsage,
-            overlaySettings.vramUsage,
-            overlaySettings.ramUsage
-        ).all { !it }
+    if (
+        listOf(
+            overlaySettings.sensors.framerate,
+            overlaySettings.sensors.frametime,
+            overlaySettings.sensors.cpuTemp,
+            overlaySettings.sensors.gpuTemp,
+            overlaySettings.sensors.cpuUsage,
+            overlaySettings.sensors.gpuUsage,
+            overlaySettings.sensors.vramUsage,
+            overlaySettings.sensors.ramUsage
+        ).all { !it.isEnabled }
     ) {
         return@AppTheme
     }
@@ -46,7 +48,7 @@ fun Overlay(
 
     Box(modifier = Modifier.fillMaxSize().alpha(overlaySettings.opacity), contentAlignment = alignment) {
         OverlayUi(
-            reader = hwInfoReader,
+            data = data,
             overlaySettings = overlaySettings
         )
     }

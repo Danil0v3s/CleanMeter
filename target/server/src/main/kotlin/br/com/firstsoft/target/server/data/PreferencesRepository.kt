@@ -1,6 +1,6 @@
-package br.com.firstsoft.target.server
+package br.com.firstsoft.target.server.data
 
-import br.com.firstsoft.target.server.ui.models.OverlaySettings
+import br.com.firstsoft.target.server.model.OverlaySettings
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import java.util.prefs.Preferences

@@ -3,6 +3,7 @@ package br.com.firstsoft.target.server.ui.overlay
 import androidx.compose.foundation.window.WindowDraggableArea
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -17,11 +18,12 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberWindowState
-import br.com.firstsoft.target.server.ui.models.OverlaySettings
+import androidx.lifecycle.viewmodel.compose.viewModel
+import br.com.firstsoft.core.os.win32.WindowsService
+import br.com.firstsoft.target.server.ApplicationViewModelStoreOwner
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.receiveAsFlow
-import br.com.firstsoft.core.os.win32.WindowsService
 import java.awt.GraphicsEnvironment
 import java.awt.Toolkit
 import java.awt.event.ComponentAdapter
@@ -38,10 +40,12 @@ val positions = listOf(
 
 @Composable
 fun ApplicationScope.OverlayWindow(
+    viewModel: OverlayViewModel = viewModel(ApplicationViewModelStoreOwner),
     channel: Channel<Unit>,
-    overlaySettings: OverlaySettings,
     onPositionChanged: (IntOffset) -> Unit
 ) {
+    val overlayState by viewModel.state.collectAsState(OverlayState())
+
     var isVisible by remember { mutableStateOf(true) }
     LaunchedEffect(Unit) {
         channel.receiveAsFlow().collectLatest {
@@ -49,19 +53,22 @@ fun ApplicationScope.OverlayWindow(
         }
     }
 
-    val overlayState = rememberWindowState().apply {
-        size = if (overlaySettings.isHorizontal) DpSize(1280.dp, 80.dp) else DpSize(350.dp, 1280.dp)
+    val overlayWindowState = rememberWindowState().apply {
+        size = if (overlayState.overlaySettings.isHorizontal) DpSize(1280.dp, 80.dp) else DpSize(350.dp, 1280.dp)
         placement = WindowPlacement.Floating
-        position = WindowPosition.Absolute(overlaySettings.positionX.dp,overlaySettings.positionY.dp)
+        position = WindowPosition.Absolute(
+            overlayState.overlaySettings.positionX.dp,
+            overlayState.overlaySettings.positionY.dp
+        )
     }
 
     val graphicsEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment()
     val screenDevices = graphicsEnvironment.screenDevices
-    val graphicsConfiguration = screenDevices[overlaySettings.selectedDisplayIndex].defaultConfiguration
+    val graphicsConfiguration = screenDevices[overlayState.overlaySettings.selectedDisplayIndex].defaultConfiguration
     val taskbarHeight = Toolkit.getDefaultToolkit().screenSize.height - graphicsEnvironment.maximumWindowBounds.height
 
     Window(
-        state = overlayState,
+        state = overlayWindowState,
         onCloseRequest = { exitApplication() },
         visible = isVisible,
         title = "Clean Meter",
@@ -69,8 +76,8 @@ fun ApplicationScope.OverlayWindow(
         alwaysOnTop = true,
         transparent = true,
         undecorated = true,
-        focusable = !overlaySettings.isPositionLocked,
-        enabled = !overlaySettings.isPositionLocked,
+        focusable = !overlayState.overlaySettings.isPositionLocked,
+        enabled = !overlayState.overlaySettings.isPositionLocked,
     ) {
         window.addComponentListener(object : ComponentAdapter() {
             override fun componentMoved(e: ComponentEvent) {
@@ -78,9 +85,9 @@ fun ApplicationScope.OverlayWindow(
             }
         })
 
-        LaunchedEffect(overlaySettings) {
-            if (overlaySettings.positionIndex < 6) {
-                val alignment = positions[overlaySettings.positionIndex]
+        LaunchedEffect(overlayState.overlaySettings) {
+            if (overlayState.overlaySettings.positionIndex < 6) {
+                val alignment = positions[overlayState.overlaySettings.positionIndex]
                 val location = when (alignment) {
                     Alignment.TopStart -> IntSize(graphicsConfiguration.bounds.x, graphicsConfiguration.bounds.y)
                     Alignment.TopCenter -> IntSize(
@@ -110,19 +117,26 @@ fun ApplicationScope.OverlayWindow(
 
                     else -> IntSize.Zero
                 }
-                overlayState.position = WindowPosition.Aligned(alignment)
+                overlayWindowState.position = WindowPosition.Aligned(alignment)
                 window.setLocation(location.width, location.height)
             } else {
-                overlayState.position = WindowPosition.Absolute(overlaySettings.positionX.dp,overlaySettings.positionY.dp)
+                overlayWindowState.position =
+                    WindowPosition.Absolute(
+                        overlayState.overlaySettings.positionX.dp,
+                        overlayState.overlaySettings.positionY.dp
+                    )
             }
 
             window.toFront()
         }
 
-        WindowsService.changeWindowTransparency(window, overlaySettings.isPositionLocked)
+        WindowsService.changeWindowTransparency(window, overlayState.overlaySettings.isPositionLocked)
 
         WindowDraggableArea {
-            Overlay(overlaySettings = overlaySettings)
+            Overlay(
+                overlaySettings = overlayState.overlaySettings,
+                data = overlayState.hwInfoData
+            )
         }
     }
 }

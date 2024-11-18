@@ -48,7 +48,7 @@ import br.com.firstsoft.target.server.ui.components.Toggle
 import br.com.firstsoft.target.server.ui.components.ToggleSection
 import br.com.firstsoft.target.server.ui.components.coercedValueAsFraction
 import br.com.firstsoft.target.server.ui.components.drawTrack
-import br.com.firstsoft.target.server.ui.models.OverlaySettings
+import br.com.firstsoft.target.server.model.OverlaySettings
 import br.com.firstsoft.target.server.ui.overlay.conditional
 
 @OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)

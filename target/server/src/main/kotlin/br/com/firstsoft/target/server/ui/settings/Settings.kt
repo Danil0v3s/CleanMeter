@@ -24,7 +24,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Minimize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -43,38 +42,29 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.WindowScope
-import br.com.firstsoft.target.server.OVERLAY_SETTINGS_PREFERENCE_KEY
-import br.com.firstsoft.target.server.PreferencesRepository
+import androidx.lifecycle.viewmodel.compose.viewModel
+import br.com.firstsoft.core.common.hwinfo.cpuReadings
+import br.com.firstsoft.core.common.hwinfo.gpuReadings
+import br.com.firstsoft.core.os.hwinfo.HwInfoReader
 import br.com.firstsoft.target.server.ui.AppTheme
 import br.com.firstsoft.target.server.ui.ColorTokens.BackgroundOffWhite
 import br.com.firstsoft.target.server.ui.ColorTokens.BarelyVisibleGray
 import br.com.firstsoft.target.server.ui.ColorTokens.DarkGray
 import br.com.firstsoft.target.server.ui.ColorTokens.MutedGray
-import br.com.firstsoft.target.server.ui.models.OverlaySettings
+import br.com.firstsoft.target.server.ui.settings.tabs.AppSettingsUi
 import br.com.firstsoft.target.server.ui.settings.tabs.OverlaySettingsUi
 import br.com.firstsoft.target.server.ui.settings.tabs.StyleUi
-import br.com.firstsoft.core.os.hwinfo.HwInfoReader
-import br.com.firstsoft.core.common.hwinfo.cpuReadings
-import br.com.firstsoft.core.common.hwinfo.gpuReadings
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
-import br.com.firstsoft.target.server.ui.settings.tabs.AppSettingsUi
 
 @Composable
 fun WindowScope.Settings(
-    overlaySettings: OverlaySettings,
+    settingsViewModel: SettingsViewModel = viewModel(),
     onCloseRequest: () -> Unit,
     onMinimizeRequest: () -> Unit,
-    onOverlaySettings: (OverlaySettings) -> Unit,
     getOverlayPosition: () -> IntOffset
 ) = AppTheme {
 
     val hwInfoData = remember { HwInfoReader }.currentData.collectAsState(null)
-
-    LaunchedEffect(overlaySettings) {
-        PreferencesRepository.setPreference(OVERLAY_SETTINGS_PREFERENCE_KEY, Json.encodeToString(overlaySettings))
-        onOverlaySettings(overlaySettings)
-    }
+    val settingsState by settingsViewModel.state.collectAsState(SettingsState())
 
     Column(
         modifier = Modifier
@@ -121,11 +111,33 @@ fun WindowScope.Settings(
 
             when (selectedTabIndex) {
                 0 -> OverlaySettingsUi(
-                    overlaySettings, onOverlaySettings,
+                    overlaySettings = settingsState.overlaySettings,
+                    onSectionSwitchToggle = { sectionType, isEnabled ->
+                        settingsViewModel.onEvent(
+                            SettingsEvent.SwitchToggle(
+                                sectionType,
+                                isEnabled
+                            )
+                        )
+                    },
+                    onOptionsToggle = {
+                        settingsViewModel.onEvent(SettingsEvent.OptionsToggle(it))
+                    },
+                    onCustomSensorSelect = { sensorType, sensorId ->
+                        settingsViewModel.onEvent(SettingsEvent.CustomSensorSelect(sensorType, sensorId))
+                    },
+                    onDisplaySelect = {
+                        settingsViewModel.onEvent(SettingsEvent.DisplaySelect(it))
+                    },
                     getCpuSensorReadings = { hwInfoData.value?.cpuReadings() ?: emptyList() },
                     getGpuSensorReadings = { hwInfoData.value?.gpuReadings() ?: emptyList() }
                 )
-                1 -> StyleUi(overlaySettings, onOverlaySettings, getOverlayPosition)
+
+                1 -> StyleUi(
+                    overlaySettings = settingsState.overlaySettings,
+                    onOverlaySettings = { TODO("remove me") },
+                    getOverlayPosition = getOverlayPosition
+                )
                 2 -> AppSettingsUi()
                 else -> Unit
             }

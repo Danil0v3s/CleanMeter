@@ -10,6 +10,7 @@ fun logException(throwable: Throwable) {
 fun setDefaultUncaughtExceptionHandler() {
     Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
         try {
+            throwable.printStackTrace()
             logException(throwable)
         } catch (e: Exception) {
             e.printStackTrace()

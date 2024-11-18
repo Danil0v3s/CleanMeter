@@ -20,8 +20,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import br.com.firstsoft.target.server.PREFERENCE_START_MINIMIZED
-import br.com.firstsoft.target.server.PreferencesRepository
+import br.com.firstsoft.target.server.data.PREFERENCE_START_MINIMIZED
+import br.com.firstsoft.target.server.data.PreferencesRepository
 import br.com.firstsoft.target.server.ui.components.CheckboxWithLabel
 import br.com.firstsoft.target.server.ui.components.Label
 import br.com.firstsoft.target.server.ui.components.Section

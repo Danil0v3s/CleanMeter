@@ -13,15 +13,13 @@ import androidx.compose.ui.window.ApplicationScope
 import androidx.compose.ui.window.Tray
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.rememberWindowState
-import br.com.firstsoft.target.server.PREFERENCE_START_MINIMIZED
-import br.com.firstsoft.target.server.PreferencesRepository
-import br.com.firstsoft.target.server.ui.models.OverlaySettings
+import br.com.firstsoft.target.server.data.PREFERENCE_START_MINIMIZED
+import br.com.firstsoft.target.server.data.PreferencesRepository
+import br.com.firstsoft.target.server.model.OverlaySettings
 import com.github.kwhat.jnativehook.GlobalScreen
 
 @Composable
 fun ApplicationScope.SettingsWindow(
-    overlaySettings: OverlaySettings,
-    onOverlaySettings: (OverlaySettings) -> Unit,
     getOverlayPosition: () -> IntOffset,
     onApplicationExit: () -> Unit,
 ) {
@@ -48,8 +46,6 @@ fun ApplicationScope.SettingsWindow(
         transparent = true,
     ) {
         Settings(
-            overlaySettings = overlaySettings,
-            onOverlaySettings = onOverlaySettings,
             onCloseRequest = { isVisible = false },
             onMinimizeRequest = { state.isMinimized = true },
             getOverlayPosition = getOverlayPosition

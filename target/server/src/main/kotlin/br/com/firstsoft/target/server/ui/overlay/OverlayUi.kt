@@ -48,14 +48,6 @@ import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.fastForEachIndexed
-import br.com.firstsoft.target.server.ui.ColorTokens.Cyan
-import br.com.firstsoft.target.server.ui.ColorTokens.OffWhite
-import br.com.firstsoft.target.server.ui.ColorTokens.Purple
-import br.com.firstsoft.target.server.ui.components.Pill
-import br.com.firstsoft.target.server.ui.components.Progress
-import br.com.firstsoft.target.server.ui.components.ProgressLabel
-import br.com.firstsoft.target.server.ui.components.ProgressUnit
-import br.com.firstsoft.target.server.ui.models.OverlaySettings
 import br.com.firstsoft.core.common.hwinfo.DlRate
 import br.com.firstsoft.core.common.hwinfo.DlRateUnit
 import br.com.firstsoft.core.common.hwinfo.FPS
@@ -64,7 +56,6 @@ import br.com.firstsoft.core.common.hwinfo.GpuTemp
 import br.com.firstsoft.core.common.hwinfo.GpuTempUnit
 import br.com.firstsoft.core.common.hwinfo.GpuUsage
 import br.com.firstsoft.core.common.hwinfo.HwInfoData
-import br.com.firstsoft.core.os.hwinfo.HwInfoReader
 import br.com.firstsoft.core.common.hwinfo.RamUsage
 import br.com.firstsoft.core.common.hwinfo.RamUsagePercent
 import br.com.firstsoft.core.common.hwinfo.UpRate
@@ -72,8 +63,16 @@ import br.com.firstsoft.core.common.hwinfo.UpRateUnit
 import br.com.firstsoft.core.common.hwinfo.VramUsage
 import br.com.firstsoft.core.common.hwinfo.VramUsagePercent
 import br.com.firstsoft.core.common.hwinfo.getReading
-import java.util.Locale
-
+import br.com.firstsoft.core.os.hwinfo.HwInfoReader
+import br.com.firstsoft.target.server.model.OverlaySettings
+import br.com.firstsoft.target.server.ui.ColorTokens.Cyan
+import br.com.firstsoft.target.server.ui.ColorTokens.OffWhite
+import br.com.firstsoft.target.server.ui.ColorTokens.Purple
+import br.com.firstsoft.target.server.ui.components.Pill
+import br.com.firstsoft.target.server.ui.components.Progress
+import br.com.firstsoft.target.server.ui.components.ProgressLabel
+import br.com.firstsoft.target.server.ui.components.ProgressUnit
+import java.util.*
 
 inline fun Modifier.conditional(
     predicate: Boolean,
@@ -83,10 +82,9 @@ inline fun Modifier.conditional(
 
 @Composable
 fun OverlayUi(
-    reader: HwInfoReader,
+    data: HwInfoData?,
     overlaySettings: OverlaySettings,
 ) {
-    val data by reader.currentData.collectAsState(null)
 
     if (data == null) {
         return
@@ -181,13 +179,13 @@ fun Content(data: HwInfoData, overlaySettings: OverlaySettings) {
 
 @Composable
 private fun net(overlaySettings: OverlaySettings, data: HwInfoData) {
-    if (overlaySettings.upRate || overlaySettings.downRate) {
+    if (overlaySettings.sensors.upRate.isEnabled || overlaySettings.sensors.downRate.isEnabled) {
         if (overlaySettings.isHorizontal) {
             Pill(
                 title = "NET",
                 isHorizontal = true,
             ) {
-                if (overlaySettings.downRate) {
+                if (overlaySettings.sensors.downRate.isEnabled) {
                     Row(verticalAlignment = Alignment.Bottom, modifier = Modifier.widthIn(min = 35.dp)) {
                         Icon(
                             painterResource("icons/arrow_down.svg"),
@@ -200,7 +198,7 @@ private fun net(overlaySettings: OverlaySettings, data: HwInfoData) {
                     }
                 }
 
-                if (overlaySettings.upRate) {
+                if (overlaySettings.sensors.upRate.isEnabled) {
                     Row(verticalAlignment = Alignment.Bottom, modifier = Modifier.widthIn(min = 35.dp)) {
                         Icon(
                             painterResource("icons/arrow_down.svg"),
@@ -241,7 +239,7 @@ private fun net(overlaySettings: OverlaySettings, data: HwInfoData) {
                     )
 
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                        if (overlaySettings.downRate) {
+                        if (overlaySettings.sensors.downRate.isEnabled) {
                             Row(verticalAlignment = Alignment.Bottom, modifier = Modifier.widthIn(min = 35.dp)) {
                                 Icon(
                                     painterResource("icons/arrow_down.svg"),
@@ -254,7 +252,7 @@ private fun net(overlaySettings: OverlaySettings, data: HwInfoData) {
                             }
                         }
 
-                        if (overlaySettings.upRate) {
+                        if (overlaySettings.sensors.upRate.isEnabled) {
                             Row(verticalAlignment = Alignment.Bottom, modifier = Modifier.widthIn(min = 35.dp)) {
                                 Icon(
                                     painterResource("icons/arrow_down.svg"),
@@ -279,7 +277,7 @@ private fun net(overlaySettings: OverlaySettings, data: HwInfoData) {
 
 @Composable
 private fun ram(overlaySettings: OverlaySettings, data: HwInfoData) {
-    if (overlaySettings.ramUsage) {
+    if (overlaySettings.sensors.ramUsage.isEnabled) {
         Pill(
             title = "RAM",
             isHorizontal = overlaySettings.isHorizontal,
@@ -296,13 +294,13 @@ private fun ram(overlaySettings: OverlaySettings, data: HwInfoData) {
 
 @Composable
 private fun cpu(overlaySettings: OverlaySettings, data: HwInfoData) {
-    if (overlaySettings.cpuTemp || overlaySettings.cpuUsage) {
+    if (overlaySettings.sensors.cpuTemp.isEnabled || overlaySettings.sensors.cpuUsage.isEnabled) {
         Pill(
             title = "CPU",
             isHorizontal = overlaySettings.isHorizontal,
         ) {
-            if (overlaySettings.cpuTemp) {
-                val cpuTemp = data.getReading(overlaySettings.cpuTempReadingId)
+            if (overlaySettings.sensors.cpuTemp.isEnabled) {
+                val cpuTemp = data.getReading(overlaySettings.sensors.cpuTemp.customReadingId)
                 val cpuTempValue = (cpuTemp?.value ?: 1f).coerceAtLeast(1f).toInt()
 
                 Progress(
@@ -312,8 +310,8 @@ private fun cpu(overlaySettings: OverlaySettings, data: HwInfoData) {
                     progressType = overlaySettings.progressType
                 )
             }
-            if (overlaySettings.cpuUsage) {
-                val cpuUsage = data.getReading(overlaySettings.cpuUsageReadingId)
+            if (overlaySettings.sensors.cpuUsage.isEnabled) {
+                val cpuUsage = data.getReading(overlaySettings.sensors.cpuUsage.customReadingId)
                 val cpuUsageValue = (cpuUsage?.value ?: 1f).coerceAtLeast(1f)
                 Progress(
                     value = cpuUsageValue / 100f,
@@ -328,12 +326,12 @@ private fun cpu(overlaySettings: OverlaySettings, data: HwInfoData) {
 
 @Composable
 private fun gpu(overlaySettings: OverlaySettings, data: HwInfoData) {
-    if (overlaySettings.gpuTemp || overlaySettings.gpuUsage || overlaySettings.vramUsage) {
+    if (overlaySettings.sensors.gpuTemp.isEnabled || overlaySettings.sensors.gpuUsage.isEnabled || overlaySettings.sensors.vramUsage.isEnabled) {
         Pill(
             title = "GPU",
             isHorizontal = overlaySettings.isHorizontal,
         ) {
-            if (overlaySettings.gpuTemp) {
+            if (overlaySettings.sensors.gpuTemp.isEnabled) {
                 Progress(
                     value = data.GpuTemp / 100f,
                     label = "${data.GpuTemp}",
@@ -341,7 +339,7 @@ private fun gpu(overlaySettings: OverlaySettings, data: HwInfoData) {
                     progressType = overlaySettings.progressType
                 )
             }
-            if (overlaySettings.gpuUsage) {
+            if (overlaySettings.sensors.gpuUsage.isEnabled) {
                 Progress(
                     value = data.GpuUsage / 100f,
                     label = String.format("%02d", data.GpuUsage, Locale.US),
@@ -349,7 +347,7 @@ private fun gpu(overlaySettings: OverlaySettings, data: HwInfoData) {
                     progressType = overlaySettings.progressType
                 )
             }
-            if (overlaySettings.vramUsage) {
+            if (overlaySettings.sensors.vramUsage.isEnabled) {
                 Progress(
                     value = data.VramUsagePercent / 100f,
                     label = String.format("%02.1f", data.VramUsage / 1000, Locale.US),
@@ -363,13 +361,13 @@ private fun gpu(overlaySettings: OverlaySettings, data: HwInfoData) {
 
 @Composable
 private fun fps(overlaySettings: OverlaySettings, data: HwInfoData) {
-    if (overlaySettings.fps || overlaySettings.frametime) {
+    if (overlaySettings.sensors.framerate.isEnabled || overlaySettings.sensors.frametime.isEnabled) {
         if (overlaySettings.isHorizontal) {
             Pill(
                 title = "FPS",
                 isHorizontal = true,
             ) {
-                if (overlaySettings.fps) {
+                if (overlaySettings.sensors.framerate.isEnabled) {
                     Text(
                         text = "${data.FPS}",
                         color = Color.White,
@@ -379,7 +377,7 @@ private fun fps(overlaySettings: OverlaySettings, data: HwInfoData) {
                     )
                 }
 
-                if (overlaySettings.frametime) {
+                if (overlaySettings.sensors.frametime.isEnabled) {
                     FrametimeGraph(data, true)
                     Text(
                         text = "${String.format("%02.01f", data.Frametime, Locale.US)} ms",
@@ -414,7 +412,7 @@ private fun fps(overlaySettings: OverlaySettings, data: HwInfoData) {
                     )
 
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                        if (overlaySettings.fps) {
+                        if (overlaySettings.sensors.framerate.isEnabled) {
                             Text(
                                 text = "${data.FPS}",
                                 color = Color.White,
@@ -424,7 +422,7 @@ private fun fps(overlaySettings: OverlaySettings, data: HwInfoData) {
                             )
                         }
 
-                        if (overlaySettings.frametime) {
+                        if (overlaySettings.sensors.frametime.isEnabled) {
                             Text(
                                 text = "${String.format("%02.01f", data.Frametime, Locale.US)} ms",
                                 color = Color.White,
@@ -486,7 +484,7 @@ private fun FrametimeGraph(data: HwInfoData, isHorizontal: Boolean) {
 
 @Composable
 private fun NetGraph(data: HwInfoData, isHorizontal: Boolean, overlaySettings: OverlaySettings) {
-    if (!overlaySettings.upRate && !overlaySettings.downRate) return
+    if (!overlaySettings.sensors.upRate.isEnabled && !overlaySettings.sensors.downRate.isEnabled) return
 
     val largestUp = remember { mutableFloatStateOf(0f) }
     val largestDown = remember { mutableFloatStateOf(0f) }
@@ -535,10 +533,10 @@ private fun NetGraph(data: HwInfoData, isHorizontal: Boolean, overlaySettings: O
             val downRateZip = downRatePoints.zipWithNext()
 
             drawIntoCanvas { canvas ->
-                if (overlaySettings.upRate) {
+                if (overlaySettings.sensors.upRate.isEnabled) {
                     drawLine(upRateZip, listSize, canvas, upRatePaint)
                 }
-                if (overlaySettings.downRate) {
+                if (overlaySettings.sensors.downRate.isEnabled) {
                     drawLine(downRateZip, listSize, canvas, downRatePaint)
                 }
             }
