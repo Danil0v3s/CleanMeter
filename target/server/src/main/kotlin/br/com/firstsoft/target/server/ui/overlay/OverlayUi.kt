@@ -427,7 +427,9 @@ private fun fps(overlaySettings: OverlaySettings, data: HwInfoData) {
                     }
                 }
 
-                FrametimeGraph(data = data, isHorizontal = false)
+                if (overlaySettings.sensors.frametime.isEnabled) {
+                    FrametimeGraph(data = data, isHorizontal = false)
+                }
             }
         }
     }
