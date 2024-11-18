@@ -42,6 +42,7 @@ internal fun Position(
     overlaySettings: OverlaySettings,
     onOverlayPositionIndex: (Int) -> Unit,
     onOverlayCustomPosition: (IntOffset, Boolean) -> Unit,
+    onOverlayCustomPositionEnable: (Boolean) -> Unit,
     getOverlayPosition: () -> IntOffset
 ) {
     CollapsibleSection(title = "POSITION") {
@@ -204,7 +205,7 @@ internal fun Position(
                     Toggle(
                         checked = overlaySettings.positionIndex == 6,
                         onCheckedChange = {
-                            onOverlayCustomPosition(IntOffset.Zero, it)
+                            onOverlayCustomPositionEnable(it)
 //                            onOverlaySettings(
 //                                overlaySettings.copy(
 //                                    positionIndex = if (it) 6 else 0,

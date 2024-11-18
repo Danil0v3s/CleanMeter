@@ -1,6 +1,5 @@
 package br.com.firstsoft.target.server.ui.settings
 
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.unit.IntOffset
 import androidx.lifecycle.ViewModel
 import br.com.firstsoft.core.common.hwinfo.HwInfoData
@@ -27,6 +26,7 @@ sealed class SettingsEvent {
     data class DisplaySelect(val displayIndex: Int) : SettingsEvent()
     data class OverlayPositionIndexSelect(val index: Int) : SettingsEvent()
     data class OverlayCustomPositionSelect(val offset: IntOffset, val isPositionLocked: Boolean) : SettingsEvent()
+    data class OverlayCustomPositionEnable(val isEnabled: Boolean) : SettingsEvent()
     data class OverlayOrientationSelect(val isHorizontal: Boolean) : SettingsEvent()
     data class OverlayOpacityChange(val opacity: Float) : SettingsEvent()
     data class OverlayGraphChange(val progressType: OverlaySettings.ProgressType) : SettingsEvent()
@@ -69,6 +69,7 @@ class SettingsViewModel : ViewModel() {
             is SettingsEvent.DisplaySelect -> onDisplaySelect(event.displayIndex, this)
             is SettingsEvent.OverlayPositionIndexSelect -> onOverlayPositionIndexSelect(event.index, this)
             is SettingsEvent.OverlayCustomPositionSelect -> onOverlayCustomPositionSelect(event.offset, event.isPositionLocked, this)
+            is SettingsEvent.OverlayCustomPositionEnable -> onOverlayCustomPositionEnable(event.isEnabled, this)
             is SettingsEvent.OverlayOrientationSelect -> onOverlayOrientationSelect(event.isHorizontal, this)
             is SettingsEvent.OverlayOpacityChange -> onOverlayOpacityChange(event.opacity, this)
             is SettingsEvent.OverlayGraphChange -> onOverlayGraphChange(event.progressType, this)
@@ -111,18 +112,22 @@ class SettingsViewModel : ViewModel() {
         settingsState: SettingsState
     ) {
         with(settingsState) {
-            val newSettings = if (offset == IntOffset.Zero) {
-                overlaySettings.copy(
-                    positionIndex = if (positionLocked) 6 else 0,
-                    isPositionLocked = true
-                )
-            } else {
-                overlaySettings.copy(
-                    positionX = offset.x,
-                    positionY = offset.y,
-                    isPositionLocked = positionLocked
-                )
-            }
+            val newSettings = overlaySettings.copy(
+                positionX = offset.x,
+                positionY = offset.y,
+                isPositionLocked = positionLocked
+            )
+
+            OverlaySettingsRepository.setOverlaySettings(newSettings)
+        }
+    }
+
+    private fun onOverlayCustomPositionEnable(enabled: Boolean, settingsState: SettingsState) {
+        with(settingsState) {
+            val newSettings = overlaySettings.copy(
+                positionIndex = if (enabled) 6 else 0,
+                isPositionLocked = true
+            )
 
             OverlaySettingsRepository.setOverlaySettings(newSettings)
         }

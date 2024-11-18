@@ -1,11 +1,13 @@
 package br.com.firstsoft.target.server.ui.overlay
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color
 import br.com.firstsoft.core.common.hwinfo.HwInfoData
 import br.com.firstsoft.core.os.hwinfo.HwInfoReader
 import br.com.firstsoft.target.server.model.OverlaySettings
@@ -45,7 +47,6 @@ fun Overlay(
         }
         else -> Alignment.Center
     }
-
     Box(modifier = Modifier.fillMaxSize().alpha(overlaySettings.opacity), contentAlignment = alignment) {
         OverlayUi(
             data = data,

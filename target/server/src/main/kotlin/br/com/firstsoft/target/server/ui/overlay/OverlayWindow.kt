@@ -56,10 +56,6 @@ fun ApplicationScope.OverlayWindow(
     val overlayWindowState = rememberWindowState().apply {
         size = if (overlayState.overlaySettings.isHorizontal) DpSize(1280.dp, 80.dp) else DpSize(350.dp, 1280.dp)
         placement = WindowPlacement.Floating
-        position = WindowPosition.Absolute(
-            overlayState.overlaySettings.positionX.dp,
-            overlayState.overlaySettings.positionY.dp
-        )
     }
 
     val graphicsEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment()
@@ -117,6 +113,7 @@ fun ApplicationScope.OverlayWindow(
 
                     else -> IntSize.Zero
                 }
+
                 overlayWindowState.position = WindowPosition.Aligned(alignment)
                 window.setLocation(location.width, location.height)
             } else {

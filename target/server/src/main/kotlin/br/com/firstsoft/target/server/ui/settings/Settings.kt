@@ -145,7 +145,8 @@ fun WindowScope.Settings(
                     },
                     onLayoutChange = { viewModel.onEvent(SettingsEvent.OverlayOrientationSelect(it)) },
                     onOpacityChange = { viewModel.onEvent(SettingsEvent.OverlayOpacityChange(it)) },
-                    onGraphTypeChange = { viewModel.onEvent(SettingsEvent.OverlayGraphChange(it)) }
+                    onGraphTypeChange = { viewModel.onEvent(SettingsEvent.OverlayGraphChange(it)) },
+                    onOverlayCustomPositionEnable = { viewModel.onEvent(SettingsEvent.OverlayCustomPositionEnable(it)) },
                 )
 
                 2 -> AppSettingsUi()

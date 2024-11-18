@@ -19,27 +19,32 @@ fun StyleUi(
     onLayoutChange: (Boolean) -> Unit,
     onOpacityChange: (Float) -> Unit,
     onGraphTypeChange: (OverlaySettings.ProgressType) -> Unit,
+    onOverlayCustomPositionEnable: (Boolean) -> Unit,
     getOverlayPosition: () -> IntOffset,
 ) = Column(
     modifier = Modifier.padding(bottom = 8.dp, top = 20.dp).verticalScroll(rememberScrollState()),
     verticalArrangement = Arrangement.spacedBy(16.dp)
 ) {
-    Position(overlaySettings, onOverlayPositionIndex, onOverlayCustomPosition, getOverlayPosition)
+    Position(
+        overlaySettings = overlaySettings,
+        onOverlayPositionIndex = onOverlayPositionIndex,
+        onOverlayCustomPosition = onOverlayCustomPosition,
+        getOverlayPosition = getOverlayPosition,
+        onOverlayCustomPositionEnable = onOverlayCustomPositionEnable,
+    )
 
-    Orientation(overlaySettings, onLayoutChange)
+    Orientation(
+        overlaySettings = overlaySettings,
+        onLayoutChange = onLayoutChange
+    )
 
-    Opacity(overlaySettings, onOpacityChange)
+    Opacity(
+        overlaySettings = overlaySettings,
+        onOpacityChange = onOpacityChange
+    )
 
-    GraphType(overlaySettings, onGraphTypeChange)
+    GraphType(
+        overlaySettings = overlaySettings,
+        onGraphTypeChange = onGraphTypeChange
+    )
 }
-
-
-
-
-
-
-
-
-
-
-
