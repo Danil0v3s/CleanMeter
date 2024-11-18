@@ -40,8 +40,11 @@ fun WindowScope.Settings(
     onMinimizeRequest: () -> Unit,
     getOverlayPosition: () -> IntOffset
 ) = AppTheme {
-
     val settingsState by viewModel.state.collectAsState(SettingsState())
+
+    if (settingsState.overlaySettings == null) {
+        return@AppTheme
+    }
 
     Column(
         modifier = Modifier
@@ -88,7 +91,7 @@ fun WindowScope.Settings(
 
             when (selectedTabIndex) {
                 0 -> OverlaySettingsUi(
-                    overlaySettings = settingsState.overlaySettings,
+                    overlaySettings = settingsState.overlaySettings!!,
                     onSectionSwitchToggle = { sectionType, isEnabled ->
                         viewModel.onEvent(
                             SettingsEvent.SwitchToggle(
@@ -111,7 +114,7 @@ fun WindowScope.Settings(
                 )
 
                 1 -> StyleUi(
-                    overlaySettings = settingsState.overlaySettings,
+                    overlaySettings = settingsState.overlaySettings!!,
                     getOverlayPosition = getOverlayPosition,
                     onOverlayPositionIndex = { viewModel.onEvent(SettingsEvent.OverlayPositionIndexSelect(it)) },
                     onOverlayCustomPosition = { offset, isPositionLocked ->

@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 data class SettingsState(
-    val overlaySettings: OverlaySettings = OverlaySettings(),
+    val overlaySettings: OverlaySettings? = null,
     val hwInfoData: HwInfoData? = null
 )
 
@@ -78,7 +78,7 @@ class SettingsViewModel : ViewModel() {
 
     private fun onOverlayGraphChange(progressType: OverlaySettings.ProgressType, settingsState: SettingsState) {
         with(settingsState) {
-            val newSettings = overlaySettings.copy(
+            val newSettings = overlaySettings?.copy(
                 progressType = progressType,
             )
 
@@ -88,7 +88,7 @@ class SettingsViewModel : ViewModel() {
 
     private fun onOverlayOpacityChange(opacity: Float, settingsState: SettingsState) {
         with(settingsState) {
-            val newSettings = overlaySettings.copy(
+            val newSettings = overlaySettings?.copy(
                 opacity = opacity,
             )
 
@@ -98,7 +98,7 @@ class SettingsViewModel : ViewModel() {
 
     private fun onOverlayOrientationSelect(isHorizontal: Boolean, settingsState: SettingsState) {
         with(settingsState) {
-            val newSettings = overlaySettings.copy(
+            val newSettings = overlaySettings?.copy(
                 isHorizontal = isHorizontal,
             )
 
@@ -112,7 +112,7 @@ class SettingsViewModel : ViewModel() {
         settingsState: SettingsState
     ) {
         with(settingsState) {
-            val newSettings = overlaySettings.copy(
+            val newSettings = overlaySettings?.copy(
                 positionX = offset.x,
                 positionY = offset.y,
                 isPositionLocked = positionLocked
@@ -124,7 +124,7 @@ class SettingsViewModel : ViewModel() {
 
     private fun onOverlayCustomPositionEnable(enabled: Boolean, settingsState: SettingsState) {
         with(settingsState) {
-            val newSettings = overlaySettings.copy(
+            val newSettings = overlaySettings?.copy(
                 positionIndex = if (enabled) 6 else 0,
                 isPositionLocked = true
             )
@@ -135,7 +135,7 @@ class SettingsViewModel : ViewModel() {
 
     private fun onOverlayPositionIndexSelect(index: Int, settingsState: SettingsState) {
         with(settingsState) {
-            val newSettings = overlaySettings.copy(
+            val newSettings = overlaySettings?.copy(
                 positionIndex = index,
             )
 
@@ -145,7 +145,7 @@ class SettingsViewModel : ViewModel() {
 
     private fun onDisplaySelect(displayIndex: Int, settingsState: SettingsState) {
         with(settingsState) {
-            val newSettings = overlaySettings.copy(
+            val newSettings = overlaySettings?.copy(
                 selectedDisplayIndex = displayIndex,
             )
 
@@ -156,7 +156,7 @@ class SettingsViewModel : ViewModel() {
     private fun onCustomSensorSelect(sensor: SensorType, sensorId: Int, settingsState: SettingsState) {
         with(settingsState) {
             val newSettings = when (sensor) {
-                SensorType.CpuTemp -> overlaySettings.copy(
+                SensorType.CpuTemp -> overlaySettings?.copy(
                     sensors = overlaySettings.sensors.copy(
                         cpuTemp = overlaySettings.sensors.cpuTemp.copy(
                             customReadingId = sensorId,
@@ -164,7 +164,7 @@ class SettingsViewModel : ViewModel() {
                     )
                 )
 
-                SensorType.CpuUsage -> overlaySettings.copy(
+                SensorType.CpuUsage -> overlaySettings?.copy(
                     sensors = overlaySettings.sensors.copy(
                         cpuUsage = overlaySettings.sensors.cpuUsage.copy(
                             customReadingId = sensorId,
@@ -172,7 +172,7 @@ class SettingsViewModel : ViewModel() {
                     )
                 )
 
-                SensorType.GpuTemp -> overlaySettings.copy(
+                SensorType.GpuTemp -> overlaySettings?.copy(
                     sensors = overlaySettings.sensors.copy(
                         gpuTemp = overlaySettings.sensors.gpuTemp.copy(
                             customReadingId = sensorId,
@@ -180,7 +180,7 @@ class SettingsViewModel : ViewModel() {
                     )
                 )
 
-                SensorType.GpuUsage -> overlaySettings.copy(
+                SensorType.GpuUsage -> overlaySettings?.copy(
                     sensors = overlaySettings.sensors.copy(
                         gpuUsage = overlaySettings.sensors.gpuUsage.copy(
                             customReadingId = sensorId,
@@ -204,7 +204,7 @@ class SettingsViewModel : ViewModel() {
     private fun onSwitchToggle(section: SectionType, isEnabled: Boolean, settingsState: SettingsState) {
         with(settingsState) {
             val newSettings = when (section) {
-                SectionType.Fps -> overlaySettings.copy(
+                SectionType.Fps -> overlaySettings?.copy(
                     sensors = overlaySettings.sensors.copy(
                         framerate = overlaySettings.sensors.framerate.copy(
                             isEnabled = isEnabled
@@ -215,7 +215,7 @@ class SettingsViewModel : ViewModel() {
                     )
                 )
 
-                SectionType.Gpu -> overlaySettings.copy(
+                SectionType.Gpu -> overlaySettings?.copy(
                     sensors = overlaySettings.sensors.copy(
                         gpuTemp = overlaySettings.sensors.gpuTemp.copy(
                             isEnabled = isEnabled
@@ -229,7 +229,7 @@ class SettingsViewModel : ViewModel() {
                     )
                 )
 
-                SectionType.Cpu -> overlaySettings.copy(
+                SectionType.Cpu -> overlaySettings?.copy(
                     sensors = overlaySettings.sensors.copy(
                         cpuTemp = overlaySettings.sensors.cpuTemp.copy(
                             isEnabled = isEnabled
@@ -240,7 +240,7 @@ class SettingsViewModel : ViewModel() {
                     )
                 )
 
-                SectionType.Ram -> overlaySettings.copy(
+                SectionType.Ram -> overlaySettings?.copy(
                     sensors = overlaySettings.sensors.copy(
                         ramUsage = overlaySettings.sensors.ramUsage.copy(
                             isEnabled = isEnabled
@@ -248,7 +248,7 @@ class SettingsViewModel : ViewModel() {
                     )
                 )
 
-                SectionType.Network -> overlaySettings.copy(
+                SectionType.Network -> overlaySettings?.copy(
                     sensors = overlaySettings.sensors.copy(
                         upRate = overlaySettings.sensors.upRate.copy(
                             isEnabled = isEnabled
@@ -268,7 +268,7 @@ class SettingsViewModel : ViewModel() {
     private fun onOptionsToggle(option: CheckboxSectionOption, currentState: SettingsState) {
         with(currentState) {
             val newSettings = when (option.type) {
-                SensorType.Framerate -> overlaySettings.copy(
+                SensorType.Framerate -> overlaySettings?.copy(
                     sensors = overlaySettings.sensors.copy(
                         framerate = overlaySettings.sensors.framerate.copy(
                             isEnabled = option.isSelected
@@ -276,7 +276,7 @@ class SettingsViewModel : ViewModel() {
                     )
                 )
 
-                SensorType.Frametime -> overlaySettings.copy(
+                SensorType.Frametime -> overlaySettings?.copy(
                     sensors = overlaySettings.sensors.copy(
                         frametime = overlaySettings.sensors.frametime.copy(
                             isEnabled = option.isSelected
@@ -284,7 +284,7 @@ class SettingsViewModel : ViewModel() {
                     )
                 )
 
-                SensorType.CpuTemp -> overlaySettings.copy(
+                SensorType.CpuTemp -> overlaySettings?.copy(
                     sensors = overlaySettings.sensors.copy(
                         cpuTemp = overlaySettings.sensors.cpuTemp.copy(
                             isEnabled = option.isSelected
@@ -292,7 +292,7 @@ class SettingsViewModel : ViewModel() {
                     )
                 )
 
-                SensorType.CpuUsage -> overlaySettings.copy(
+                SensorType.CpuUsage -> overlaySettings?.copy(
                     sensors = overlaySettings.sensors.copy(
                         cpuUsage = overlaySettings.sensors.cpuUsage.copy(
                             isEnabled = option.isSelected
@@ -300,7 +300,7 @@ class SettingsViewModel : ViewModel() {
                     )
                 )
 
-                SensorType.GpuTemp -> overlaySettings.copy(
+                SensorType.GpuTemp -> overlaySettings?.copy(
                     sensors = overlaySettings.sensors.copy(
                         gpuTemp = overlaySettings.sensors.gpuTemp.copy(
                             isEnabled = option.isSelected
@@ -308,7 +308,7 @@ class SettingsViewModel : ViewModel() {
                     )
                 )
 
-                SensorType.GpuUsage -> overlaySettings.copy(
+                SensorType.GpuUsage -> overlaySettings?.copy(
                     sensors = overlaySettings.sensors.copy(
                         gpuUsage = overlaySettings.sensors.gpuUsage.copy(
                             isEnabled = option.isSelected
@@ -316,7 +316,7 @@ class SettingsViewModel : ViewModel() {
                     )
                 )
 
-                SensorType.VramUsage -> overlaySettings.copy(
+                SensorType.VramUsage -> overlaySettings?.copy(
                     sensors = overlaySettings.sensors.copy(
                         vramUsage = overlaySettings.sensors.vramUsage.copy(
                             isEnabled = option.isSelected
@@ -324,7 +324,7 @@ class SettingsViewModel : ViewModel() {
                     )
                 )
 
-                SensorType.RamUsage -> overlaySettings.copy(
+                SensorType.RamUsage -> overlaySettings?.copy(
                     sensors = overlaySettings.sensors.copy(
                         ramUsage = overlaySettings.sensors.ramUsage.copy(
                             isEnabled = option.isSelected
@@ -332,7 +332,7 @@ class SettingsViewModel : ViewModel() {
                     )
                 )
 
-                SensorType.UpRate -> overlaySettings.copy(
+                SensorType.UpRate -> overlaySettings?.copy(
                     sensors = overlaySettings.sensors.copy(
                         upRate = overlaySettings.sensors.upRate.copy(
                             isEnabled = option.isSelected
@@ -340,7 +340,7 @@ class SettingsViewModel : ViewModel() {
                     )
                 )
 
-                SensorType.DownRate -> overlaySettings.copy(
+                SensorType.DownRate -> overlaySettings?.copy(
                     sensors = overlaySettings.sensors.copy(
                         downRate = overlaySettings.sensors.downRate.copy(
                             isEnabled = option.isSelected
@@ -348,7 +348,7 @@ class SettingsViewModel : ViewModel() {
                     )
                 )
 
-                SensorType.NetGraph -> overlaySettings.copy(netGraph = option.isSelected)
+                SensorType.NetGraph -> overlaySettings?.copy(netGraph = option.isSelected)
             }
 
             OverlaySettingsRepository.setOverlaySettings(newSettings)

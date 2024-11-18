@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 data class OverlayState(
-    val overlaySettings: OverlaySettings = OverlaySettings(),
+    val overlaySettings: OverlaySettings? = null,
     val hwInfoData: HwInfoData? = null,
 )
 

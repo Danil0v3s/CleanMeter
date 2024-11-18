@@ -46,6 +46,8 @@ fun ApplicationScope.OverlayWindow(
 ) {
     val overlayState by viewModel.state.collectAsState(OverlayState())
 
+    if (overlayState.overlaySettings == null) return
+
     var isVisible by remember { mutableStateOf(true) }
     LaunchedEffect(Unit) {
         channel.receiveAsFlow().collectLatest {
@@ -54,13 +56,13 @@ fun ApplicationScope.OverlayWindow(
     }
 
     val overlayWindowState = rememberWindowState().apply {
-        size = if (overlayState.overlaySettings.isHorizontal) DpSize(1280.dp, 80.dp) else DpSize(350.dp, 1280.dp)
+        size = if (overlayState.overlaySettings!!.isHorizontal) DpSize(1280.dp, 80.dp) else DpSize(350.dp, 1280.dp)
         placement = WindowPlacement.Floating
     }
 
     val graphicsEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment()
     val screenDevices = graphicsEnvironment.screenDevices
-    val graphicsConfiguration = screenDevices[overlayState.overlaySettings.selectedDisplayIndex].defaultConfiguration
+    val graphicsConfiguration = screenDevices[overlayState.overlaySettings!!.selectedDisplayIndex].defaultConfiguration
     val taskbarHeight = Toolkit.getDefaultToolkit().screenSize.height - graphicsEnvironment.maximumWindowBounds.height
 
     Window(
@@ -72,8 +74,8 @@ fun ApplicationScope.OverlayWindow(
         alwaysOnTop = true,
         transparent = true,
         undecorated = true,
-        focusable = !overlayState.overlaySettings.isPositionLocked,
-        enabled = !overlayState.overlaySettings.isPositionLocked,
+        focusable = !overlayState.overlaySettings!!.isPositionLocked,
+        enabled = !overlayState.overlaySettings!!.isPositionLocked,
     ) {
         window.addComponentListener(object : ComponentAdapter() {
             override fun componentMoved(e: ComponentEvent) {
@@ -82,8 +84,8 @@ fun ApplicationScope.OverlayWindow(
         })
 
         LaunchedEffect(overlayState.overlaySettings) {
-            if (overlayState.overlaySettings.positionIndex < 6) {
-                val alignment = positions[overlayState.overlaySettings.positionIndex]
+            if (overlayState.overlaySettings!!.positionIndex < 6) {
+                val alignment = positions[overlayState.overlaySettings!!.positionIndex]
                 val location = when (alignment) {
                     Alignment.TopStart -> IntSize(graphicsConfiguration.bounds.x, graphicsConfiguration.bounds.y)
                     Alignment.TopCenter -> IntSize(
@@ -119,19 +121,19 @@ fun ApplicationScope.OverlayWindow(
             } else {
                 overlayWindowState.position =
                     WindowPosition.Absolute(
-                        overlayState.overlaySettings.positionX.dp,
-                        overlayState.overlaySettings.positionY.dp
+                        overlayState.overlaySettings!!.positionX.dp,
+                        overlayState.overlaySettings!!.positionY.dp
                     )
             }
 
             window.toFront()
         }
 
-        WindowsService.changeWindowTransparency(window, overlayState.overlaySettings.isPositionLocked)
+        WindowsService.changeWindowTransparency(window, overlayState.overlaySettings!!.isPositionLocked)
 
         WindowDraggableArea {
             Overlay(
-                overlaySettings = overlayState.overlaySettings,
+                overlaySettings = overlayState.overlaySettings!!,
                 data = overlayState.hwInfoData
             )
         }

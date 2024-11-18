@@ -17,7 +17,8 @@ object OverlaySettingsRepository {
         _data.value = PreferencesRepository.loadOverlaySettings()
     }
 
-    fun setOverlaySettings(settings: OverlaySettings) {
+    fun setOverlaySettings(settings: OverlaySettings?) {
+        if (settings == null) return
         _data.value = settings
         PreferencesRepository.setPreference(OVERLAY_SETTINGS_PREFERENCE_KEY, Json.encodeToString(settings))
     }
