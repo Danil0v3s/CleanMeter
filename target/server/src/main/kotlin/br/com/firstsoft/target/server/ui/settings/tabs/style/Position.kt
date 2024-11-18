@@ -206,12 +206,6 @@ internal fun Position(
                         checked = overlaySettings.positionIndex == 6,
                         onCheckedChange = {
                             onOverlayCustomPositionEnable(it)
-//                            onOverlaySettings(
-//                                overlaySettings.copy(
-//                                    positionIndex = if (it) 6 else 0,
-//                                    isPositionLocked = true
-//                                )
-//                            )
                         },
                     )
                 }
@@ -243,13 +237,6 @@ internal fun Position(
                                 onCheckedChange = {
                                     val position = getOverlayPosition()
                                     onOverlayCustomPosition(IntOffset(position.x, position.y), !it)
-//                                    onOverlaySettings(
-//                                        overlaySettings.copy(
-//                                            isPositionLocked = !it,
-//                                            positionX = position.x,
-//                                            positionY = position.y
-//                                        )
-//                                    )
                                 },
                                 thumbContent = {
                                     val icon = if (!overlaySettings.isPositionLocked) {
