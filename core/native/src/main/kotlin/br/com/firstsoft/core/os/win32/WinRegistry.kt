@@ -43,7 +43,7 @@ object WinRegistry {
     }
 
     fun registerAppToStartWithWindows() {
-        write(STARTUP_ITEMS_LOCATION, REGISTRY_APP_NAME, "\\\"${System.getProperty("user.dir")}\\$REGISTRY_APP_NAME.exe\\\"")
+        write(STARTUP_ITEMS_LOCATION, REGISTRY_APP_NAME, "\\\"${System.getProperty("user.dir")}\\cleanmeter\\$REGISTRY_APP_NAME.exe\\\"")
     }
 
     fun removeAppFromStartWithWindows() {
