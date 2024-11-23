@@ -1,6 +1,12 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
+val copyMonitorFiles = tasks.register<Copy>("copyMonitorFiles") {
+    from("../../HardwareMonitor/HardwareMonitor/bin/Release/net8.0")
+    into(layout.buildDirectory.dir("compose/binaries/main/app/cleanmeter/cleanmeter/app/resources"))
+}
+
 val copyLauncherFiles = tasks.register<Copy>("copyLauncherFiles") {
+    finalizedBy(copyMonitorFiles)
     from("../../Launcher/Launcher/bin/Release/net8.0")
     into(layout.buildDirectory.dir("compose/binaries/main/app/cleanmeter"))
 }
@@ -17,16 +23,22 @@ val moveBuildResult = tasks.register<Exec>("moveBuild") {
     }
 }
 
-val compileLauncher = tasks.register<Exec>("compileLauncher") {
+val compileMonitor = tasks.register<Exec>("compileMonitor") {
     finalizedBy(moveBuildResult)
+    workingDir("../../HardwareMonitor/")
+    commandLine("dotnet", "build", "--configuration", "Release")
+}
+
+val compileLauncher = tasks.register<Exec>("compileLauncher") {
+    finalizedBy(compileMonitor)
     workingDir("../../Launcher/")
     commandLine("dotnet", "build", "--configuration", "Release")
 }
 
-val copyHwinfoToResources = tasks.register<Copy>("copyHwinfoToResources") {
+val copyPresentmonToResources = tasks.register<Copy>("copyPresentmonToResources") {
     finalizedBy(compileLauncher)
 
-    from("../../hwinfo")
+    from("../../presentmon")
     into(layout.buildDirectory.dir("compose/binaries/main/app/cleanmeter/app/resources"))
 }
 
@@ -63,7 +75,7 @@ compose.desktop {
 
         afterEvaluate {
             tasks.named("createDistributable") {
-                finalizedBy(copyHwinfoToResources)
+                finalizedBy(copyPresentmonToResources)
             }
         }
 
