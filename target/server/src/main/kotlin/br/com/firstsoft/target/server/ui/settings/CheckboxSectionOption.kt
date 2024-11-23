@@ -4,7 +4,7 @@ data class CheckboxSectionOption(
     val isSelected: Boolean,
     val name: String,
     val type: SensorType,
-    val optionReadingId: Int = -1,
+    val optionReadingId: String = "",
     val useCustomSensor: Boolean = false,
 )
 

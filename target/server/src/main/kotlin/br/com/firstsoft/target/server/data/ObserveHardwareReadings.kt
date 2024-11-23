@@ -13,19 +13,19 @@ object ObserveHardwareReadings {
         val displayedFps = HardwareMonitorData.Sensor(
             Name = "FPS (Displayed)",
             Identifier = "/presentmon/displayed",
-            SensorType = 10,
+            SensorType = 17,
             Value = 1000 / presentMon.displayedTime
         )
         val presentedFps = HardwareMonitorData.Sensor(
             Name = "FPS (Presented)",
             Identifier = "/presentmon/presented",
-            SensorType = 10,
+            SensorType = 17,
             Value = 1000 / presentMon.gpuTime
         )
         val frametime = HardwareMonitorData.Sensor(
             Name = "Frametime",
             Identifier = "/presentmon/frametime",
-            SensorType = 10,
+            SensorType = 17,
             Value = presentMon.frameTime
         )
 

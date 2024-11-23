@@ -134,7 +134,7 @@ fun ApplicationScope.OverlayWindow(
         WindowDraggableArea {
             Overlay(
                 overlaySettings = overlayState.overlaySettings!!,
-                data = overlayState.hwInfoData
+                data = overlayState.hardwareData
             )
         }
     }

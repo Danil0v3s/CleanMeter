@@ -40,24 +40,24 @@ data class OverlaySettings(
         abstract val isEnabled: Boolean
 
         @Serializable
-        data class Framerate(override val isEnabled: Boolean = true, val customReadingId: Int = 0) : Sensor(SensorType.Framerate)
+        data class Framerate(override val isEnabled: Boolean = true, val customReadingId: String = "") : Sensor(SensorType.Framerate)
         @Serializable
-        data class Frametime(override val isEnabled: Boolean = true, val customReadingId: Int = 0) : Sensor(SensorType.Frametime)
+        data class Frametime(override val isEnabled: Boolean = true, val customReadingId: String = "") : Sensor(SensorType.Frametime)
         @Serializable
-        data class CpuTemp(override val isEnabled: Boolean = true, val customReadingId: Int = 0) : Sensor(SensorType.CpuTemp)
+        data class CpuTemp(override val isEnabled: Boolean = true, val customReadingId: String = "") : Sensor(SensorType.CpuTemp)
         @Serializable
-        data class CpuUsage(override val isEnabled: Boolean = true, val customReadingId: Int = 0) : Sensor(SensorType.CpuUsage)
+        data class CpuUsage(override val isEnabled: Boolean = true, val customReadingId: String = "") : Sensor(SensorType.CpuUsage)
         @Serializable
-        data class GpuTemp(override val isEnabled: Boolean = true, val customReadingId: Int = 0) : Sensor(SensorType.GpuTemp)
+        data class GpuTemp(override val isEnabled: Boolean = true, val customReadingId: String = "") : Sensor(SensorType.GpuTemp)
         @Serializable
-        data class GpuUsage(override val isEnabled: Boolean = true, val customReadingId: Int = 0) : Sensor(SensorType.GpuUsage)
+        data class GpuUsage(override val isEnabled: Boolean = true, val customReadingId: String = "") : Sensor(SensorType.GpuUsage)
         @Serializable
-        data class VramUsage(override val isEnabled: Boolean = true, val customReadingId: Int = 0) : Sensor(SensorType.VramUsage)
+        data class VramUsage(override val isEnabled: Boolean = true, val customReadingId: String = "") : Sensor(SensorType.VramUsage)
         @Serializable
-        data class RamUsage(override val isEnabled: Boolean = true, val customReadingId: Int = 0) : Sensor(SensorType.RamUsage)
+        data class RamUsage(override val isEnabled: Boolean = true, val customReadingId: String = "") : Sensor(SensorType.RamUsage)
         @Serializable
-        data class UpRate(override val isEnabled: Boolean = true, val customReadingId: Int = 0) : Sensor(SensorType.UpRate)
+        data class UpRate(override val isEnabled: Boolean = true, val customReadingId: String = "") : Sensor(SensorType.UpRate)
         @Serializable
-        data class DownRate(override val isEnabled: Boolean = true, val customReadingId: Int = 0) : Sensor(SensorType.DownRate)
+        data class DownRate(override val isEnabled: Boolean = true, val customReadingId: String = "") : Sensor(SensorType.DownRate)
     }
 }

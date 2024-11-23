@@ -63,7 +63,8 @@ public class MonitorPoller
         using var memoryMappedFile = MemoryMappedFile.CreateNew(SharedMemoryConsts.SharedMemoryName, 500_000);
         using var mmfStream = memoryMappedFile.CreateViewStream();
         using var writer = new BinaryWriter(mmfStream);
-
+        var accumulator = 0;
+        
         while (_isOpen)
         {
             sharedMemoryData.LastPollTime = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
@@ -77,12 +78,14 @@ public class MonitorPoller
             writer.Write((int)jsonArray.Length);
             writer.Write(jsonArray);
 
-            // if (sharedMemoryData.LastPollTime % 10 == 0)
-            // {
-            //     GC.Collect();
-            // }
+            if (accumulator >= 120_000)
+            {
+                GC.Collect();
+                accumulator = 0;
+            }
 
             writer.Seek(0, SeekOrigin.Begin);
+            accumulator += 500;
             await Task.Delay(500);
         }
     }

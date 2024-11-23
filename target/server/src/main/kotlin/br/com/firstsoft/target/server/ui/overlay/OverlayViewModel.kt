@@ -1,8 +1,10 @@
 package br.com.firstsoft.target.server.ui.overlay
 
 import androidx.lifecycle.ViewModel
+import br.com.firstsoft.core.common.hardwaremonitor.HardwareMonitorData
 import br.com.firstsoft.core.common.hwinfo.HwInfoData
 import br.com.firstsoft.core.os.hwinfo.HwInfoReader
+import br.com.firstsoft.target.server.data.ObserveHardwareReadings
 import br.com.firstsoft.target.server.data.OverlaySettingsRepository
 import br.com.firstsoft.target.server.model.OverlaySettings
 import kotlinx.coroutines.CoroutineScope
@@ -15,7 +17,7 @@ import kotlinx.coroutines.launch
 
 data class OverlayState(
     val overlaySettings: OverlaySettings? = null,
-    val hwInfoData: HwInfoData? = null,
+    val hardwareData: HardwareMonitorData? = null,
 )
 
 class OverlayViewModel : ViewModel() {
@@ -40,8 +42,8 @@ class OverlayViewModel : ViewModel() {
 
     private fun observeHwInfo() {
         CoroutineScope(Dispatchers.IO).launch {
-            HwInfoReader.currentData.collectLatest { hwInfoData ->
-                _state.update { it.copy(hwInfoData = hwInfoData) }
+            ObserveHardwareReadings.data.collectLatest { hwInfoData ->
+                _state.update { it.copy(hardwareData = hwInfoData) }
             }
         }
     }

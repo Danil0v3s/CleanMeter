@@ -15,6 +15,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import br.com.firstsoft.core.common.hardwaremonitor.HardwareMonitorData
 import br.com.firstsoft.core.common.hwinfo.SensorReadingElement
 import br.com.firstsoft.target.server.model.OverlaySettings
 import br.com.firstsoft.target.server.ui.ColorTokens.LabelGray
@@ -37,10 +38,10 @@ fun OverlaySettingsUi(
     overlaySettings: OverlaySettings,
     onOptionsToggle: (CheckboxSectionOption) -> Unit,
     onSectionSwitchToggle: (SectionType, Boolean) -> Unit,
-    onCustomSensorSelect: (SensorType, Int) -> Unit,
+    onCustomSensorSelect: (SensorType, String) -> Unit,
     onDisplaySelect: (Int) -> Unit,
-    getCpuSensorReadings: () -> List<SensorReadingElement>,
-    getGpuSensorReadings: () -> List<SensorReadingElement>,
+    getCpuSensorReadings: () -> List<HardwareMonitorData.Sensor>,
+    getGpuSensorReadings: () -> List<HardwareMonitorData.Sensor>,
 ) = Column(
     modifier = Modifier.padding(bottom = 8.dp, top = 20.dp).verticalScroll(rememberScrollState()),
     verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -83,13 +84,13 @@ fun OverlaySettingsUi(
                             if (readings.isNotEmpty() && option.isSelected && option.useCustomSensor) {
                                 StealthDropdownMenu(
                                     modifier = Modifier.padding(start = 18.dp),
-                                    options = readings.map { "${it.szLabelOrig} (${it.value}${it.szUnit})" },
+                                    options = readings.map { "${it.Name} (${it.Value} - ${HardwareMonitorData.SensorType.fromValue(it.SensorType)})" },
                                     onValueChanged = {
-                                        val reading = readings[it].dwReadingID
+                                        val reading = readings[it].Identifier
                                         onCustomSensorSelect(option.type, reading)
                                     },
                                     selectedIndex = readings
-                                        .indexOfFirst { it.dwReadingID == option.optionReadingId }
+                                        .indexOfFirst { it.Identifier == option.optionReadingId }
                                         .coerceAtLeast(0),
                                     label = "Sensor:"
                                 )
@@ -118,13 +119,13 @@ fun OverlaySettingsUi(
                             if (readings.isNotEmpty() && option.isSelected && option.useCustomSensor) {
                                 StealthDropdownMenu(
                                     modifier = Modifier.padding(start = 18.dp),
-                                    options = readings.map { "${it.szLabelOrig} (${it.value}${it.szUnit})" },
+                                    options = readings.map { "${it.Name} (${it.Value} - ${HardwareMonitorData.SensorType.fromValue(it.SensorType)})" },
                                     onValueChanged = {
-                                        val reading = readings[it].dwReadingID
+                                        val reading = readings[it].Identifier
                                         onCustomSensorSelect(option.type, reading)
                                     },
                                     selectedIndex = readings
-                                        .indexOfFirst { it.dwReadingID == option.optionReadingId }
+                                        .indexOfFirst { it.Identifier == option.optionReadingId }
                                         .coerceAtLeast(0),
                                     label = "Sensor:"
                                 )

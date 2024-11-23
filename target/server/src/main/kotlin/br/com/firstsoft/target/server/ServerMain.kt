@@ -13,9 +13,7 @@ import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import br.com.firstsoft.core.common.reporting.setDefaultUncaughtExceptionHandler
 import br.com.firstsoft.core.os.hardwaremonitor.HardwareMonitorProcessManager
-import br.com.firstsoft.core.os.hardwaremonitor.HardwareMonitorReader
 import br.com.firstsoft.core.os.hardwaremonitor.PresentMonProcessManager
-import br.com.firstsoft.target.server.data.ObserveHardwareReadings
 import br.com.firstsoft.target.server.data.OverlaySettingsRepository
 import br.com.firstsoft.target.server.model.OverlaySettings
 import br.com.firstsoft.target.server.ui.overlay.OverlayWindow
@@ -26,7 +24,6 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -45,10 +42,6 @@ class MainViewModel : ViewModel() {
 
     private fun observeOverlaySettings() {
         CoroutineScope(Dispatchers.IO).launch {
-            ObserveHardwareReadings.data.collect {
-                println(it)
-            }
-
             OverlaySettingsRepository
                 .data
                 .collectLatest { overlaySettings ->
