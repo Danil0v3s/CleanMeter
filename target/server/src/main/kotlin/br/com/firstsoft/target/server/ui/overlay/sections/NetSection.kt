@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
@@ -32,9 +33,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import br.com.firstsoft.core.common.hardwaremonitor.DlRate
 import br.com.firstsoft.core.common.hardwaremonitor.HardwareMonitorData
-import br.com.firstsoft.core.common.hardwaremonitor.UpRate
+import br.com.firstsoft.core.common.hardwaremonitor.getReading
 import br.com.firstsoft.target.server.model.OverlaySettings
 import br.com.firstsoft.target.server.ui.ColorTokens.Cyan
 import br.com.firstsoft.target.server.ui.ColorTokens.OffWhite
@@ -51,29 +51,31 @@ internal fun NetSection(overlaySettings: OverlaySettings, data: HardwareMonitorD
                 isHorizontal = true,
             ) {
                 if (overlaySettings.sensors.downRate.isEnabled) {
+                    val dlRate = data.getReading(overlaySettings.sensors.downRate.customReadingId)?.Value ?: 0f
                     Row(verticalAlignment = Alignment.Bottom) {
                         Icon(
                             painterResource("icons/arrow_down.svg"),
                             "",
                             tint = Cyan,
-                            modifier = Modifier.padding(end = 4.dp, bottom = 3.dp).alpha(data.DlRate.coerceAtMost(1f))
+                            modifier = Modifier.padding(end = 4.dp, bottom = 3.dp).alpha(dlRate.coerceAtMost(1f))
                         )
                     }
                 }
 
                 if (overlaySettings.sensors.upRate.isEnabled) {
+                    val upRate = data.getReading(overlaySettings.sensors.upRate.customReadingId)?.Value ?: 0f
                     Row(verticalAlignment = Alignment.Bottom) {
                         Icon(
                             painterResource("icons/arrow_down.svg"),
                             "",
                             tint = Purple,
-                            modifier = Modifier.padding(end = 4.dp, bottom = 3.dp).rotate(180f).alpha(data.UpRate.coerceAtMost(1f))
+                            modifier = Modifier.padding(end = 4.dp, bottom = 3.dp).rotate(180f).alpha(upRate.coerceAtMost(1f))
                         )
                     }
                 }
 
                 if (overlaySettings.netGraph) {
-                    NetGraph(data = data, isHorizontal = false, overlaySettings = overlaySettings)
+                    NetGraph(data = data, isHorizontal = true, overlaySettings = overlaySettings)
                 }
             }
         } else {
@@ -101,23 +103,25 @@ internal fun NetSection(overlaySettings: OverlaySettings, data: HardwareMonitorD
 
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                         if (overlaySettings.sensors.downRate.isEnabled) {
+                            val dlRate = data.getReading(overlaySettings.sensors.downRate.customReadingId)?.Value ?: 0f
                             Row(verticalAlignment = Alignment.Bottom) {
                                 Icon(
                                     painterResource("icons/arrow_down.svg"),
                                     "",
                                     tint = Cyan,
-                                    modifier = Modifier.padding(end = 4.dp, bottom = 3.dp).alpha(data.DlRate.coerceAtMost(1f))
+                                    modifier = Modifier.padding(end = 4.dp, bottom = 3.dp).alpha(dlRate.coerceAtMost(1f))
                                 )
                             }
                         }
 
                         if (overlaySettings.sensors.upRate.isEnabled) {
+                            val upRate = data.getReading(overlaySettings.sensors.upRate.customReadingId)?.Value ?: 0f
                             Row(verticalAlignment = Alignment.Bottom) {
                                 Icon(
                                     painterResource("icons/arrow_down.svg"),
                                     "",
                                     tint = Purple,
-                                    modifier = Modifier.padding(end = 4.dp, bottom = 3.dp).rotate(180f).alpha(data.UpRate.coerceAtMost(1f))
+                                    modifier = Modifier.padding(end = 4.dp, bottom = 3.dp).rotate(180f).alpha(upRate.coerceAtMost(1f))
                                 )
                             }
                         }
@@ -160,8 +164,11 @@ private fun NetGraph(data: HardwareMonitorData, isHorizontal: Boolean, overlaySe
     }
 
     LaunchedEffect(data) {
-        upRatePoints.add((data.UpRate / largestUp.floatValue).coerceIn(0f, 1f))
-        downRatePoints.add((data.DlRate / largestDown.floatValue + .2f).coerceIn(0f, 1f))
+        val dlRate = data.getReading(overlaySettings.sensors.downRate.customReadingId)?.Value ?: 0f
+        val upRate = data.getReading(overlaySettings.sensors.upRate.customReadingId)?.Value ?: 0f
+
+        upRatePoints.add((upRate / largestUp.floatValue.coerceAtLeast(1f)).coerceIn(0f, 1f))
+        downRatePoints.add((dlRate / largestDown.floatValue + .2f).coerceIn(0f, 1f))
         if (upRatePoints.size > listSize) upRatePoints.removeFirst()
         if (downRatePoints.size > listSize) downRatePoints.removeFirst()
         largestUp.floatValue = upRatePoints.max()

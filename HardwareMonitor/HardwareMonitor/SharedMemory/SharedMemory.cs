@@ -10,17 +10,25 @@ public static class SharedMemoryConsts
 
 public class SharedMemoryHardware
 {
-    public string Name { get; set; }
-    public string Identifier { get; set; }
+    public required IHardware Hardware;
+    public required string Name { get; set; }
+    public required string Identifier { get; set; }
+    public required HardwareType HardwareType { get; set; }
+    
+    public bool ShouldSerializeHardware()
+    {
+        return false;
+    }
 }
 
 public class SharedMemorySensor
 {
-    public ISensor Sensor;
-    public string Name { get; set; }
-    public string Identifier { get; set; }
-    public int SensorType { get; set; }
-    public float Value { get; set; }
+    public required ISensor Sensor;
+    public required string Name { get; set; }
+    public required string Identifier { get; set; }
+    public required SensorType SensorType { get; set; }
+    public required float Value { get; set; }
+    public required string HardwareIdentifier { get; set; }
 
     public bool ShouldSerializeSensor()
     {
@@ -31,8 +39,8 @@ public class SharedMemorySensor
 public class SharedMemoryData
 {
     public long LastPollTime { get; set; }
-    public List<SharedMemoryHardware> Hardwares { get; set; }
-    public List<SharedMemorySensor> Sensors { get; set; }
+    public List<SharedMemoryHardware> Hardwares { get; set; } = [];
+    public List<SharedMemorySensor> Sensors { get; set; } = [];
 }
 
 [JsonSourceGenerationOptions(WriteIndented = false, GenerationMode = JsonSourceGenerationMode.Serialization)]

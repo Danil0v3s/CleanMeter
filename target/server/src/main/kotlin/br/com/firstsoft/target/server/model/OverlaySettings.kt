@@ -30,13 +30,14 @@ data class OverlaySettings(
         val gpuTemp: Sensor.GpuTemp = Sensor.GpuTemp(),
         val gpuUsage: Sensor.GpuUsage = Sensor.GpuUsage(),
         val vramUsage: Sensor.VramUsage = Sensor.VramUsage(),
+        val totalVramUsed: Sensor.TotalVramUsed = Sensor.TotalVramUsed(),
         val ramUsage: Sensor.RamUsage = Sensor.RamUsage(),
         val upRate: Sensor.UpRate = Sensor.UpRate(),
         val downRate: Sensor.DownRate = Sensor.DownRate(),
     )
 
     @Serializable
-    sealed class Sensor(open val sensorType: SensorType) {
+    sealed class Sensor(val sensorType: SensorType) {
         abstract val isEnabled: Boolean
 
         @Serializable
@@ -53,6 +54,8 @@ data class OverlaySettings(
         data class GpuUsage(override val isEnabled: Boolean = true, val customReadingId: String = "") : Sensor(SensorType.GpuUsage)
         @Serializable
         data class VramUsage(override val isEnabled: Boolean = true, val customReadingId: String = "") : Sensor(SensorType.VramUsage)
+        @Serializable
+        data class TotalVramUsed(override val isEnabled: Boolean = true, val customReadingId: String = "") : Sensor(SensorType.TotalVramUsed)
         @Serializable
         data class RamUsage(override val isEnabled: Boolean = true, val customReadingId: String = "") : Sensor(SensorType.RamUsage)
         @Serializable

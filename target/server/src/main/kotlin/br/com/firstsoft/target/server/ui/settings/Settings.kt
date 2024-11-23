@@ -22,9 +22,9 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.WindowScope
 import androidx.lifecycle.viewmodel.compose.viewModel
-import br.com.firstsoft.core.common.hardwaremonitor.HardwareMonitorData
 import br.com.firstsoft.core.common.hardwaremonitor.cpuReadings
 import br.com.firstsoft.core.common.hardwaremonitor.gpuReadings
+import br.com.firstsoft.core.common.hardwaremonitor.networkReadings
 import br.com.firstsoft.target.server.ui.AppTheme
 import br.com.firstsoft.target.server.ui.ColorTokens.BackgroundOffWhite
 import br.com.firstsoft.target.server.ui.ColorTokens.DarkGray
@@ -111,7 +111,9 @@ fun WindowScope.Settings(
                         viewModel.onEvent(SettingsEvent.DisplaySelect(it))
                     },
                     getCpuSensorReadings = { settingsState.hardwareData?.cpuReadings() ?: emptyList() },
-                    getGpuSensorReadings = { settingsState.hardwareData?.gpuReadings() ?: emptyList() }
+                    getGpuSensorReadings = { settingsState.hardwareData?.gpuReadings() ?: emptyList() },
+                    getNetworkSensorReadings = { settingsState.hardwareData?.networkReadings() ?: emptyList() },
+                    getHardwareSensors = { settingsState.hardwareData?.Hardwares ?: emptyList() },
                 )
 
                 1 -> StyleUi(

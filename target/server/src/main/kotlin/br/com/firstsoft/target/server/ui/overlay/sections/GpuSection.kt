@@ -1,13 +1,10 @@
 package br.com.firstsoft.target.server.ui.overlay.sections
 
 import androidx.compose.runtime.Composable
-import br.com.firstsoft.core.common.hardwaremonitor.GpuTemp
-import br.com.firstsoft.core.common.hardwaremonitor.GpuTempUnit
-import br.com.firstsoft.core.common.hardwaremonitor.GpuUsage
 import br.com.firstsoft.core.common.hardwaremonitor.HardwareMonitorData
-import br.com.firstsoft.core.common.hardwaremonitor.VramUsage
-import br.com.firstsoft.core.common.hardwaremonitor.VramUsagePercent
+import br.com.firstsoft.core.common.hardwaremonitor.getReading
 import br.com.firstsoft.target.server.model.OverlaySettings
+import br.com.firstsoft.target.server.ui.components.CustomReadingProgress
 import br.com.firstsoft.target.server.ui.components.Pill
 import br.com.firstsoft.target.server.ui.components.Progress
 import java.util.*
@@ -20,25 +17,32 @@ internal fun GpuSection(overlaySettings: OverlaySettings, data: HardwareMonitorD
             isHorizontal = overlaySettings.isHorizontal,
         ) {
             if (overlaySettings.sensors.gpuTemp.isEnabled) {
-                Progress(
-                    value = data.GpuTemp / 100f,
-                    label = "${data.GpuTemp}",
-                    unit = data.GpuTempUnit,
-                    progressType = overlaySettings.progressType
+                CustomReadingProgress(
+                    data = data,
+                    customReadingId = overlaySettings.sensors.gpuTemp.customReadingId,
+                    progressType = overlaySettings.progressType,
+                    progressUnit = "°C",
+                    label = { "${it.toInt()}" }
                 )
             }
+
             if (overlaySettings.sensors.gpuUsage.isEnabled) {
-                Progress(
-                    value = data.GpuUsage / 100f,
-                    label = String.format("%02d", data.GpuUsage, Locale.US),
-                    unit = "%",
-                    progressType = overlaySettings.progressType
+                CustomReadingProgress(
+                    data = data,
+                    customReadingId = overlaySettings.sensors.gpuUsage.customReadingId,
+                    progressType = overlaySettings.progressType,
+                    progressUnit = "%",
+                    label = { String.format("%02d", it.toInt(), Locale.US) }
                 )
             }
+
             if (overlaySettings.sensors.vramUsage.isEnabled) {
+                val vramUsage = data.getReading(overlaySettings.sensors.vramUsage.customReadingId)?.Value?.coerceAtLeast(1f) ?: 1f
+                val totalVramUsed = data.getReading(overlaySettings.sensors.totalVramUsed.customReadingId)?.Value?.coerceAtLeast(1f) ?: 1f
+
                 Progress(
-                    value = data.VramUsagePercent / 100f,
-                    label = String.format("%02.1f", data.VramUsage / 1000, Locale.US),
+                    value = vramUsage / 100f,
+                    label = String.format("%02.1f", totalVramUsed / 1000, Locale.US),
                     unit = "GB",
                     progressType = overlaySettings.progressType
                 )

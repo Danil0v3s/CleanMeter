@@ -188,12 +188,41 @@ class SettingsViewModel : ViewModel() {
                     )
                 )
 
+                SensorType.VramUsage -> overlaySettings?.copy(
+                    sensors = overlaySettings.sensors.copy(
+                        vramUsage = overlaySettings.sensors.vramUsage.copy(
+                            customReadingId = sensorId,
+                        )
+                    )
+                )
+
+                SensorType.TotalVramUsed -> overlaySettings?.copy(
+                    sensors = overlaySettings.sensors.copy(
+                        totalVramUsed = overlaySettings.sensors.totalVramUsed.copy(
+                            customReadingId = sensorId,
+                        )
+                    )
+                )
+
+                SensorType.UpRate -> overlaySettings?.copy(
+                    sensors = overlaySettings.sensors.copy(
+                        upRate = overlaySettings.sensors.upRate.copy(
+                            customReadingId = sensorId,
+                        )
+                    )
+                )
+
+                SensorType.DownRate -> overlaySettings?.copy(
+                    sensors = overlaySettings.sensors.copy(
+                        downRate = overlaySettings.sensors.downRate.copy(
+                            customReadingId = sensorId,
+                        )
+                    )
+                )
+
                 SensorType.Framerate -> overlaySettings
                 SensorType.Frametime -> overlaySettings
-                SensorType.VramUsage -> overlaySettings
                 SensorType.RamUsage -> overlaySettings
-                SensorType.UpRate -> overlaySettings
-                SensorType.DownRate -> overlaySettings
                 SensorType.NetGraph -> overlaySettings
             }
 
@@ -347,6 +376,8 @@ class SettingsViewModel : ViewModel() {
                         )
                     )
                 )
+
+                SensorType.TotalVramUsed -> overlaySettings // cant disable total vram used
 
                 SensorType.NetGraph -> overlaySettings?.copy(netGraph = option.isSelected)
             }

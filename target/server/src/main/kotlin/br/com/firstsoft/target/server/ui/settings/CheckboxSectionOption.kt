@@ -6,10 +6,11 @@ data class CheckboxSectionOption(
     val type: SensorType,
     val optionReadingId: String = "",
     val useCustomSensor: Boolean = false,
+    val useCheckbox: Boolean = true,
 )
 
 enum class SensorType {
-    Framerate, Frametime, CpuTemp, CpuUsage, GpuTemp, GpuUsage, VramUsage, RamUsage, UpRate, DownRate, NetGraph
+    Framerate, Frametime, CpuTemp, CpuUsage, GpuTemp, GpuUsage, VramUsage, TotalVramUsed, RamUsage, UpRate, DownRate, NetGraph
 }
 
 enum class SectionType {

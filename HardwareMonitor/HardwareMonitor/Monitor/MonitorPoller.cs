@@ -64,10 +64,15 @@ public class MonitorPoller
         using var mmfStream = memoryMappedFile.CreateViewStream();
         using var writer = new BinaryWriter(mmfStream);
         var accumulator = 0;
-        
+
         while (_isOpen)
         {
             sharedMemoryData.LastPollTime = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
+
+            foreach (var hardware in hardwareList)
+            {
+                hardware.Hardware.Update();
+            }
 
             foreach (var sensor in sensorList)
             {
@@ -95,18 +100,21 @@ public class MonitorPoller
         computer.Close();
     }
 
-    private SharedMemoryHardware MapHardware(IHardware hardware) => new()
+    private static SharedMemoryHardware MapHardware(IHardware hardware) => new()
     {
         Name = hardware.Name,
-        Identifier = hardware.Identifier.ToString()
+        Identifier = hardware.Identifier.ToString(),
+        HardwareType = hardware.HardwareType,
+        Hardware = hardware
     };
 
-    private SharedMemorySensor MapSensor(ISensor sensor) => new()
+    private static SharedMemorySensor MapSensor(ISensor sensor) => new()
     {
         Name = sensor.Name,
         Identifier = sensor.Identifier.ToString(),
-        SensorType = (int)sensor.SensorType,
+        SensorType = sensor.SensorType,
         Value = float.IsNaN(sensor.Value ?? 0f) ? 0f : (sensor.Value ?? 0f),
+        HardwareIdentifier = sensor.Hardware.Identifier.ToString(),
         Sensor = sensor
     };
 }

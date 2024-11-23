@@ -13,7 +13,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="LibreHardwareMonitorLib" Version="0.9.3" />
+      <PackageReference Include="LibreHardwareMonitorLib" Version="0.9.4-pre360" />
       <PackageReference Include="Utf8Json" Version="1.3.7" />
     </ItemGroup>
 
