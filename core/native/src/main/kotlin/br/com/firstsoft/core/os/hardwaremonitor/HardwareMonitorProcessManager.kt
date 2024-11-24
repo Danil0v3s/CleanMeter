@@ -26,7 +26,7 @@ object HardwareMonitorProcessManager {
         val file = if (isDev()) {
             "D:\\Projetos\\Personal\\PCMonitoR\\HardwareMonitor\\HardwareMonitor\\bin\\Release\\net8.0\\HardwareMonitor.exe"
         } else {
-            "$currentDir\\cleanmeter\\app\\resources\\HardwareMonitor.exe"
+            "$currentDir\\app\\resources\\HardwareMonitor.exe"
         }
 
         process = ProcessBuilder().apply {

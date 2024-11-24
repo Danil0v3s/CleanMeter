@@ -10,6 +10,8 @@ import com.sun.jna.platform.win32.WinNT
 import com.sun.jna.platform.win32.WinNT.HANDLE
 import com.sun.jna.platform.win32.WinUser
 import java.awt.Component
+import java.io.File
+import java.io.IOException
 
 class WindowsService {
 
@@ -60,6 +62,15 @@ class WindowsService {
                 User32.INSTANCE.GetWindowLong(hwnd, WinUser.GWL_EXSTYLE) or WinUser.WS_EX_LAYERED and WinUser.WS_EX_TRANSPARENT.inv()
             }
             User32.INSTANCE.SetWindowLong(hwnd, WinUser.GWL_EXSTYLE, wl)
+        }
+
+        fun isProcessElevated(): Boolean {
+            try {
+                File.createTempFile("cleanmeter", ".lock", File("C:/")).deleteOnExit()
+            } catch (ex: Exception) {
+                return false
+            }
+            return true
         }
     }
 }

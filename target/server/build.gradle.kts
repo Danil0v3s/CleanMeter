@@ -1,47 +1,18 @@
-import org.apache.tools.ant.taskdefs.condition.Os
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
 val copyMonitorFiles = tasks.register<Copy>("copyMonitorFiles") {
     from("../../HardwareMonitor/HardwareMonitor/bin/Release/net8.0")
-    into(layout.buildDirectory.dir("compose/binaries/main/app/cleanmeter/cleanmeter/app/resources"))
-}
-
-val copyLauncherFiles = tasks.register<Copy>("copyLauncherFiles") {
-    finalizedBy(copyMonitorFiles)
-    from("../../Launcher/Launcher/bin/Release/net8.0")
-    into(layout.buildDirectory.dir("compose/binaries/main/app/cleanmeter"))
-}
-
-val moveBuildResult = tasks.register<Exec>("moveBuild") {
-    finalizedBy(copyLauncherFiles)
-    workingDir(layout.buildDirectory.dir("compose/binaries/main/app/cleanmeter"))
-    if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-        commandLine("cmd.exe", "/c", "mkdir", "cleanmeter")
-    } else {
-        commandLine("sh", "-c", "mkdir", "cleanmeter")
-    }
-
-    doLast {
-        file("build/compose/binaries/main/app/cleanmeter/cleanmeter.exe").renameTo(file("build/compose/binaries/main/app/cleanmeter/cleanmeter/cleanmeter.exe"))
-        file("build/compose/binaries/main/app/cleanmeter/runtime").renameTo(file("build/compose/binaries/main/app/cleanmeter/cleanmeter/runtime"))
-        file("build/compose/binaries/main/app/cleanmeter/app").renameTo(file("build/compose/binaries/main/app/cleanmeter/cleanmeter/app"))
-    }
+    into(layout.buildDirectory.dir("compose/binaries/main/app/cleanmeter/app/resources"))
 }
 
 val compileMonitor = tasks.register<Exec>("compileMonitor") {
-    finalizedBy(moveBuildResult)
+    finalizedBy(copyMonitorFiles)
     workingDir("../../HardwareMonitor/")
     commandLine("dotnet", "build", "--configuration", "Release")
 }
 
-val compileLauncher = tasks.register<Exec>("compileLauncher") {
-    finalizedBy(compileMonitor)
-    workingDir("../../Launcher/")
-    commandLine("dotnet", "build", "--configuration", "Release")
-}
-
 val copyPresentmonToResources = tasks.register<Copy>("copyPresentmonToResources") {
-    finalizedBy(compileLauncher)
+    finalizedBy(compileMonitor)
 
     from("../../presentmon")
     into(layout.buildDirectory.dir("compose/binaries/main/app/cleanmeter/app/resources"))

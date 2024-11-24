@@ -34,7 +34,7 @@ object PresentMonProcessManager {
         val file = if(isDev()) {
             "D:\\Projetos\\Personal\\PCMonitoR\\presentmon\\presentmon.exe"
         } else {
-            "$currentDir\\cleanmeter\\app\\resources\\presentmon.exe"
+            "$currentDir\\app\\resources\\presentmon.exe"
         }
 
         process = ProcessBuilder()

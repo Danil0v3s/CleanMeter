@@ -15,6 +15,8 @@ import br.com.firstsoft.core.common.reporting.setDefaultUncaughtExceptionHandler
 import br.com.firstsoft.core.os.hardwaremonitor.HardwareMonitorProcessManager
 import br.com.firstsoft.core.os.hardwaremonitor.PresentMonProcessManager
 import br.com.firstsoft.core.os.util.isDev
+import br.com.firstsoft.core.os.win32.Shell32Impl
+import br.com.firstsoft.core.os.win32.WindowsService
 import br.com.firstsoft.target.server.data.OverlaySettingsRepository
 import br.com.firstsoft.target.server.model.OverlaySettings
 import br.com.firstsoft.target.server.ui.overlay.OverlayWindow
@@ -27,6 +29,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.nio.file.Path
+import kotlin.system.exitProcess
 
 data class MainState(
     val overlaySettings: OverlaySettings = OverlaySettings(),
@@ -63,6 +67,8 @@ fun main() {
     setDefaultUncaughtExceptionHandler()
 
     val channel = Channel<Unit>()
+    checkIfProcessIsElevated()
+
     if (isDev()) {
         Runtime.getRuntime().addShutdownHook(Thread {
             HardwareMonitorProcessManager.stop()
@@ -105,5 +111,13 @@ fun main() {
                 PresentMonProcessManager.stop()
             }
         )
+    }
+}
+
+private fun checkIfProcessIsElevated() {
+    if (!isDev() && !WindowsService.isProcessElevated()) {
+        val currentDir = Path.of("").toAbsolutePath().toString()
+        Shell32Impl.INSTANCE.ShellExecuteW(null, "runas", "$currentDir\\cleanmeter.exe", "", "", 10)
+        exitProcess(0)
     }
 }
