@@ -1,7 +1,9 @@
 package br.com.firstsoft.target.server.ui.settings
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -31,6 +33,7 @@ import br.com.firstsoft.target.server.ui.ColorTokens.DarkGray
 import br.com.firstsoft.target.server.ui.components.SettingsTab
 import br.com.firstsoft.target.server.ui.components.TopBar
 import br.com.firstsoft.target.server.ui.settings.tabs.AppSettingsUi
+import br.com.firstsoft.target.server.ui.settings.tabs.HelpSettingsUi
 import br.com.firstsoft.target.server.ui.settings.tabs.OverlaySettingsUi
 import br.com.firstsoft.target.server.ui.settings.tabs.style.StyleUi
 
@@ -59,34 +62,44 @@ fun WindowScope.Settings(
         var selectedTabIndex by remember { mutableStateOf(0) }
 
         Column(modifier = Modifier.fillMaxSize().padding(24.dp)) {
-            ScrollableTabRow(
-                selectedTabIndex = selectedTabIndex,
-                modifier = Modifier.fillMaxWidth().height(44.dp),
-                backgroundColor = Color.Transparent,
-                contentColor = DarkGray,
-                edgePadding = 0.dp,
-                indicator = { tabPositions -> },
-                divider = {}
-            ) {
+            Row(modifier = Modifier.fillMaxWidth().height(44.dp)) {
+                ScrollableTabRow(
+                    selectedTabIndex = selectedTabIndex,
+                    modifier = Modifier.weight(1f).height(44.dp),
+                    backgroundColor = Color.Transparent,
+                    contentColor = DarkGray,
+                    edgePadding = 0.dp,
+                    indicator = { tabPositions -> },
+                    divider = {}
+                ) {
+                    SettingsTab(
+                        selected = selectedTabIndex == 0,
+                        onClick = { selectedTabIndex = 0 },
+                        label = "Stats",
+                        icon = painterResource("icons/data_usage.svg"),
+                    )
+                    SettingsTab(
+                        selected = selectedTabIndex == 1,
+                        onClick = { selectedTabIndex = 1 },
+                        label = "Style",
+                        icon = painterResource("icons/layers.svg"),
+                        modifier = Modifier.padding(start = 8.dp)
+                    )
+                    SettingsTab(
+                        selected = selectedTabIndex == 2,
+                        onClick = { selectedTabIndex = 2 },
+                        label = "Settings",
+                        icon = painterResource("icons/settings.svg"),
+                        modifier = Modifier.padding(start = 8.dp),
+                    )
+                }
+
                 SettingsTab(
-                    selected = selectedTabIndex == 0,
-                    onClick = { selectedTabIndex = 0 },
-                    label = "Stats",
-                    icon = painterResource("icons/data_usage.svg"),
-                )
-                SettingsTab(
-                    selected = selectedTabIndex == 1,
-                    onClick = { selectedTabIndex = 1 },
-                    label = "Style",
-                    icon = painterResource("icons/layers.svg"),
-                    modifier = Modifier.padding(start = 8.dp)
-                )
-                SettingsTab(
-                    selected = selectedTabIndex == 2,
-                    onClick = { selectedTabIndex = 2 },
-                    label = "Settings",
-                    icon = painterResource("icons/settings.svg"),
-                    modifier = Modifier.padding(start = 8.dp),
+                    selected = selectedTabIndex == 3,
+                    onClick = { selectedTabIndex = 3 },
+                    label = "",
+                    icon = painterResource("icons/help.svg"),
+                    modifier = Modifier.weight(0.1f).padding(start = 4.dp),
                 )
             }
 
@@ -135,6 +148,7 @@ fun WindowScope.Settings(
                 )
 
                 2 -> AppSettingsUi()
+                3 -> HelpSettingsUi()
                 else -> Unit
             }
         }
