@@ -23,6 +23,7 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.ChevronRight
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Search
@@ -55,8 +56,10 @@ import br.com.firstsoft.core.common.hardwaremonitor.HardwareMonitorData
 import br.com.firstsoft.target.server.ui.ColorTokens.AlmostVisibleGray
 import br.com.firstsoft.target.server.ui.ColorTokens.BarelyVisibleGray
 import br.com.firstsoft.target.server.ui.ColorTokens.DarkGray
+import br.com.firstsoft.target.server.ui.ColorTokens.Gray200
 import br.com.firstsoft.target.server.ui.ColorTokens.LabelGray
 import br.com.firstsoft.target.server.ui.ColorTokens.MutedGray
+import br.com.firstsoft.target.server.ui.overlay.conditional
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -181,17 +184,39 @@ fun SensorReadingDropdownMenu(
                             ) {
                                 filteredItems.forEachIndexed { index, item ->
                                     item {
-                                        Text(
-                                            text = "${item.Name} (${item.Value} - ${item.SensorType})",
-                                            color = DarkGray,
-                                            fontSize = 12.sp,
-                                            fontWeight = FontWeight.Medium,
-                                            modifier = Modifier.fillMaxWidth().height(24.dp).clickable {
-                                                expanded = false
-                                                selectedOption = item
-                                                onValueChanged(item)
+                                        Row(
+                                            modifier = Modifier
+                                                .height(40.dp)
+                                                .fillMaxWidth()
+                                                .clickable {
+                                                    expanded = false
+                                                    selectedOption = item
+                                                    onValueChanged(item)
+                                                }
+                                                .conditional(
+                                                    predicate = index == selectedIndex,
+                                                    ifTrue = { background(Gray200, RoundedCornerShape(8.dp)) }
+                                                )
+                                                .padding(horizontal = 12.dp, vertical = 10.dp),
+                                            horizontalArrangement = Arrangement.SpaceBetween,
+                                            verticalAlignment = Alignment.CenterVertically
+                                        ) {
+                                            Text(
+                                                text = "${item.Name} (${item.Value} - ${item.SensorType})",
+                                                color = DarkGray,
+                                                fontSize = 14.sp,
+                                                fontWeight = FontWeight(550),
+                                                lineHeight = 0.sp,
+                                                modifier = Modifier
+                                            )
+
+                                            if (index == selectedIndex) {
+                                                Icon(
+                                                    Icons.Rounded.Check,
+                                                    "Trailing icon for exposed dropdown menu",
+                                                )
                                             }
-                                        )
+                                        }
                                     }
                                 }
                             }
