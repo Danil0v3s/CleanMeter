@@ -30,8 +30,8 @@ object PresentMonProcessManager {
 
     fun start() {
         val currentDir = Path.of("").toAbsolutePath().toString()
-//        val file = "$currentDir\\cleanmeter\\app\\resources\\HWiNFO64.exe"
-        val file = "D:\\Projetos\\Personal\\PCMonitoR\\presentmon\\presentmon.exe"
+        val file = "$currentDir\\cleanmeter\\app\\resources\\presentmon.exe"
+//        val file = "D:\\Projetos\\Personal\\PCMonitoR\\presentmon\\presentmon.exe"
 
         process = ProcessBuilder()
             .apply {
