@@ -71,6 +71,7 @@ fun HardwareMonitorData.readings(namePart: String): List<HardwareMonitorData.Sen
         .sortedBy { it.SensorType }
 }
 fun HardwareMonitorData.getReading(identifier: String) = Sensors.firstOrNull { it.Identifier == identifier }
+fun HardwareMonitorData.getReading(identifier: String, namePart: String) = Sensors.firstOrNull { it.Identifier == identifier && it.Name.contains(namePart, true) }
 
 val HardwareMonitorData.FPS: Int
     get() = (getReading("/presentmon/presented")?.Value?.toInt() ?: 0).coerceAtMost(480)

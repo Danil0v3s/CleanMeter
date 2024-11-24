@@ -37,7 +37,7 @@ internal fun GpuSection(overlaySettings: OverlaySettings, data: HardwareMonitorD
             }
 
             if (overlaySettings.sensors.vramUsage.isEnabled) {
-                val vramUsage = data.getReading(overlaySettings.sensors.vramUsage.customReadingId)?.Value?.coerceAtLeast(1f) ?: 1f
+                val vramUsage = data.getReading(overlaySettings.sensors.vramUsage.customReadingId, "memory")?.Value?.coerceAtLeast(1f) ?: 1f
                 val totalVramUsed = data.getReading(overlaySettings.sensors.totalVramUsed.customReadingId)?.Value?.coerceAtLeast(1f) ?: 1f
 
                 Progress(
