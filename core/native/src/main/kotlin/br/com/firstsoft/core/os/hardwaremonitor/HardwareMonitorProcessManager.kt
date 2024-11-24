@@ -1,5 +1,6 @@
 package br.com.firstsoft.core.os.hardwaremonitor
 
+import br.com.firstsoft.core.os.util.isDev
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -22,9 +23,11 @@ object HardwareMonitorProcessManager {
 
     fun start() {
         val currentDir = Path.of("").toAbsolutePath().toString()
-        val file = "$currentDir\\cleanmeter\\app\\resources\\HardwareMonitor.exe"
-//        val file =
-//            "D:\\Projetos\\Personal\\PCMonitoR\\HardwareMonitor\\HardwareMonitor\\bin\\Release\\net8.0\\HardwareMonitor.exe"
+        val file = if (isDev()) {
+            "D:\\Projetos\\Personal\\PCMonitoR\\HardwareMonitor\\HardwareMonitor\\bin\\Release\\net8.0\\HardwareMonitor.exe"
+        } else {
+            "$currentDir\\cleanmeter\\app\\resources\\HardwareMonitor.exe"
+        }
 
         process = ProcessBuilder().apply {
             command("cmd.exe", "/c", file)

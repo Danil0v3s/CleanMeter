@@ -1,6 +1,7 @@
 package br.com.firstsoft.core.os.hardwaremonitor
 
 import br.com.firstsoft.core.common.hardwaremonitor.PresentMonReading
+import br.com.firstsoft.core.os.util.isDev
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -30,8 +31,11 @@ object PresentMonProcessManager {
 
     fun start() {
         val currentDir = Path.of("").toAbsolutePath().toString()
-        val file = "$currentDir\\cleanmeter\\app\\resources\\presentmon.exe"
-//        val file = "D:\\Projetos\\Personal\\PCMonitoR\\presentmon\\presentmon.exe"
+        val file = if(isDev()) {
+            "D:\\Projetos\\Personal\\PCMonitoR\\presentmon\\presentmon.exe"
+        } else {
+            "$currentDir\\cleanmeter\\app\\resources\\presentmon.exe"
+        }
 
         process = ProcessBuilder()
             .apply {
@@ -50,7 +54,6 @@ object PresentMonProcessManager {
                     "--output_stdout"
                 )
             }
-//            .inheritIO()
             .start()
         process?.inputStream?.run { observeOutput(this) }
         pollingJob?.cancel()

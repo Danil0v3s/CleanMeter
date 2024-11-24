@@ -14,6 +14,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import br.com.firstsoft.core.common.reporting.setDefaultUncaughtExceptionHandler
 import br.com.firstsoft.core.os.hardwaremonitor.HardwareMonitorProcessManager
 import br.com.firstsoft.core.os.hardwaremonitor.PresentMonProcessManager
+import br.com.firstsoft.core.os.util.isDev
 import br.com.firstsoft.target.server.data.OverlaySettingsRepository
 import br.com.firstsoft.target.server.model.OverlaySettings
 import br.com.firstsoft.target.server.ui.overlay.OverlayWindow
@@ -62,12 +63,14 @@ fun main() {
     setDefaultUncaughtExceptionHandler()
 
     val channel = Channel<Unit>()
-//    registerKeyboardHook(channel)
-
-    Runtime.getRuntime().addShutdownHook(Thread {
-        HardwareMonitorProcessManager.stop()
-        PresentMonProcessManager.stop()
-    })
+    if (isDev()) {
+        Runtime.getRuntime().addShutdownHook(Thread {
+            HardwareMonitorProcessManager.stop()
+            PresentMonProcessManager.stop()
+        })
+    } else {
+        registerKeyboardHook(channel)
+    }
 
     PresentMonProcessManager.start()
     HardwareMonitorProcessManager.start()
