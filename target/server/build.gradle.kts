@@ -1,3 +1,4 @@
+import org.apache.tools.ant.taskdefs.condition.Os
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
 val copyMonitorFiles = tasks.register<Copy>("copyMonitorFiles") {
@@ -14,7 +15,11 @@ val copyLauncherFiles = tasks.register<Copy>("copyLauncherFiles") {
 val moveBuildResult = tasks.register<Exec>("moveBuild") {
     finalizedBy(copyLauncherFiles)
     workingDir(layout.buildDirectory.dir("compose/binaries/main/app/cleanmeter"))
-    commandLine("cmd.exe", "/c", "mkdir", "cleanmeter")
+    if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+        commandLine("cmd.exe", "/c", "mkdir", "cleanmeter")
+    } else {
+        commandLine("sh", "-c", "mkdir", "cleanmeter")
+    }
 
     doLast {
         file("build/compose/binaries/main/app/cleanmeter/cleanmeter.exe").renameTo(file("build/compose/binaries/main/app/cleanmeter/cleanmeter/cleanmeter.exe"))
