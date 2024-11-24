@@ -62,7 +62,8 @@ fun main() {
     setDefaultUncaughtExceptionHandler()
 
     val channel = Channel<Unit>()
-    //registerKeyboardHook(channel)
+//    registerKeyboardHook(channel)
+
     Runtime.getRuntime().addShutdownHook(Thread {
         HardwareMonitorProcessManager.stop()
         PresentMonProcessManager.stop()

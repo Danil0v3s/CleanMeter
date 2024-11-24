@@ -16,7 +16,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.com.firstsoft.core.common.hardwaremonitor.HardwareMonitorData
-import br.com.firstsoft.core.common.hwinfo.SensorReadingElement
 import br.com.firstsoft.target.server.model.OverlaySettings
 import br.com.firstsoft.target.server.ui.ColorTokens.LabelGray
 import br.com.firstsoft.target.server.ui.components.CheckboxSection
@@ -24,7 +23,7 @@ import br.com.firstsoft.target.server.ui.components.CheckboxWithLabel
 import br.com.firstsoft.target.server.ui.components.CustomBodyCheckboxSection
 import br.com.firstsoft.target.server.ui.components.DropdownSection
 import br.com.firstsoft.target.server.ui.components.KeyboardShortcutInfoLabel
-import br.com.firstsoft.target.server.ui.components.StealthDropdownMenu
+import br.com.firstsoft.target.server.ui.components.SensorReadingDropdownMenu
 import br.com.firstsoft.target.server.ui.settings.CheckboxSectionOption
 import br.com.firstsoft.target.server.ui.settings.SectionType
 import br.com.firstsoft.target.server.ui.settings.SensorType
@@ -88,17 +87,17 @@ fun OverlaySettingsUi(
                             )
 
                             if (readings.isNotEmpty() && option.isSelected && option.useCustomSensor) {
-                                StealthDropdownMenu(
+                                SensorReadingDropdownMenu(
                                     modifier = Modifier.padding(start = 18.dp),
-                                    options = readings.map { "${it.Name} (${it.Value} - ${it.SensorType})" },
+                                    options = readings,
                                     onValueChanged = {
-                                        val reading = readings[it].Identifier
-                                        onCustomSensorSelect(option.type, reading)
+                                        onCustomSensorSelect(option.type, it.Identifier)
                                     },
                                     selectedIndex = readings
                                         .indexOfFirst { it.Identifier == option.optionReadingId }
                                         .coerceAtLeast(0),
-                                    label = "Sensor:"
+                                    label = "Sensor:",
+                                    sensorName = option.name,
                                 )
                             }
                         }
@@ -123,17 +122,17 @@ fun OverlaySettingsUi(
                                 checked = option.isSelected,
                             )
                             if (readings.isNotEmpty() && option.isSelected && option.useCustomSensor) {
-                                StealthDropdownMenu(
+                                SensorReadingDropdownMenu(
                                     modifier = Modifier.padding(start = 18.dp),
-                                    options = readings.map { "${it.Name} (${it.Value} - ${it.SensorType})" },
+                                    options = readings,
                                     onValueChanged = {
-                                        val reading = readings[it].Identifier
-                                        onCustomSensorSelect(option.type, reading)
+                                        onCustomSensorSelect(option.type, it.Identifier)
                                     },
                                     selectedIndex = readings
                                         .indexOfFirst { it.Identifier == option.optionReadingId }
                                         .coerceAtLeast(0),
-                                    label = "Sensor:"
+                                    label = "Sensor:",
+                                    sensorName = option.name,
                                 )
                             }
                         }
@@ -175,17 +174,18 @@ fun OverlaySettingsUi(
                             )
 
                             if (readings.isNotEmpty() && option.isSelected && option.useCustomSensor) {
-                                StealthDropdownMenu(
+                                SensorReadingDropdownMenu(
                                     modifier = Modifier.padding(start = 18.dp),
-                                    options = readings.map { "${getHardwareSensors().firstOrNull { hardware -> hardware.Identifier == it.HardwareIdentifier }?.Name}: ${it.Name} (${it.Value} - ${it.SensorType})" },
+//                                    options = readings.map { "${getHardwareSensors().firstOrNull { hardware -> hardware.Identifier == it.HardwareIdentifier }?.Name}: ${it.Name} (${it.Value} - ${it.SensorType})" },
+                                    options = readings,
                                     onValueChanged = {
-                                        val reading = readings[it].Identifier
-                                        onCustomSensorSelect(option.type, reading)
+                                        onCustomSensorSelect(option.type, it.Identifier)
                                     },
                                     selectedIndex = readings
                                         .indexOfFirst { it.Identifier == option.optionReadingId }
                                         .coerceAtLeast(0),
-                                    label = "Sensor:"
+                                    label = "Sensor:",
+                                    sensorName = option.name,
                                 )
                             }
                         }
