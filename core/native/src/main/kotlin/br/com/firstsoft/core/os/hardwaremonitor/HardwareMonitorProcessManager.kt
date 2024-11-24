@@ -22,9 +22,9 @@ object HardwareMonitorProcessManager {
 
     fun start() {
         val currentDir = Path.of("").toAbsolutePath().toString()
-//        val file = "$currentDir\\cleanmeter\\app\\resources\\HWiNFO64.exe"
-        val file =
-            "D:\\Projetos\\Personal\\PCMonitoR\\HardwareMonitor\\HardwareMonitor\\bin\\Release\\net8.0\\HardwareMonitor.exe"
+        val file = "$currentDir\\cleanmeter\\app\\resources\\HardwareMonitor.exe"
+//        val file =
+//            "D:\\Projetos\\Personal\\PCMonitoR\\HardwareMonitor\\HardwareMonitor\\bin\\Release\\net8.0\\HardwareMonitor.exe"
 
         process = ProcessBuilder().apply {
             command("cmd.exe", "/c", file)
