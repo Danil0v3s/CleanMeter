@@ -18,6 +18,12 @@ internal fun HelpSettingsUi() {
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         CollapsibleSection(
+            title = "SHORCUTS",
+        ) {
+            Text("fasdadas")
+        }
+
+        CollapsibleSection(
             title = "HOW TO SETUP",
         ) {
             Text("fasdadas")
