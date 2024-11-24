@@ -80,8 +80,6 @@ fun Progress(
     }
 }
 
-
-
 @Preview
 @Composable
 private fun ProgressPreview() {

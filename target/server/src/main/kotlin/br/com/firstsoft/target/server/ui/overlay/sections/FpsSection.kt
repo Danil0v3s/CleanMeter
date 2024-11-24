@@ -64,7 +64,7 @@ internal fun FpsSection(overlaySettings: OverlaySettings, data: HardwareMonitorD
                         fontSize = 12.sp,
                         lineHeight = 0.sp,
                         fontWeight = FontWeight.Normal,
-                        modifier = Modifier.width(50.dp)
+                        modifier = Modifier.width(50.dp).padding(bottom = 2.dp)
                     )
                 }
             }
