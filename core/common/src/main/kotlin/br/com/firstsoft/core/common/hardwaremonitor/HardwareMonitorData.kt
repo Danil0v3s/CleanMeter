@@ -1,6 +1,5 @@
 package br.com.firstsoft.core.common.hardwaremonitor
 
-import br.com.firstsoft.core.common.hwinfo.SensorReadingType
 import kotlinx.serialization.Serializable
 
 @Serializable

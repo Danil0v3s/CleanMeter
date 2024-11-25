@@ -1,4 +1,5 @@
 ﻿using System.IO.MemoryMappedFiles;
+using HardwareMonitor.PresentMon;
 using HardwareMonitor.SharedMemory;
 using LibreHardwareMonitor.Hardware;
 
@@ -6,7 +7,7 @@ namespace HardwareMonitor.Monitor;
 
 public class MonitorPoller
 {
-    Computer computer = new()
+    Computer _computer = new()
     {
         IsCpuEnabled = true,
         IsGpuEnabled = true,
@@ -18,21 +19,24 @@ public class MonitorPoller
         IsBatteryEnabled = true,
         IsStorageEnabled = true
     };
+    
+    PresentMonPoller _presentMonPoller = new();
 
     private bool _isOpen;
 
     public async ValueTask Start()
     {
         _isOpen = true;
-        computer.Open();
-        computer.Accept(new UpdateVisitor());
+        _computer.Open();
+        _computer.Accept(new UpdateVisitor());
+        _presentMonPoller.Start();
 
         var hardwareList = new List<SharedMemoryHardware>();
         var sensorList = new List<SharedMemorySensor>();
         var sharedMemoryData = new SharedMemoryData();
         var jsonArray = Array.Empty<byte>();
 
-        foreach (var hardware in computer.Hardware)
+        foreach (var hardware in _computer.Hardware)
         {
             hardwareList.Add(MapHardware(hardware));
             foreach (var subHardware in hardware.SubHardware)
@@ -41,7 +45,7 @@ public class MonitorPoller
             }
         }
 
-        foreach (var hardware in computer.Hardware)
+        foreach (var hardware in _computer.Hardware)
         {
             foreach (var sensor in hardware.Sensors)
             {
@@ -56,6 +60,10 @@ public class MonitorPoller
                 }
             }
         }
+        
+        sensorList.Add(MapSensor(_presentMonPoller.Displayed));
+        sensorList.Add(MapSensor(_presentMonPoller.Presented));
+        sensorList.Add(MapSensor(_presentMonPoller.Frametime));
 
         sharedMemoryData.Sensors = sensorList;
         sharedMemoryData.Hardwares = hardwareList;
@@ -97,7 +105,8 @@ public class MonitorPoller
 
     public void Stop()
     {
-        computer.Close();
+        _computer.Close();
+        _presentMonPoller.Stop();
     }
 
     private static SharedMemoryHardware MapHardware(IHardware hardware) => new()

@@ -13,7 +13,6 @@ import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import br.com.firstsoft.core.common.reporting.setDefaultUncaughtExceptionHandler
 import br.com.firstsoft.core.os.hardwaremonitor.HardwareMonitorProcessManager
-import br.com.firstsoft.core.os.hardwaremonitor.PresentMonProcessManager
 import br.com.firstsoft.core.os.util.isDev
 import br.com.firstsoft.core.os.win32.Shell32Impl
 import br.com.firstsoft.core.os.win32.WindowsService
@@ -76,13 +75,11 @@ fun main(vararg args: String) {
     if (isDev()) {
         Runtime.getRuntime().addShutdownHook(Thread {
             HardwareMonitorProcessManager.stop()
-            PresentMonProcessManager.stop()
         })
     } else {
         registerKeyboardHook(channel)
     }
 
-    PresentMonProcessManager.start()
     HardwareMonitorProcessManager.start()
 
     application {
@@ -112,7 +109,6 @@ fun main(vararg args: String) {
             getOverlayPosition = { overlayPosition },
             onApplicationExit = {
                 HardwareMonitorProcessManager.stop()
-                PresentMonProcessManager.stop()
             }
         )
     }

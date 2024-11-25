@@ -16,5 +16,13 @@
       <PackageReference Include="LibreHardwareMonitorLib" Version="0.9.4-pre360" />
       <PackageReference Include="Utf8Json" Version="1.3.7" />
     </ItemGroup>
+    
+    <Target AfterTargets="AfterBuild" Name="CopyPresentMon">
+        <ItemGroup>
+            <RootFiles Include="$(ProjectDir)..\..\presentmon\presentmon.exe"/>
+        </ItemGroup>
+        
+        <Copy SourceFiles="@(RootFiles)" DestinationFolder="$(TargetDir)"/>
+    </Target>
 
 </Project>
