@@ -12,6 +12,9 @@ import com.sun.jna.platform.win32.WinUser
 import java.awt.Component
 import java.io.File
 import java.io.IOException
+import java.nio.file.Files.createFile
+import java.nio.file.Path
+import kotlin.io.path.exists
 
 class WindowsService {
 
@@ -71,6 +74,18 @@ class WindowsService {
                 return false
             }
             return true
+        }
+
+        fun checkLockFile(): Boolean {
+            val currentPath = Path.of("").toAbsolutePath()
+            val filePath = Path.of(currentPath.toString(), "cleanmeter.lock")
+            if (filePath.exists()) {
+                return true
+            }
+
+            createFile(filePath).toFile().deleteOnExit()
+
+            return false
         }
     }
 }

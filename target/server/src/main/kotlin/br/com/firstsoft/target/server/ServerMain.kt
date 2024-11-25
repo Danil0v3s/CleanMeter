@@ -63,11 +63,15 @@ object ApplicationViewModelStoreOwner : ViewModelStoreOwner {
 
 }
 
-fun main() {
+fun main(vararg args: String) {
+    if(WindowsService.checkLockFile()) {
+        exitProcess(0)
+    }
+
     setDefaultUncaughtExceptionHandler()
 
     val channel = Channel<Unit>()
-    checkIfProcessIsElevated()
+    checkIfProcessIsElevated(args)
 
     if (isDev()) {
         Runtime.getRuntime().addShutdownHook(Thread {
@@ -114,7 +118,8 @@ fun main() {
     }
 }
 
-private fun checkIfProcessIsElevated() {
+private fun checkIfProcessIsElevated(args: Array<out String>) {
+    if (args.isNotEmpty() && args[0] == "--autostart") return
     if (!isDev() && !WindowsService.isProcessElevated()) {
         val currentDir = Path.of("").toAbsolutePath().toString()
         Shell32Impl.INSTANCE.ShellExecuteW(null, "runas", "$currentDir\\cleanmeter.exe", "", "", 10)

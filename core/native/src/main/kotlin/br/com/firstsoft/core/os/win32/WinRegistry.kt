@@ -44,7 +44,7 @@ object WinRegistry {
     }
 
     fun registerAppToStartWithWindows() {
-        write(STARTUP_ITEMS_LOCATION, REGISTRY_APP_NAME, "\\\"${Path.of("").toAbsolutePath()}\\$REGISTRY_APP_NAME.exe\\\"")
+        write(STARTUP_ITEMS_LOCATION, REGISTRY_APP_NAME, "\\\"${Path.of("").toAbsolutePath()}\\$REGISTRY_APP_NAME.exe\\\" --autostart")
     }
 
     fun removeAppFromStartWithWindows() {
