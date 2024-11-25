@@ -2,6 +2,7 @@ package br.com.firstsoft.core.os.win32
 
 import java.io.BufferedReader
 import java.io.InputStreamReader
+import java.nio.file.Path
 
 object WinRegistry {
     const val STARTUP_ITEMS_LOCATION = "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run"
@@ -43,7 +44,7 @@ object WinRegistry {
     }
 
     fun registerAppToStartWithWindows() {
-        write(STARTUP_ITEMS_LOCATION, REGISTRY_APP_NAME, "\\\"${System.getProperty("user.dir")}\\cleanmeter\\$REGISTRY_APP_NAME.exe\\\"")
+        write(STARTUP_ITEMS_LOCATION, REGISTRY_APP_NAME, "\\\"${Path.of("").toAbsolutePath()}\\$REGISTRY_APP_NAME.exe\\\"")
     }
 
     fun removeAppFromStartWithWindows() {
