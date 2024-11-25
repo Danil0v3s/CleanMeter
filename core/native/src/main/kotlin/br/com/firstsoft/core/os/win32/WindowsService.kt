@@ -69,7 +69,7 @@ class WindowsService {
 
         fun isProcessElevated(): Boolean {
             try {
-                File.createTempFile("cleanmeter", ".lock", File("C:/")).deleteOnExit()
+                File.createTempFile("cleanmeter", ".lock", File("C:/")).delete()
             } catch (ex: Exception) {
                 return false
             }
