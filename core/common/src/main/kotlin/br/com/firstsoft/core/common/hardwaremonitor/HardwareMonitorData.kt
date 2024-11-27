@@ -84,7 +84,7 @@ fun HardwareMonitorData.getReading(identifier: String) = Sensors.firstOrNull { i
 fun HardwareMonitorData.getReading(identifier: String, namePart: String) = Sensors.firstOrNull { it.Identifier == identifier && it.Name.contains(namePart, true) }
 
 val HardwareMonitorData.FPS: Int
-    get() = (getReading("/presentmon/presented")?.Value?.toInt() ?: 0).coerceAtMost(480)
+    get() = (1000f / (getReading("/presentmon/frametime")?.Value ?: 1f)).toInt().coerceAtMost(480)
 
 val HardwareMonitorData.Frametime: Float
     get() = (getReading("/presentmon/frametime")?.Value ?: 0f).coerceAtLeast(0f).coerceAtMost(99f)
