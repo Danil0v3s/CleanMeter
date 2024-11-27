@@ -70,7 +70,9 @@ fun main(vararg args: String) {
     setDefaultUncaughtExceptionHandler()
 
     val channel = Channel<Unit>()
-    checkIfProcessIsElevated(args)
+    val isAutostart = isAutostart(args)
+
+    checkIfProcessIsElevated(isAutostart)
 
     if (isDev()) {
         Runtime.getRuntime().addShutdownHook(Thread {
@@ -80,7 +82,9 @@ fun main(vararg args: String) {
         registerKeyboardHook(channel)
     }
 
-    HardwareMonitorProcessManager.start()
+    if (!isAutostart) {
+        HardwareMonitorProcessManager.start()
+    }
 
     application {
         val viewModel: MainViewModel = viewModel(ApplicationViewModelStoreOwner)
@@ -108,14 +112,18 @@ fun main(vararg args: String) {
         SettingsWindow(
             getOverlayPosition = { overlayPosition },
             onApplicationExit = {
-                HardwareMonitorProcessManager.stop()
+                if (isAutostart) {
+                    HardwareMonitorProcessManager.stop()
+                }
             }
         )
     }
 }
 
-private fun checkIfProcessIsElevated(args: Array<out String>) {
-    if (args.isNotEmpty() && args[0] == "--autostart") return
+private fun isAutostart(args: Array<out String>) = (args.isNotEmpty() && args[0] == "--autostart")
+
+private fun checkIfProcessIsElevated(isAutostart: Boolean) {
+    if (isAutostart) return
     if (!isDev() && !WindowsService.isProcessElevated()) {
         val currentDir = Path.of("").toAbsolutePath().toString()
         Shell32Impl.INSTANCE.ShellExecuteW(null, "runas", "$currentDir\\cleanmeter.exe", "", "", 10)

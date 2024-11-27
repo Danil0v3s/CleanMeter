@@ -34,6 +34,38 @@ object HardwareMonitorProcessManager {
         }.start()
     }
 
+    fun createService() {
+        val currentDir = Path.of("").toAbsolutePath().toString()
+        val file = "$currentDir\\app\\resources\\HardwareMonitor.exe"
+        val command = listOf(
+            "cmd.exe",
+            "/c",
+            "sc create svcleanmeter displayname= \"CleanMeter Service\" binPath= $file start= auto")
+        ProcessBuilder().apply {
+            command(command)
+        }.inheritIO().start()
+    }
+
+    fun stopService() {
+        ProcessBuilder().apply {
+            command(
+                "cmd.exe",
+                "/c",
+                "sc stop svcleanmeter"
+            )
+        }.start()
+    }
+
+    fun deleteService() {
+        ProcessBuilder().apply {
+            command(
+                "cmd.exe",
+                "/c",
+                "sc delete svcleanmeter"
+            )
+        }.start()
+    }
+
     fun stop() {
         process?.apply {
             descendants().forEach(ProcessHandle::destroy)

@@ -22,7 +22,7 @@ public class PresentMonPoller
         Presented = new PresentMonSensor(_hardware, "presented", 1, "Presented Frames");
         Frametime = new PresentMonSensor(_hardware, "frametime", 2, "Frametime");
 
-        var processStartInfo = new ProcessStartInfo()
+        var processStartInfo = new ProcessStartInfo
         {
             CreateNoWindow = true,
             RedirectStandardOutput = true,
@@ -34,6 +34,8 @@ public class PresentMonPoller
         _process.StartInfo = processStartInfo;
 
         _process.OutputDataReceived += (sender, args) => ParseData(args.Data);
+        _process.Exited += (sender, args) => Start();
+        
         _process.Start();
         _process.BeginOutputReadLine();
 

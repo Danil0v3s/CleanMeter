@@ -3,10 +3,13 @@ using System.Text;
 using HardwareMonitor.PresentMon;
 using HardwareMonitor.SharedMemory;
 using LibreHardwareMonitor.Hardware;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace HardwareMonitor.Monitor;
 
-public class MonitorPoller
+public class MonitorPoller(IHostApplicationLifetime hostApplicationLifetime,
+    ILogger<MonitorPoller> logger) : BackgroundService
 {
     Computer _computer = new()
     {
@@ -25,8 +28,39 @@ public class MonitorPoller
 
     private bool _isOpen;
 
-    public async ValueTask Start()
+    private void Stop()
     {
+        _computer.Close();
+        _presentMonPoller.Stop();
+    }
+
+    private static SharedMemoryHardware MapHardware(IHardware hardware) => new()
+    {
+        Name = hardware.Name,
+        Identifier = hardware.Identifier.ToString(),
+        HardwareType = hardware.HardwareType,
+        Hardware = hardware
+    };
+
+    private static SharedMemorySensor MapSensor(ISensor sensor) => new()
+    {
+        Name = sensor.Name,
+        Identifier = sensor.Identifier.ToString(),
+        SensorType = sensor.SensorType,
+        Value = float.IsNaN(sensor.Value ?? 0f) ? 0f : (sensor.Value ?? 0f),
+        HardwareIdentifier = sensor.Hardware.Identifier.ToString(),
+        Sensor = sensor
+    };
+
+    private static byte[] GetBytes(string str, int length)
+    {
+        return Encoding.UTF8.GetBytes(str.Length > length ? str[..length] : str.PadRight(length, '\0'));
+    }
+
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    {
+        logger.LogInformation("Starting monitor");
+        
         _isOpen = true;
         _computer.Open();
         _computer.Accept(new UpdateVisitor());
@@ -101,7 +135,7 @@ public class MonitorPoller
             sensorValueOffset[index] = (int)writer.BaseStream.Position - 4;
         }
 
-        while (_isOpen)
+        while (!stoppingToken.IsCancellationRequested)
         {
             foreach (var hardware in hardwareList)
             {
@@ -125,36 +159,10 @@ public class MonitorPoller
             }
 
             accumulator += 500;
-            await Task.Delay(500);
+            await Task.Delay(500, stoppingToken);
         }
-    }
-
-    public void Stop()
-    {
-        _computer.Close();
-        _presentMonPoller.Stop();
-    }
-
-    private static SharedMemoryHardware MapHardware(IHardware hardware) => new()
-    {
-        Name = hardware.Name,
-        Identifier = hardware.Identifier.ToString(),
-        HardwareType = hardware.HardwareType,
-        Hardware = hardware
-    };
-
-    private static SharedMemorySensor MapSensor(ISensor sensor) => new()
-    {
-        Name = sensor.Name,
-        Identifier = sensor.Identifier.ToString(),
-        SensorType = sensor.SensorType,
-        Value = float.IsNaN(sensor.Value ?? 0f) ? 0f : (sensor.Value ?? 0f),
-        HardwareIdentifier = sensor.Hardware.Identifier.ToString(),
-        Sensor = sensor
-    };
-
-    private static byte[] GetBytes(string str, int length)
-    {
-        return Encoding.UTF8.GetBytes(str.Length > length ? str[..length] : str.PadRight(length, '\0'));
+        
+        Stop();
+        hostApplicationLifetime.StopApplication();
     }
 }
