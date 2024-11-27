@@ -32,9 +32,6 @@ object HardwareMonitorProcessManager {
         process = ProcessBuilder().apply {
             command("cmd.exe", "/c", file)
         }.start()
-
-        pollingJob?.cancel()
-        pollingJob = observePollingTime()
     }
 
     fun stop() {

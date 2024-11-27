@@ -1,4 +1,5 @@
 ﻿using System.IO.MemoryMappedFiles;
+using System.Text;
 using HardwareMonitor.PresentMon;
 using HardwareMonitor.SharedMemory;
 using LibreHardwareMonitor.Hardware;
@@ -17,9 +18,9 @@ public class MonitorPoller
         IsNetworkEnabled = true,
         IsPsuEnabled = true,
         IsBatteryEnabled = true,
-        IsStorageEnabled = true
+        IsStorageEnabled = true,
     };
-    
+
     PresentMonPoller _presentMonPoller = new();
 
     private bool _isOpen;
@@ -34,7 +35,6 @@ public class MonitorPoller
         var hardwareList = new List<SharedMemoryHardware>();
         var sensorList = new List<SharedMemorySensor>();
         var sharedMemoryData = new SharedMemoryData();
-        var jsonArray = Array.Empty<byte>();
 
         foreach (var hardware in _computer.Hardware)
         {
@@ -49,6 +49,7 @@ public class MonitorPoller
         {
             foreach (var sensor in hardware.Sensors)
             {
+                sensor.ValuesTimeWindow = TimeSpan.Zero;
                 sensorList.Add(MapSensor(sensor));
             }
 
@@ -56,11 +57,12 @@ public class MonitorPoller
             {
                 foreach (var sensor in subHardware.Sensors)
                 {
+                    sensor.ValuesTimeWindow = TimeSpan.Zero;
                     sensorList.Add(MapSensor(sensor));
                 }
             }
         }
-        
+
         sensorList.Add(MapSensor(_presentMonPoller.Displayed));
         sensorList.Add(MapSensor(_presentMonPoller.Presented));
         sensorList.Add(MapSensor(_presentMonPoller.Frametime));
@@ -68,36 +70,60 @@ public class MonitorPoller
         sharedMemoryData.Sensors = sensorList;
         sharedMemoryData.Hardwares = hardwareList;
 
+        var sensorValueOffset = new Dictionary<int, int>();
         using var memoryMappedFile = MemoryMappedFile.CreateNew(SharedMemoryConsts.SharedMemoryName, 500_000);
         using var mmfStream = memoryMappedFile.CreateViewStream();
         using var writer = new BinaryWriter(mmfStream);
         var accumulator = 0;
 
+        writer.Write(hardwareList.Count);
+        writer.Write(sensorList.Count);
+
+        foreach (var hardware in hardwareList)
+        {
+            writer.Write(GetBytes(hardware.Name, SharedMemoryConsts.NameSize));
+            writer.Write(GetBytes(hardware.Identifier, SharedMemoryConsts.IdentifierSize));
+            writer.Write((int)hardware.HardwareType);
+        }
+
+        for (var index = 0; index < sensorList.Count; index++)
+        {
+            var sensor = sensorList[index];
+            sensor.Value = float.IsNaN(sensor.Sensor.Value ?? 0f) ? 0f : (sensor.Sensor.Value ?? 0f);
+
+            writer.Write(GetBytes(sensor.Name, SharedMemoryConsts.NameSize));
+            writer.Write(GetBytes(sensor.Identifier, SharedMemoryConsts.IdentifierSize));
+            writer.Write(GetBytes(sensor.HardwareIdentifier, SharedMemoryConsts.IdentifierSize));
+            writer.Write((int)sensor.SensorType);
+            writer.Write((float)sensor.Value);
+            
+            // store the starting offset of the float we just wrote
+            sensorValueOffset[index] = (int)writer.BaseStream.Position - 4;
+        }
+
         while (_isOpen)
         {
-            sharedMemoryData.LastPollTime = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
-
             foreach (var hardware in hardwareList)
             {
                 hardware.Hardware.Update();
             }
 
-            foreach (var sensor in sensorList)
+            for (var index = 0; index < sensorList.Count; index++)
             {
+                var sensor = sensorList[index];
                 sensor.Value = float.IsNaN(sensor.Sensor.Value ?? 0f) ? 0f : (sensor.Sensor.Value ?? 0f);
+                
+                // seek to the sensor value offset
+                writer.Seek(sensorValueOffset[index], SeekOrigin.Begin);
+                writer.Write((float)sensor.Value);
             }
 
-            jsonArray = Utf8Json.JsonSerializer.Serialize(sharedMemoryData);
-            writer.Write((int)jsonArray.Length);
-            writer.Write(jsonArray);
-
-            if (accumulator >= 120_000)
+            if (accumulator >= 1000)
             {
                 GC.Collect();
                 accumulator = 0;
             }
 
-            writer.Seek(0, SeekOrigin.Begin);
             accumulator += 500;
             await Task.Delay(500);
         }
@@ -126,4 +152,9 @@ public class MonitorPoller
         HardwareIdentifier = sensor.Hardware.Identifier.ToString(),
         Sensor = sensor
     };
+
+    private static byte[] GetBytes(string str, int length)
+    {
+        return Encoding.UTF8.GetBytes(str.Length > length ? str[..length] : str.PadRight(length, '\0'));
+    }
 }

@@ -24,41 +24,52 @@ data class HardwareMonitorData(
         val Value: Float
     )
 
-    enum class HardwareType {
-        Motherboard,
-        SuperIO,
-        Cpu,
-        Memory,
-        GpuNvidia,
-        GpuAmd,
-        GpuIntel,
-        Storage,
-        Network,
-        Cooler,
-        EmbeddedController,
-        Psu,
-        Battery;
+    enum class HardwareType(val value: Int) {
+        Motherboard(0),
+        SuperIO(1),
+        Cpu(2),
+        Memory(3),
+        GpuNvidia(4),
+        GpuAmd(5),
+        GpuIntel(6),
+        Storage(7),
+        Network(8),
+        Cooler(9),
+        EmbeddedController(10),
+        Psu(11),
+        Battery(12),
+        Unknown(13);
+
+        companion object {
+            fun fromValue(value: Int): HardwareType = entries.firstOrNull { it.value == value } ?: Unknown
+        }
     }
 
-    enum class SensorType {
-        Voltage,
-        Current,
-        Power,
-        Clock,
-        Temperature,
-        Load,
-        Frequency,
-        Fan,
-        Flow,
-        Control,
-        Level,
-        Factor,
-        Data,
-        SmallData,
-        Throughput,
-        TimeSpan,
-        Energy,
-        Noise;
+    enum class SensorType(val value: Int) {
+        Voltage(0),
+        Current(1),
+        Power(2),
+        Clock(3),
+        Temperature(4),
+        Load(5),
+        Frequency(6),
+        Fan(7),
+        Flow(8),
+        Control(9),
+        Level(10),
+        Factor(11),
+        Data(12),
+        SmallData(13),
+        Throughput(14),
+        TimeSpan(15),
+        Energy(16),
+        Noise(17),
+        Unknown(18)
+        ;
+
+        companion object {
+            fun fromValue(value: Int): SensorType = entries.firstOrNull { it.value == value } ?: Unknown
+        }
     }
 }
 
