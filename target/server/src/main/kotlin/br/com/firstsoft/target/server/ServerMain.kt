@@ -63,16 +63,16 @@ object ApplicationViewModelStoreOwner : ViewModelStoreOwner {
 }
 
 fun main(vararg args: String) {
-    if(WindowsService.checkLockFile()) {
-        exitProcess(0)
-    }
+//    if(WindowsService.checkLockFile()) {
+//        exitProcess(0)
+//    }
 
     setDefaultUncaughtExceptionHandler()
 
     val channel = Channel<Unit>()
     val isAutostart = isAutostart(args)
 
-    checkIfProcessIsElevated(isAutostart)
+    tryElevateProcess(isAutostart)
 
     if (isDev()) {
         Runtime.getRuntime().addShutdownHook(Thread {
@@ -112,9 +112,9 @@ fun main(vararg args: String) {
         SettingsWindow(
             getOverlayPosition = { overlayPosition },
             onApplicationExit = {
-                if (isAutostart) {
-                    HardwareMonitorProcessManager.stop()
-                }
+//                if (isAutostart) {
+//                    HardwareMonitorProcessManager.stop()
+//                }
             }
         )
     }
@@ -122,7 +122,7 @@ fun main(vararg args: String) {
 
 private fun isAutostart(args: Array<out String>) = (args.isNotEmpty() && args[0] == "--autostart")
 
-private fun checkIfProcessIsElevated(isAutostart: Boolean) {
+private fun tryElevateProcess(isAutostart: Boolean) {
     if (isAutostart) return
     if (!isDev() && !WindowsService.isProcessElevated()) {
         val currentDir = Path.of("").toAbsolutePath().toString()

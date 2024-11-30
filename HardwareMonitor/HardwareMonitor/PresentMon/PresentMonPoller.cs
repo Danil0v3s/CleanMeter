@@ -14,7 +14,7 @@ public class PresentMonPoller
     private Process _process;
     private CultureInfo _cultureInfo = (CultureInfo)CultureInfo.CurrentCulture.Clone();
 
-    public async ValueTask Start()
+    public async void Start()
     {
         _cultureInfo.NumberFormat.NumberDecimalSeparator = ".";
 

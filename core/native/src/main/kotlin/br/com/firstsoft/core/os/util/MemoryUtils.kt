@@ -1,10 +1,15 @@
 package br.com.firstsoft.core.os.util
 
 import com.sun.jna.Pointer
+import java.io.InputStream
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.charset.Charset
 import java.util.Locale
+
+internal fun getByteBuffer(input: InputStream, length: Int): ByteBuffer {
+    return ByteBuffer.wrap(input.readNBytes(length)).order(ByteOrder.LITTLE_ENDIAN)
+}
 
 internal fun getByteBuffer(pointer: Pointer, size: Int, offset: Int = 0): ByteBuffer {
     val buffer = ByteBuffer.allocateDirect(size)

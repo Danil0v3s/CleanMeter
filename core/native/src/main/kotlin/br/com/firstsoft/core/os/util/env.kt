@@ -1,3 +1,7 @@
 package br.com.firstsoft.core.os.util
 
-fun isDev() = System.getenv("env") == "dev"
+fun isDev() = try {
+    System.getenv("env") == "dev"
+} catch (e: Exception) {
+    false
+}
