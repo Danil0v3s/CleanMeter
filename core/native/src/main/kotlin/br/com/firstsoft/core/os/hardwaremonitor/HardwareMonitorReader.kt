@@ -23,22 +23,19 @@ object HardwareMonitorReader {
     val currentData = flow {
         delay(5000)
         val socket = Socket("127.0.0.1", 31337)
-
+        val inputStream = socket.inputStream
         while (socket.isConnected) {
             try {
-                if (socket.getInputStream().available() == 0) continue
-                val (hardware, sensor) = readHardwareAndSensorCount(socket.getInputStream())
-                val hardwareBuffer = getByteBuffer(socket.getInputStream(), hardware * HARDWARE_SIZE)
-                val sensorBuffer = getByteBuffer(socket.getInputStream(), sensor * SENSOR_SIZE)
-                val hardwares = readHardware(hardwareBuffer, hardware)
-                val sensors = readSensor(sensorBuffer, sensor)
+                val (hardware, sensor) = readHardwareAndSensorCount(inputStream)
+                val buffer = getByteBuffer(inputStream, hardware * HARDWARE_SIZE + sensor * SENSOR_SIZE)
+                val hardwares = readHardware(buffer, hardware)
+                val sensors = readSensor(buffer, sensor)
                 emit(HardwareMonitorData(0L, hardwares, sensors))
-            } catch (e: CancellationException) {
+            } catch (e: Exception) {
                 break
             }
         }
-    }
-        .flowOn(Dispatchers.IO)
+    }.flowOn(Dispatchers.IO)
 
     private fun readHardwareAndSensorCount(input: InputStream): Pair<Int, Int> {
         val buffer = getByteBuffer(input, HEADER_SIZE)
