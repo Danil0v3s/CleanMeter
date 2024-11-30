@@ -1,6 +1,4 @@
-﻿using System.IO.MemoryMappedFiles;
-using System.Text;
-using HardwareMonitor.Native;
+﻿using System.Text;
 using HardwareMonitor.PresentMon;
 using HardwareMonitor.SharedMemory;
 using HardwareMonitor.Sockets;
@@ -43,9 +41,6 @@ public class MonitorPoller(
         var sharedMemoryData = QueryHardwareData();
 
         var sensorValueOffset = new Dictionary<int, int>();
-        // using var memoryMappedFile = MemoryMappedFile.CreateNew(SharedMemoryConsts.SharedMemoryName, 500_000,
-        //     MemoryMappedFileAccess.ReadWrite, MemoryMappedFileOptions.None, HandleInheritability.Inheritable);
-        // InterProcessSecurity.SetLowIntegrityLevel(memoryMappedFile.SafeMemoryMappedFileHandle);
 
         using var memoryStream = new MemoryStream();
         using var writer = new BinaryWriter(memoryStream);
