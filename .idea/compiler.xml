@@ -2,6 +2,15 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel target="20">
+      <module name="CleanMeter" target="22" />
+      <module name="CleanMeter.core.native" target="22" />
+      <module name="CleanMeter.core.native.main" target="22" />
+      <module name="CleanMeter.core.native.test" target="22" />
+      <module name="CleanMeter.main" target="22" />
+      <module name="CleanMeter.target.server" target="22" />
+      <module name="CleanMeter.target.server.main" target="22" />
+      <module name="CleanMeter.target.server.test" target="22" />
+      <module name="CleanMeter.test" target="22" />
       <module name="PCMonitoR" target="22" />
       <module name="PCMonitoR.core.native" target="22" />
       <module name="PCMonitoR.core.native.main" target="22" />
