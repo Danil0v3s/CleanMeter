@@ -69,6 +69,7 @@ fun SensorReadingDropdownMenu(
     onValueChanged: (HardwareMonitorData.Sensor) -> Unit,
     label: String? = null,
     sensorName: String,
+    dropdownLabel: (HardwareMonitorData.Sensor) -> String = { "${it.Name} (${it.Value} - ${it.SensorType})" },
     modifier: Modifier = Modifier
 ) {
     var expanded by remember { mutableStateOf(false) }
@@ -167,10 +168,8 @@ fun SensorReadingDropdownMenu(
                                     if (filter.isNotEmpty()) {
                                         filteredItems =
                                             options.filter {
-                                                it.SensorType.name.contains(filter, true) || it.Name.contains(
-                                                    filter,
-                                                    true
-                                                )
+                                                it.SensorType.name.contains(filter, true) ||
+                                                        it.Name.contains(filter, true)
                                             }
                                     } else {
                                         filteredItems = options
@@ -202,7 +201,7 @@ fun SensorReadingDropdownMenu(
                                             verticalAlignment = Alignment.CenterVertically
                                         ) {
                                             Text(
-                                                text = "${item.Name} (${item.Value} - ${item.SensorType})",
+                                                text = dropdownLabel(item),
                                                 color = DarkGray,
                                                 fontSize = 14.sp,
                                                 fontWeight = FontWeight(550),

@@ -68,16 +68,11 @@ fun OverlaySettingsUi(
             SensorType.TotalVramUsed,
         ),
         onSwitchToggle = { onSectionSwitchToggle(SectionType.Gpu, it) },
-        body = {
+        body = { options ->
             Column(modifier = Modifier, verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                val readings = getGpuSensorReadings()
-                availableOptions.filterOptions(
-                    SensorType.GpuUsage,
-                    SensorType.GpuTemp,
-                    SensorType.VramUsage,
-                    SensorType.TotalVramUsed,
-                )
-                    .forEach { option ->
+                options.forEach { option ->
+                    val readings = getGpuSensorReadings().filter { it.SensorType == option.dataType }
+
                         Column(horizontalAlignment = Alignment.Start, modifier = Modifier.fillMaxWidth()) {
                             CheckboxWithLabel(
                                 label = option.name,
@@ -110,11 +105,11 @@ fun OverlaySettingsUi(
         title = "CPU",
         options = availableOptions.filterOptions(SensorType.CpuUsage, SensorType.CpuTemp),
         onSwitchToggle = { onSectionSwitchToggle(SectionType.Cpu, it) },
-        body = {
+        body = { options ->
             Column(modifier = Modifier, verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                val readings = getCpuSensorReadings()
-                availableOptions.filterOptions(SensorType.CpuUsage, SensorType.CpuTemp)
-                    .forEach { option ->
+                options.forEach { option ->
+                    val readings = getCpuSensorReadings().filter { it.SensorType == option.dataType }
+
                         Column(horizontalAlignment = Alignment.Start, modifier = Modifier.fillMaxWidth()) {
                             CheckboxWithLabel(
                                 label = option.name,
@@ -156,15 +151,11 @@ fun OverlaySettingsUi(
             SensorType.NetGraph,
         ),
         onSwitchToggle = { onSectionSwitchToggle(SectionType.Network, it) },
-        body = {
+        body = { options ->
             Column(modifier = Modifier, verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                val readings = getNetworkSensorReadings().sortedBy { it.HardwareIdentifier }
-                availableOptions.filterOptions(
-                    SensorType.DownRate,
-                    SensorType.UpRate,
-                    SensorType.NetGraph
-                )
-                    .forEach { option ->
+                options.forEach { option ->
+                        val readings = getNetworkSensorReadings().sortedBy { it.HardwareIdentifier }.filter { it.SensorType == option.dataType }
+
                         Column(horizontalAlignment = Alignment.Start, modifier = Modifier.fillMaxWidth()) {
                             CheckboxWithLabel(
                                 label = option.name,
@@ -176,7 +167,9 @@ fun OverlaySettingsUi(
                             if (readings.isNotEmpty() && option.isSelected && option.useCustomSensor) {
                                 SensorReadingDropdownMenu(
                                     modifier = Modifier.padding(start = 18.dp),
-//                                    options = readings.map { "${getHardwareSensors().firstOrNull { hardware -> hardware.Identifier == it.HardwareIdentifier }?.Name}: ${it.Name} (${it.Value} - ${it.SensorType})" },
+                                    dropdownLabel = {
+                                        "${getHardwareSensors().firstOrNull { hardware -> hardware.Identifier == it.HardwareIdentifier }?.Name}: ${it.Name} (${it.Value} - ${it.SensorType})"
+                                    },
                                     options = readings,
                                     onValueChanged = {
                                         onCustomSensorSelect(option.type, it.Identifier)
@@ -217,47 +210,54 @@ private fun checkboxSectionOptions(overlaySettings: OverlaySettings) = listOf(
     CheckboxSectionOption(
         isSelected = overlaySettings.sensors.framerate.isEnabled,
         name = "Frame count",
-        type = SensorType.Framerate
+        type = SensorType.Framerate,
+        dataType = HardwareMonitorData.SensorType.SmallData,
     ),
     CheckboxSectionOption(
         isSelected = overlaySettings.sensors.frametime.isEnabled,
         name = "Frame time graph",
-        type = SensorType.Frametime
+        type = SensorType.Frametime,
+        dataType = HardwareMonitorData.SensorType.Unknown,
     ),
     CheckboxSectionOption(
         isSelected = overlaySettings.sensors.cpuTemp.isEnabled,
         name = "CPU temperature",
         type = SensorType.CpuTemp,
         optionReadingId = overlaySettings.sensors.cpuTemp.customReadingId,
-        useCustomSensor = true
+        useCustomSensor = true,
+        dataType = HardwareMonitorData.SensorType.Temperature,
     ),
     CheckboxSectionOption(
         isSelected = overlaySettings.sensors.cpuUsage.isEnabled,
         name = "CPU usage",
         type = SensorType.CpuUsage,
         optionReadingId = overlaySettings.sensors.cpuUsage.customReadingId,
-        useCustomSensor = true
+        useCustomSensor = true,
+        dataType = HardwareMonitorData.SensorType.Load,
     ),
     CheckboxSectionOption(
         isSelected = overlaySettings.sensors.gpuTemp.isEnabled,
         name = "GPU temperature",
         type = SensorType.GpuTemp,
         optionReadingId = overlaySettings.sensors.gpuTemp.customReadingId,
-        useCustomSensor = true
+        useCustomSensor = true,
+        dataType = HardwareMonitorData.SensorType.Temperature,
     ),
     CheckboxSectionOption(
         isSelected = overlaySettings.sensors.gpuUsage.isEnabled,
         name = "GPU usage",
         type = SensorType.GpuUsage,
         optionReadingId = overlaySettings.sensors.gpuUsage.customReadingId,
-        useCustomSensor = true
+        useCustomSensor = true,
+        dataType = HardwareMonitorData.SensorType.Load,
     ),
     CheckboxSectionOption(
         isSelected = overlaySettings.sensors.vramUsage.isEnabled,
         name = "VRAM usage",
         type = SensorType.VramUsage,
         optionReadingId = overlaySettings.sensors.vramUsage.customReadingId,
-        useCustomSensor = true
+        useCustomSensor = true,
+        dataType = HardwareMonitorData.SensorType.Load,
     ),
     CheckboxSectionOption(
         isSelected = overlaySettings.sensors.vramUsage.isEnabled,
@@ -265,30 +265,35 @@ private fun checkboxSectionOptions(overlaySettings: OverlaySettings) = listOf(
         type = SensorType.TotalVramUsed,
         optionReadingId = overlaySettings.sensors.totalVramUsed.customReadingId,
         useCustomSensor = true,
-        useCheckbox = false
+        useCheckbox = false,
+        dataType = HardwareMonitorData.SensorType.SmallData,
     ),
     CheckboxSectionOption(
         isSelected = overlaySettings.sensors.ramUsage.isEnabled,
         name = "RAM usage",
-        type = SensorType.RamUsage
+        type = SensorType.RamUsage,
+        dataType = HardwareMonitorData.SensorType.Load,
     ),
     CheckboxSectionOption(
         isSelected = overlaySettings.sensors.downRate.isEnabled,
         name = "Receive speed",
         type = SensorType.DownRate,
         optionReadingId = overlaySettings.sensors.downRate.customReadingId,
-        useCustomSensor = true
+        useCustomSensor = true,
+        dataType = HardwareMonitorData.SensorType.Throughput,
     ),
     CheckboxSectionOption(
         isSelected = overlaySettings.sensors.upRate.isEnabled,
         name = "Send speed",
         type = SensorType.UpRate,
         optionReadingId = overlaySettings.sensors.upRate.customReadingId,
-        useCustomSensor = true
+        useCustomSensor = true,
+        dataType = HardwareMonitorData.SensorType.Throughput,
     ),
     CheckboxSectionOption(
         isSelected = overlaySettings.netGraph,
         name = "Network graph",
-        type = SensorType.NetGraph
+        type = SensorType.NetGraph,
+        dataType = HardwareMonitorData.SensorType.Unknown,
     ),
 )

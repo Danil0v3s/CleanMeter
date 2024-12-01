@@ -1,9 +1,12 @@
 package br.com.firstsoft.target.server.ui.settings
 
+import br.com.firstsoft.core.common.hardwaremonitor.HardwareMonitorData
+
 data class CheckboxSectionOption(
     val isSelected: Boolean,
     val name: String,
     val type: SensorType,
+    val dataType: HardwareMonitorData.SensorType,
     val optionReadingId: String = "",
     val useCustomSensor: Boolean = false,
     val useCheckbox: Boolean = true,

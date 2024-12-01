@@ -70,7 +70,7 @@ fun CustomBodyCheckboxSection(
     title: String,
     options: List<CheckboxSectionOption>,
     onSwitchToggle: (Boolean) -> Unit,
-    body: @Composable () -> Unit,
+    body: @Composable (List<CheckboxSectionOption>) -> Unit,
 ) = Column(
     modifier = Modifier.animateContentSize().background(Color.White, RoundedCornerShape(12.dp)).padding(20.dp),
     verticalArrangement = Arrangement.spacedBy(20.dp)
@@ -97,6 +97,6 @@ fun CustomBodyCheckboxSection(
     }
 
     if (isAnySelected) {
-        body()
+        body(options)
     }
 }
