@@ -27,7 +27,7 @@ public class MonitorPoller(
     };
 
     private SocketHost _socketHost = new(logger);
-    private readonly PresentMonPoller _presentMonPoller = new();
+    private readonly PresentMonPoller _presentMonPoller = new(logger);
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {

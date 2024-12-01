@@ -1,10 +1,11 @@
 ﻿using System.Diagnostics;
 using System.Globalization;
 using LibreHardwareMonitor.Hardware;
+using Microsoft.Extensions.Logging;
 
 namespace HardwareMonitor.PresentMon;
 
-public class PresentMonPoller
+public class PresentMonPoller(ILogger logger)
 {
     private IHardware _hardware = new PresentMonHardware();
     public PresentMonSensor Displayed { get; private set; }
