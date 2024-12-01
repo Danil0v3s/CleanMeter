@@ -64,6 +64,15 @@ internal fun HelpSettingsUi() {
         ) {
             FrequentlyAskedQuestions(
                 "The sensors look wrong" to buildAnnotatedString { append("Try setting up each sensor via the Stats tab") },
+                "Neither sensors dropdown or the overlay are showing up" to buildAnnotatedString {
+                    append("You need to have ")
+                    pushStringAnnotation("click", "https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-desktop-8.0.11-windows-x64-installer")
+                    withStyle(SpanStyle(textDecoration = TextDecoration.Underline)) {
+                        append(".NET Core Framework ")
+                    }
+                    pop()
+                    append("installed")
+                },
                 "Still has questions?" to buildAnnotatedString {
                     append("Join our ")
                     pushStringAnnotation("click", "https://discord.gg/phqwe89cvE")
