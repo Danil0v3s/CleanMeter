@@ -143,7 +143,7 @@ private fun FrametimeGraph(data: HardwareMonitorData, isHorizontal: Boolean) {
         if (data.Frametime > largestFrametime.floatValue) {
             largestFrametime.floatValue = data.Frametime
         }
-        frametimePoints.add(data.Frametime / largestFrametime.floatValue)
+        frametimePoints.add(1f - (data.Frametime / largestFrametime.floatValue))
         if (frametimePoints.size > listSize) frametimePoints.removeFirst()
     }
 
