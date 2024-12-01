@@ -59,7 +59,7 @@ compose.desktop {
 
         nativeDistributions {
             val projectVersion: String by project
-            includeAllModules = true
+
             targetFormats(TargetFormat.Exe, TargetFormat.Deb)
 
             packageName = "cleanmeter"
