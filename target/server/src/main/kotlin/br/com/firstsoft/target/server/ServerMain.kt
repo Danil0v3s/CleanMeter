@@ -28,6 +28,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.net.ServerSocket
 import java.nio.file.Path
 import kotlin.system.exitProcess
 
@@ -63,9 +64,9 @@ object ApplicationViewModelStoreOwner : ViewModelStoreOwner {
 }
 
 fun main(vararg args: String) {
-//    if(WindowsService.checkLockFile()) {
-//        exitProcess(0)
-//    }
+    if(isAppAlreadyRunning()) {
+        exitProcess(0)
+    }
 
     setDefaultUncaughtExceptionHandler()
 
@@ -112,9 +113,9 @@ fun main(vararg args: String) {
         SettingsWindow(
             getOverlayPosition = { overlayPosition },
             onApplicationExit = {
-//                if (isAutostart) {
-//                    HardwareMonitorProcessManager.stop()
-//                }
+                if (isAutostart) {
+                    HardwareMonitorProcessManager.stop()
+                }
             }
         )
     }
@@ -129,4 +130,15 @@ private fun tryElevateProcess(isAutostart: Boolean) {
         Shell32Impl.INSTANCE.ShellExecuteW(null, "runas", "$currentDir\\cleanmeter.exe", "", "", 10)
         exitProcess(0)
     }
+}
+
+private fun isAppAlreadyRunning() = try {
+    ServerSocket(1337).apply {
+        CoroutineScope(Dispatchers.IO).launch {
+            accept()
+        }
+    }
+    false
+} catch (ex: Exception) {
+    true
 }
