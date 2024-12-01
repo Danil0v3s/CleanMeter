@@ -21,14 +21,20 @@ public class PresentMonPoller
         Displayed = new PresentMonSensor(_hardware, "displayed", 0, "Displayed Frames");
         Presented = new PresentMonSensor(_hardware, "presented", 1, "Presented Frames");
         Frametime = new PresentMonSensor(_hardware, "frametime", 2, "Frametime");
+        
+        using var reader = new StreamReader(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "presentmon", "ignored-processes.txt"));
+        var text = await reader.ReadToEndAsync();
+        var processes = text
+            .Split("\n", StringSplitOptions.RemoveEmptyEntries)
+            .Select(x => $"--exclude {x.Trim()}");
 
         var processStartInfo = new ProcessStartInfo
         {
             CreateNoWindow = true,
             RedirectStandardOutput = true,
             UseShellExecute = false,
-            FileName = "presentmon.exe",
-            Arguments = "--stop_existing_session --no_console_stats --output_stdout"
+            FileName = "presentmon\\presentmon.exe",
+            Arguments = $"--stop_existing_session --no_console_stats --output_stdout {string.Join(' ', processes)}"
         };
         _process = new Process();
         _process.StartInfo = processStartInfo;

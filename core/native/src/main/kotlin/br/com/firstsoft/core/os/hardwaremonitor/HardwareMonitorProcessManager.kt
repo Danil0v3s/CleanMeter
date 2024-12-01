@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.nio.file.Path
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 object HardwareMonitorProcessManager {
@@ -32,6 +33,20 @@ object HardwareMonitorProcessManager {
         process = ProcessBuilder().apply {
             command("cmd.exe", "/c", file)
         }.start()
+
+//        val scannerIn = Scanner(process!!.inputStream)
+//        val scannerErr = Scanner(process!!.errorStream)
+//
+//        CoroutineScope(Dispatchers.IO).launch {
+//            while(scannerIn.hasNextLine()) {
+//                System.out.println(scannerIn.nextLine())
+//            }
+//        }
+//        CoroutineScope(Dispatchers.IO).launch {
+//            while(scannerErr.hasNextLine()) {
+//                System.err.println(scannerErr.nextLine())
+//            }
+//        }
     }
 
     fun createService() {
@@ -43,7 +58,7 @@ object HardwareMonitorProcessManager {
             "sc create svcleanmeter displayname= \"CleanMeter Service\" binPath= $file start= auto group= LocalServiceNoNetworkFirewall")
         ProcessBuilder().apply {
             command(command)
-        }.inheritIO().start()
+        }.start()
     }
 
     fun stopService() {

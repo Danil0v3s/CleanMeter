@@ -7,11 +7,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import java.io.InputStream
+import java.net.ConnectException
 import java.net.InetSocketAddress
 import java.net.Socket
+import java.net.SocketException
 import java.nio.ByteBuffer
 
 private const val HARDWARE_SIZE = 260
@@ -23,31 +23,43 @@ private const val HEADER_SIZE = 8
 object HardwareMonitorReader {
 
     val currentData = flow {
-        val socket = Socket()
+        var socket = Socket()
+
         while (true) {
+
+            // try open a connection with HardwareMonitor
             if (!socket.isConnected) {
                 try {
-                    socket.connect(InetSocketAddress("127.0.0.1", 31337), 200)
+                    socket = Socket()
+                    socket.connect(InetSocketAddress("127.0.0.1", 31337))
                 } catch (ex: Exception) {
-                    ex.printStackTrace()
+                    if (ex !is SocketException) {
+                        ex.printStackTrace()
+                    }
                 } finally {
-                    delay(1000)
+                    delay(500)
+                    continue
                 }
             }
 
             val inputStream = socket.inputStream
             while (socket.isConnected) {
                 try {
+                    // read first 8 bytes to get the amount of hardware and sensors
                     val (hardware, sensor) = readHardwareAndSensorCount(inputStream)
+
+                    // if both are 0, bail
                     if (hardware + sensor == 0) continue
 
+                    // we know the length in bytes of hardware and sensor, so we know the length of the packet
                     val buffer = getByteBuffer(inputStream, hardware * HARDWARE_SIZE + sensor * SENSOR_SIZE)
                     val hardwares = readHardware(buffer, hardware)
                     val sensors = readSensor(buffer, sensor)
                     emit(HardwareMonitorData(0L, hardwares, sensors))
-                } catch (e: Exception) {
+                } catch (e: SocketException) {
+                    socket.close()
+                    socket = Socket()
                     e.printStackTrace()
-                    break
                 }
             }
         }

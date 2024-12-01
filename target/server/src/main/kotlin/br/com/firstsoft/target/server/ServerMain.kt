@@ -28,6 +28,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.io.BufferedOutputStream
+import java.io.File
+import java.io.FileOutputStream
+import java.io.PrintStream
 import java.net.ServerSocket
 import java.nio.file.Path
 import kotlin.system.exitProcess
@@ -113,7 +117,7 @@ fun main(vararg args: String) {
         SettingsWindow(
             getOverlayPosition = { overlayPosition },
             onApplicationExit = {
-                if (isAutostart) {
+                if (!isAutostart) {
                     HardwareMonitorProcessManager.stop()
                 }
             }
@@ -134,8 +138,15 @@ private fun tryElevateProcess(isAutostart: Boolean) {
 
 private fun isAppAlreadyRunning() = try {
     ServerSocket(1337).apply {
+        Runtime.getRuntime().addShutdownHook(Thread {
+            close()
+        })
         CoroutineScope(Dispatchers.IO).launch {
-            accept()
+            try {
+                accept()
+            } catch (_: Exception) {
+                // consume the exception of accept since we do not really care if the socket was shutdown
+            }
         }
     }
     false

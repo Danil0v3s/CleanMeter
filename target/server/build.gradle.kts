@@ -11,13 +11,6 @@ val compileMonitor = tasks.register<Exec>("compileMonitor") {
     commandLine("dotnet", "build", "--configuration", "Release")
 }
 
-val copyPresentmonToResources = tasks.register<Copy>("copyPresentmonToResources") {
-    finalizedBy(compileMonitor)
-
-    from("../../presentmon")
-    into(layout.buildDirectory.dir("compose/binaries/main/app/cleanmeter/app/resources"))
-}
-
 plugins {
     kotlin("jvm")
     kotlin("plugin.serialization")
@@ -51,7 +44,10 @@ compose.desktop {
 
         afterEvaluate {
             tasks.named("createDistributable") {
-                finalizedBy(copyPresentmonToResources)
+                finalizedBy(compileMonitor)
+            }
+            tasks.named("runDistributable") {
+                finalizedBy(compileMonitor)
             }
         }
 
@@ -62,6 +58,7 @@ compose.desktop {
         }
 
         nativeDistributions {
+            includeAllModules = true
             targetFormats(TargetFormat.Exe, TargetFormat.Deb)
 
             packageName = "cleanmeter"
