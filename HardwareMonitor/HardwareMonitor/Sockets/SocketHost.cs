@@ -11,11 +11,10 @@ public class SocketHost(ILogger logger)
     
     public async void StartServer()
     {
-        IPHostEntry host = Dns.GetHostEntry("127.0.0.1");
-        IPAddress ipAddress = host.AddressList[0];
-        IPEndPoint localEndPoint = new IPEndPoint(ipAddress, 31337);
+        IPEndPoint localEndPoint = new IPEndPoint(IPAddress.Any, 31337);
+        logger.LogInformation("Listening for connections on {LocalEndPoint}", localEndPoint);
         
-        _listener = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+        _listener = new Socket(localEndPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
         _listener.Bind(localEndPoint);
         _listener.Listen();
 

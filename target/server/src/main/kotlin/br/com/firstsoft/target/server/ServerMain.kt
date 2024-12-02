@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
+import br.com.firstsoft.core.common.reporting.ApplicationParams
 import br.com.firstsoft.core.common.reporting.setDefaultUncaughtExceptionHandler
 import br.com.firstsoft.core.os.hardwaremonitor.HardwareMonitorProcessManager
 import br.com.firstsoft.core.os.util.isDev
@@ -28,8 +29,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.io.FileOutputStream
+import java.io.PrintStream
 import java.net.ServerSocket
 import java.nio.file.Path
+import java.util.*
 import kotlin.system.exitProcess
 
 data class MainState(
@@ -66,6 +70,15 @@ object ApplicationViewModelStoreOwner : ViewModelStoreOwner {
 fun main(vararg args: String) {
     if(isAppAlreadyRunning()) {
         exitProcess(0)
+    }
+
+    ApplicationParams.parse(args)
+
+    if (ApplicationParams.isVerbose) {
+        val startTime = Date().time
+        val printStream = PrintStream(FileOutputStream("out.$startTime.txt", true))
+        System.setOut(printStream)
+        System.setErr(printStream)
     }
 
     setDefaultUncaughtExceptionHandler()

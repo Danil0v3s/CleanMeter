@@ -29,9 +29,12 @@ object HardwareMonitorReader {
             // try open a connection with HardwareMonitor
             if (!socket.isConnected) {
                 try {
+                    println("Trying to connect")
                     socket = Socket()
-                    socket.connect(InetSocketAddress("127.0.0.1", 31337))
+                    socket.connect(InetSocketAddress("0.0.0.0", 31337))
+                    println("Connected ${socket.isConnected}")
                 } catch (ex: Exception) {
+                    println("Couldn't connect ${ex.message}")
                     if (ex !is SocketException) {
                         ex.printStackTrace()
                     }
