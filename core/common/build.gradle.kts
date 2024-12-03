@@ -9,8 +9,7 @@ repositories {
 
 dependencies {
     implementation(libs.kotlinx.serialization)
-    implementation(libs.jackson.module)
-    implementation(libs.jackson.dataformat)
+    implementation(libs.kotlinx.coroutines.core)
 }
 
 tasks.test {

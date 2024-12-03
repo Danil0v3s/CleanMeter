@@ -1,5 +1,6 @@
 package br.com.firstsoft.core.os.win32
 
+import br.com.firstsoft.core.os.util.isDev
 import com.sun.jna.Native
 import com.sun.jna.Pointer
 import com.sun.jna.platform.win32.Kernel32
@@ -15,6 +16,7 @@ import java.io.IOException
 import java.nio.file.Files.createFile
 import java.nio.file.Path
 import kotlin.io.path.exists
+import kotlin.system.exitProcess
 
 class WindowsService {
 
@@ -76,16 +78,13 @@ class WindowsService {
             return true
         }
 
-        fun checkLockFile(): Boolean {
-            val currentPath = Path.of("").toAbsolutePath()
-            val filePath = Path.of(currentPath.toString(), "cleanmeter.lock")
-            if (filePath.exists()) {
-                return true
+        fun tryElevateProcess(isAutostart: Boolean) {
+            if (isAutostart) return
+            if (!isDev() && !WindowsService.isProcessElevated()) {
+                val currentDir = Path.of("").toAbsolutePath().toString()
+                Shell32Impl.INSTANCE.ShellExecuteW(null, "runas", "$currentDir\\cleanmeter.exe", "", "", 10)
+                exitProcess(0)
             }
-
-            createFile(filePath).toFile().deleteOnExit()
-
-            return false
         }
     }
 }
