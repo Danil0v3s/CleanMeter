@@ -68,10 +68,28 @@ internal fun HelpSettingsUi() {
                     append("You need to have ")
                     pushStringAnnotation("click", "https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-desktop-8.0.11-windows-x64-installer")
                     withStyle(SpanStyle(textDecoration = TextDecoration.Underline)) {
-                        append(".NET Core Framework ")
+                        append(".NET Core Framework")
                     }
                     pop()
-                    append("installed")
+                    append(" installed")
+                },
+                "Having problems like crashes or still nothing showing up?" to buildAnnotatedString {
+                    append("Launch the app with ")
+                    withStyle(SpanStyle(textDecoration = TextDecoration.Underline)) {
+                        append("--verbose (eg: cleanmeter.exe --verbose)")
+                    }
+                    append(" params and ping us on our ")
+                    pushStringAnnotation("click", "https://discord.gg/phqwe89cvE")
+                    withStyle(SpanStyle(textDecoration = TextDecoration.Underline)) {
+                        append("Discord Server")
+                    }
+                    pop()
+                    append(" or ")
+                    pushStringAnnotation("click", "https://github.com/Danil0v3s/CleanMeter/issues")
+                    withStyle(SpanStyle(textDecoration = TextDecoration.Underline)) {
+                        append("GitHub Issues")
+                    }
+                    pop()
                 },
                 "Still has questions?" to buildAnnotatedString {
                     append("Join our ")
