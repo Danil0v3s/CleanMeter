@@ -5,8 +5,20 @@ val copyMonitorFiles = tasks.register<Copy>("copyMonitorFiles") {
     into(layout.buildDirectory.dir("compose/binaries/main/app/cleanmeter/app/resources"))
 }
 
-val compileMonitor = tasks.register<Exec>("compileMonitor") {
+val copyUpdaterFiles = tasks.register<Copy>("copyUpdaterFiles") {
     finalizedBy(copyMonitorFiles)
+    from("../../Updater/bin/Release/net8.0")
+    into(layout.buildDirectory.dir("compose/binaries/main/app/cleanmeter/app/resources"))
+}
+
+val compileUpdater = tasks.register<Exec>("compileUpdater") {
+    finalizedBy(copyUpdaterFiles)
+    workingDir("../../Updater/")
+    commandLine("dotnet", "build", "--configuration", "Release")
+}
+
+val compileMonitor = tasks.register<Exec>("compileMonitor") {
+    finalizedBy(compileUpdater)
     workingDir("../../HardwareMonitor/")
     commandLine("dotnet", "build", "--configuration", "Release")
 }
@@ -29,6 +41,7 @@ dependencies {
 
     implementation(projects.core.common)
     implementation(projects.core.native)
+    implementation(projects.core.updater)
 }
 
 sourceSets {

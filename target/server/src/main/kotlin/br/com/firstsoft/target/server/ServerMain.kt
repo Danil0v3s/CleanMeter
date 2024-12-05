@@ -7,6 +7,7 @@ import br.com.firstsoft.core.os.util.isDev
 import br.com.firstsoft.core.os.win32.WindowsService
 import kotlinx.coroutines.channels.Channel
 
+
 fun main(vararg args: String) = singleInstance(args) {
     WindowsService.tryElevateProcess(ApplicationParams.isAutostart)
 
