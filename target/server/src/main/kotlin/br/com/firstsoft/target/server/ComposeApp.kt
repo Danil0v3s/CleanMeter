@@ -12,9 +12,8 @@ import br.com.firstsoft.core.common.reporting.ApplicationParams
 import br.com.firstsoft.core.os.ProcessManager
 import br.com.firstsoft.target.server.ui.overlay.OverlayWindow
 import br.com.firstsoft.target.server.ui.settings.SettingsWindow
-import kotlinx.coroutines.channels.Channel
 
-fun composeApp(callbackChannel: Channel<Unit>) = application {
+fun composeApp() = application {
     val viewModel: MainViewModel = viewModel(ApplicationViewModelStoreOwner)
 
     val state by viewModel.state.collectAsState(MainState())
@@ -29,7 +28,6 @@ fun composeApp(callbackChannel: Channel<Unit>) = application {
     }
 
     OverlayWindow(
-        channel = callbackChannel,
         onPositionChanged = {
             if (!state.overlaySettings.isPositionLocked) {
                 overlayPosition = it
