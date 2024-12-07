@@ -15,7 +15,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import br.com.firstsoft.core.common.hwinfo.SensorReadingElement
+import br.com.firstsoft.core.common.hardwaremonitor.HardwareMonitorData
 import br.com.firstsoft.target.server.model.OverlaySettings
 import br.com.firstsoft.target.server.ui.ColorTokens.LabelGray
 import br.com.firstsoft.target.server.ui.components.CheckboxSection
@@ -23,7 +23,7 @@ import br.com.firstsoft.target.server.ui.components.CheckboxWithLabel
 import br.com.firstsoft.target.server.ui.components.CustomBodyCheckboxSection
 import br.com.firstsoft.target.server.ui.components.DropdownSection
 import br.com.firstsoft.target.server.ui.components.KeyboardShortcutInfoLabel
-import br.com.firstsoft.target.server.ui.components.StealthDropdownMenu
+import br.com.firstsoft.target.server.ui.components.SensorReadingDropdownMenu
 import br.com.firstsoft.target.server.ui.settings.CheckboxSectionOption
 import br.com.firstsoft.target.server.ui.settings.SectionType
 import br.com.firstsoft.target.server.ui.settings.SensorType
@@ -37,10 +37,12 @@ fun OverlaySettingsUi(
     overlaySettings: OverlaySettings,
     onOptionsToggle: (CheckboxSectionOption) -> Unit,
     onSectionSwitchToggle: (SectionType, Boolean) -> Unit,
-    onCustomSensorSelect: (SensorType, Int) -> Unit,
+    onCustomSensorSelect: (SensorType, String) -> Unit,
     onDisplaySelect: (Int) -> Unit,
-    getCpuSensorReadings: () -> List<SensorReadingElement>,
-    getGpuSensorReadings: () -> List<SensorReadingElement>,
+    getCpuSensorReadings: () -> List<HardwareMonitorData.Sensor>,
+    getGpuSensorReadings: () -> List<HardwareMonitorData.Sensor>,
+    getNetworkSensorReadings: () -> List<HardwareMonitorData.Sensor>,
+    getHardwareSensors: () -> List<HardwareMonitorData.Hardware>,
 ) = Column(
     modifier = Modifier.padding(bottom = 8.dp, top = 20.dp).verticalScroll(rememberScrollState()),
     verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -62,36 +64,35 @@ fun OverlaySettingsUi(
         options = availableOptions.filterOptions(
             SensorType.GpuUsage,
             SensorType.GpuTemp,
-            SensorType.VramUsage
+            SensorType.VramUsage,
+            SensorType.TotalVramUsed,
         ),
         onSwitchToggle = { onSectionSwitchToggle(SectionType.Gpu, it) },
-        body = {
+        body = { options ->
             Column(modifier = Modifier, verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                val readings = getGpuSensorReadings()
-                availableOptions.filterOptions(
-                    SensorType.GpuUsage,
-                    SensorType.GpuTemp,
-                    SensorType.VramUsage
-                )
-                    .forEach { option ->
+                options.forEach { option ->
+                    val readings = getGpuSensorReadings().filter { it.SensorType == option.dataType }
+
                         Column(horizontalAlignment = Alignment.Start, modifier = Modifier.fillMaxWidth()) {
                             CheckboxWithLabel(
                                 label = option.name,
+                                enabled = option.useCheckbox,
                                 onCheckedChange = { onOptionsToggle(option.copy(isSelected = !option.isSelected)) },
                                 checked = option.isSelected,
                             )
+
                             if (readings.isNotEmpty() && option.isSelected && option.useCustomSensor) {
-                                StealthDropdownMenu(
+                                SensorReadingDropdownMenu(
                                     modifier = Modifier.padding(start = 18.dp),
-                                    options = readings.map { "${it.szLabelOrig} (${it.value}${it.szUnit})" },
+                                    options = readings,
                                     onValueChanged = {
-                                        val reading = readings[it].dwReadingID
-                                        onCustomSensorSelect(option.type, reading)
+                                        onCustomSensorSelect(option.type, it.Identifier)
                                     },
                                     selectedIndex = readings
-                                        .indexOfFirst { it.dwReadingID == option.optionReadingId }
+                                        .indexOfFirst { it.Identifier == option.optionReadingId }
                                         .coerceAtLeast(0),
-                                    label = "Sensor:"
+                                    label = "Sensor:",
+                                    sensorName = option.name,
                                 )
                             }
                         }
@@ -104,11 +105,11 @@ fun OverlaySettingsUi(
         title = "CPU",
         options = availableOptions.filterOptions(SensorType.CpuUsage, SensorType.CpuTemp),
         onSwitchToggle = { onSectionSwitchToggle(SectionType.Cpu, it) },
-        body = {
+        body = { options ->
             Column(modifier = Modifier, verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                val readings = getCpuSensorReadings()
-                availableOptions.filterOptions(SensorType.CpuUsage, SensorType.CpuTemp)
-                    .forEach { option ->
+                options.forEach { option ->
+                    val readings = getCpuSensorReadings().filter { it.SensorType == option.dataType }
+
                         Column(horizontalAlignment = Alignment.Start, modifier = Modifier.fillMaxWidth()) {
                             CheckboxWithLabel(
                                 label = option.name,
@@ -116,17 +117,17 @@ fun OverlaySettingsUi(
                                 checked = option.isSelected,
                             )
                             if (readings.isNotEmpty() && option.isSelected && option.useCustomSensor) {
-                                StealthDropdownMenu(
+                                SensorReadingDropdownMenu(
                                     modifier = Modifier.padding(start = 18.dp),
-                                    options = readings.map { "${it.szLabelOrig} (${it.value}${it.szUnit})" },
+                                    options = readings,
                                     onValueChanged = {
-                                        val reading = readings[it].dwReadingID
-                                        onCustomSensorSelect(option.type, reading)
+                                        onCustomSensorSelect(option.type, it.Identifier)
                                     },
                                     selectedIndex = readings
-                                        .indexOfFirst { it.dwReadingID == option.optionReadingId }
+                                        .indexOfFirst { it.Identifier == option.optionReadingId }
                                         .coerceAtLeast(0),
-                                    label = "Sensor:"
+                                    label = "Sensor:",
+                                    sensorName = option.name,
                                 )
                             }
                         }
@@ -142,15 +143,48 @@ fun OverlaySettingsUi(
         onSwitchToggle = { onSectionSwitchToggle(SectionType.Ram, it) }
     )
 
-    CheckboxSection(
+    CustomBodyCheckboxSection(
         title = "NETWORK",
         options = availableOptions.filterOptions(
             SensorType.DownRate,
             SensorType.UpRate,
-            SensorType.NetGraph
+            SensorType.NetGraph,
         ),
-        onOptionToggle = onOptionsToggle,
-        onSwitchToggle = { onSectionSwitchToggle(SectionType.Network, it) }
+        onSwitchToggle = { onSectionSwitchToggle(SectionType.Network, it) },
+        body = { options ->
+            Column(modifier = Modifier, verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                options.forEach { option ->
+                        val readings = getNetworkSensorReadings().sortedBy { it.HardwareIdentifier }.filter { it.SensorType == option.dataType }
+
+                        Column(horizontalAlignment = Alignment.Start, modifier = Modifier.fillMaxWidth()) {
+                            CheckboxWithLabel(
+                                label = option.name,
+                                enabled = option.useCheckbox,
+                                onCheckedChange = { onOptionsToggle(option.copy(isSelected = !option.isSelected)) },
+                                checked = option.isSelected,
+                            )
+
+                            if (readings.isNotEmpty() && option.isSelected && option.useCustomSensor) {
+                                SensorReadingDropdownMenu(
+                                    modifier = Modifier.padding(start = 18.dp),
+                                    dropdownLabel = {
+                                        "${getHardwareSensors().firstOrNull { hardware -> hardware.Identifier == it.HardwareIdentifier }?.Name}: ${it.Name} (${it.Value} - ${it.SensorType})"
+                                    },
+                                    options = readings,
+                                    onValueChanged = {
+                                        onCustomSensorSelect(option.type, it.Identifier)
+                                    },
+                                    selectedIndex = readings
+                                        .indexOfFirst { it.Identifier == option.optionReadingId }
+                                        .coerceAtLeast(0),
+                                    label = "Sensor:",
+                                    sensorName = option.name,
+                                )
+                            }
+                        }
+                    }
+            }
+        }
     )
 
     DropdownSection(
@@ -176,64 +210,90 @@ private fun checkboxSectionOptions(overlaySettings: OverlaySettings) = listOf(
     CheckboxSectionOption(
         isSelected = overlaySettings.sensors.framerate.isEnabled,
         name = "Frame count",
-        type = SensorType.Framerate
+        type = SensorType.Framerate,
+        dataType = HardwareMonitorData.SensorType.SmallData,
     ),
     CheckboxSectionOption(
         isSelected = overlaySettings.sensors.frametime.isEnabled,
         name = "Frame time graph",
-        type = SensorType.Frametime
+        type = SensorType.Frametime,
+        dataType = HardwareMonitorData.SensorType.Unknown,
     ),
     CheckboxSectionOption(
         isSelected = overlaySettings.sensors.cpuTemp.isEnabled,
         name = "CPU temperature",
         type = SensorType.CpuTemp,
         optionReadingId = overlaySettings.sensors.cpuTemp.customReadingId,
-        useCustomSensor = true
+        useCustomSensor = true,
+        dataType = HardwareMonitorData.SensorType.Temperature,
     ),
     CheckboxSectionOption(
         isSelected = overlaySettings.sensors.cpuUsage.isEnabled,
         name = "CPU usage",
         type = SensorType.CpuUsage,
         optionReadingId = overlaySettings.sensors.cpuUsage.customReadingId,
-        useCustomSensor = true
+        useCustomSensor = true,
+        dataType = HardwareMonitorData.SensorType.Load,
     ),
     CheckboxSectionOption(
         isSelected = overlaySettings.sensors.gpuTemp.isEnabled,
         name = "GPU temperature",
         type = SensorType.GpuTemp,
         optionReadingId = overlaySettings.sensors.gpuTemp.customReadingId,
-        useCustomSensor = true
+        useCustomSensor = true,
+        dataType = HardwareMonitorData.SensorType.Temperature,
     ),
     CheckboxSectionOption(
         isSelected = overlaySettings.sensors.gpuUsage.isEnabled,
         name = "GPU usage",
         type = SensorType.GpuUsage,
         optionReadingId = overlaySettings.sensors.gpuUsage.customReadingId,
-        useCustomSensor = true
+        useCustomSensor = true,
+        dataType = HardwareMonitorData.SensorType.Load,
     ),
     CheckboxSectionOption(
         isSelected = overlaySettings.sensors.vramUsage.isEnabled,
         name = "VRAM usage",
-        type = SensorType.VramUsage
+        type = SensorType.VramUsage,
+        optionReadingId = overlaySettings.sensors.vramUsage.customReadingId,
+        useCustomSensor = true,
+        dataType = HardwareMonitorData.SensorType.Load,
+    ),
+    CheckboxSectionOption(
+        isSelected = overlaySettings.sensors.vramUsage.isEnabled,
+        name = "Total VRAM used",
+        type = SensorType.TotalVramUsed,
+        optionReadingId = overlaySettings.sensors.totalVramUsed.customReadingId,
+        useCustomSensor = true,
+        useCheckbox = false,
+        dataType = HardwareMonitorData.SensorType.SmallData,
     ),
     CheckboxSectionOption(
         isSelected = overlaySettings.sensors.ramUsage.isEnabled,
         name = "RAM usage",
-        type = SensorType.RamUsage
+        type = SensorType.RamUsage,
+        dataType = HardwareMonitorData.SensorType.Load,
     ),
     CheckboxSectionOption(
         isSelected = overlaySettings.sensors.downRate.isEnabled,
         name = "Receive speed",
-        type = SensorType.DownRate
+        type = SensorType.DownRate,
+        optionReadingId = overlaySettings.sensors.downRate.customReadingId,
+        useCustomSensor = true,
+        dataType = HardwareMonitorData.SensorType.Throughput,
     ),
     CheckboxSectionOption(
         isSelected = overlaySettings.sensors.upRate.isEnabled,
         name = "Send speed",
-        type = SensorType.UpRate
+        type = SensorType.UpRate,
+        optionReadingId = overlaySettings.sensors.upRate.customReadingId,
+        useCustomSensor = true,
+        dataType = HardwareMonitorData.SensorType.Throughput,
     ),
     CheckboxSectionOption(
         isSelected = overlaySettings.netGraph,
         name = "Network graph",
-        type = SensorType.NetGraph
+        type = SensorType.NetGraph,
+        dataType = HardwareMonitorData.SensorType.Unknown,
     ),
 )

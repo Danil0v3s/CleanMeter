@@ -17,6 +17,7 @@ private fun HwInfoData.readings(namePart: String): List<SensorReadingElement> {
 fun HwInfoData.cpuReadings() = readings("CPU")
 fun HwInfoData.gpuReadings() = readings("GPU")
 fun HwInfoData.getReading(readingId: Int) = readings.firstOrNull { it.dwReadingID == readingId }
+fun HwInfoData.getReading(readingId: String) = readings.firstOrNull()
 
 val HwInfoData.FPS: Int
     get() = (readings.firstOrNull { it.readingType == SensorReadingType.Other && it.szLabelOrig == "Framerate (Presented)" }?.value?.toInt()

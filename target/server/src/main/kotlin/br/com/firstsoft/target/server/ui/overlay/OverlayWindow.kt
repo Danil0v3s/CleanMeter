@@ -21,9 +21,9 @@ import androidx.compose.ui.window.rememberWindowState
 import androidx.lifecycle.viewmodel.compose.viewModel
 import br.com.firstsoft.core.os.win32.WindowsService
 import br.com.firstsoft.target.server.ApplicationViewModelStoreOwner
-import kotlinx.coroutines.channels.Channel
+import br.com.firstsoft.target.server.KeyboardEvent
+import br.com.firstsoft.target.server.KeyboardManager
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.receiveAsFlow
 import java.awt.GraphicsEnvironment
 import java.awt.Toolkit
 import java.awt.event.ComponentAdapter
@@ -41,7 +41,6 @@ val positions = listOf(
 @Composable
 fun ApplicationScope.OverlayWindow(
     viewModel: OverlayViewModel = viewModel(ApplicationViewModelStoreOwner),
-    channel: Channel<Unit>,
     onPositionChanged: (IntOffset) -> Unit
 ) {
     val overlayState by viewModel.state.collectAsState(OverlayState())
@@ -50,7 +49,7 @@ fun ApplicationScope.OverlayWindow(
 
     var isVisible by remember { mutableStateOf(true) }
     LaunchedEffect(Unit) {
-        channel.receiveAsFlow().collectLatest {
+        KeyboardManager.filter(KeyboardEvent.ToggleOverlay).collectLatest {
             isVisible = !isVisible
         }
     }
@@ -134,7 +133,7 @@ fun ApplicationScope.OverlayWindow(
         WindowDraggableArea {
             Overlay(
                 overlaySettings = overlayState.overlaySettings!!,
-                data = overlayState.hwInfoData
+                data = overlayState.hardwareData
             )
         }
     }

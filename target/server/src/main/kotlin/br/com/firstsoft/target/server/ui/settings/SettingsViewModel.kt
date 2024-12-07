@@ -2,8 +2,8 @@ package br.com.firstsoft.target.server.ui.settings
 
 import androidx.compose.ui.unit.IntOffset
 import androidx.lifecycle.ViewModel
-import br.com.firstsoft.core.common.hwinfo.HwInfoData
-import br.com.firstsoft.core.os.hwinfo.HwInfoReader
+import br.com.firstsoft.core.common.hardwaremonitor.HardwareMonitorData
+import br.com.firstsoft.target.server.data.ObserveHardwareReadings
 import br.com.firstsoft.target.server.data.OverlaySettingsRepository
 import br.com.firstsoft.target.server.model.OverlaySettings
 import kotlinx.coroutines.CoroutineScope
@@ -16,13 +16,13 @@ import kotlinx.coroutines.launch
 
 data class SettingsState(
     val overlaySettings: OverlaySettings? = null,
-    val hwInfoData: HwInfoData? = null
+    val hardwareData: HardwareMonitorData? = null
 )
 
 sealed class SettingsEvent {
     data class OptionsToggle(val data: CheckboxSectionOption) : SettingsEvent()
     data class SwitchToggle(val section: SectionType, val isEnabled: Boolean) : SettingsEvent()
-    data class CustomSensorSelect(val sensor: SensorType, val sensorId: Int) : SettingsEvent()
+    data class CustomSensorSelect(val sensor: SensorType, val sensorId: String) : SettingsEvent()
     data class DisplaySelect(val displayIndex: Int) : SettingsEvent()
     data class OverlayPositionIndexSelect(val index: Int) : SettingsEvent()
     data class OverlayCustomPositionSelect(val offset: IntOffset, val isPositionLocked: Boolean) : SettingsEvent()
@@ -55,8 +55,8 @@ class SettingsViewModel : ViewModel() {
 
     private fun observeHwInfo() {
         CoroutineScope(Dispatchers.IO).launch {
-            HwInfoReader.currentData.collectLatest { hwInfoData ->
-                _state.update { it.copy(hwInfoData = hwInfoData) }
+            ObserveHardwareReadings.data.collectLatest { hwInfoData ->
+                _state.update { it.copy(hardwareData = hwInfoData) }
             }
         }
     }
@@ -153,7 +153,7 @@ class SettingsViewModel : ViewModel() {
         }
     }
 
-    private fun onCustomSensorSelect(sensor: SensorType, sensorId: Int, settingsState: SettingsState) {
+    private fun onCustomSensorSelect(sensor: SensorType, sensorId: String, settingsState: SettingsState) {
         with(settingsState) {
             val newSettings = when (sensor) {
                 SensorType.CpuTemp -> overlaySettings?.copy(
@@ -188,12 +188,41 @@ class SettingsViewModel : ViewModel() {
                     )
                 )
 
+                SensorType.VramUsage -> overlaySettings?.copy(
+                    sensors = overlaySettings.sensors.copy(
+                        vramUsage = overlaySettings.sensors.vramUsage.copy(
+                            customReadingId = sensorId,
+                        )
+                    )
+                )
+
+                SensorType.TotalVramUsed -> overlaySettings?.copy(
+                    sensors = overlaySettings.sensors.copy(
+                        totalVramUsed = overlaySettings.sensors.totalVramUsed.copy(
+                            customReadingId = sensorId,
+                        )
+                    )
+                )
+
+                SensorType.UpRate -> overlaySettings?.copy(
+                    sensors = overlaySettings.sensors.copy(
+                        upRate = overlaySettings.sensors.upRate.copy(
+                            customReadingId = sensorId,
+                        )
+                    )
+                )
+
+                SensorType.DownRate -> overlaySettings?.copy(
+                    sensors = overlaySettings.sensors.copy(
+                        downRate = overlaySettings.sensors.downRate.copy(
+                            customReadingId = sensorId,
+                        )
+                    )
+                )
+
                 SensorType.Framerate -> overlaySettings
                 SensorType.Frametime -> overlaySettings
-                SensorType.VramUsage -> overlaySettings
                 SensorType.RamUsage -> overlaySettings
-                SensorType.UpRate -> overlaySettings
-                SensorType.DownRate -> overlaySettings
                 SensorType.NetGraph -> overlaySettings
             }
 
@@ -347,6 +376,8 @@ class SettingsViewModel : ViewModel() {
                         )
                     )
                 )
+
+                SensorType.TotalVramUsed -> overlaySettings // cant disable total vram used
 
                 SensorType.NetGraph -> overlaySettings?.copy(netGraph = option.isSelected)
             }

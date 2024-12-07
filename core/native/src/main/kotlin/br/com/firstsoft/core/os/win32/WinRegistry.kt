@@ -1,7 +1,9 @@
 package br.com.firstsoft.core.os.win32
 
+import br.com.firstsoft.core.os.hardwaremonitor.HardwareMonitorProcessManager
 import java.io.BufferedReader
 import java.io.InputStreamReader
+import java.nio.file.Path
 
 object WinRegistry {
     const val STARTUP_ITEMS_LOCATION = "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run"
@@ -43,10 +45,17 @@ object WinRegistry {
     }
 
     fun registerAppToStartWithWindows() {
-        write(STARTUP_ITEMS_LOCATION, REGISTRY_APP_NAME, "\\\"${System.getProperty("user.dir")}\\cleanmeter\\$REGISTRY_APP_NAME.exe\\\"")
+        if (WindowsService.isProcessElevated()) {
+            write(STARTUP_ITEMS_LOCATION, REGISTRY_APP_NAME, "\\\"${Path.of("").toAbsolutePath()}\\$REGISTRY_APP_NAME.exe\\\" --autostart")
+            HardwareMonitorProcessManager.createService()
+        }
     }
 
     fun removeAppFromStartWithWindows() {
-        delete(STARTUP_ITEMS_LOCATION, REGISTRY_APP_NAME)
+        if (WindowsService.isProcessElevated()) {
+            delete(STARTUP_ITEMS_LOCATION, REGISTRY_APP_NAME)
+            HardwareMonitorProcessManager.stopService()
+            HardwareMonitorProcessManager.deleteService()
+        }
     }
 }

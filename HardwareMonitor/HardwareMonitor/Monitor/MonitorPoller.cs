@@ -1,12 +1,19 @@
-﻿using System.IO.MemoryMappedFiles;
+﻿using System.Text;
+using HardwareMonitor.PresentMon;
 using HardwareMonitor.SharedMemory;
+using HardwareMonitor.Sockets;
 using LibreHardwareMonitor.Hardware;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace HardwareMonitor.Monitor;
 
-public class MonitorPoller
+public class MonitorPoller(
+    IHostApplicationLifetime hostApplicationLifetime,
+    ILogger<MonitorPoller> logger
+) : BackgroundService
 {
-    Computer computer = new()
+    private readonly Computer _computer = new()
     {
         IsCpuEnabled = true,
         IsGpuEnabled = true,
@@ -16,23 +23,97 @@ public class MonitorPoller
         IsNetworkEnabled = true,
         IsPsuEnabled = true,
         IsBatteryEnabled = true,
-        IsStorageEnabled = true
+        IsStorageEnabled = true,
     };
 
-    private bool _isOpen;
+    private SocketHost _socketHost = new(logger);
+    private readonly PresentMonPoller _presentMonPoller = new(logger);
 
-    public async ValueTask Start()
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _isOpen = true;
-        computer.Open();
-        computer.Accept(new UpdateVisitor());
+        logger.LogInformation("Starting monitor");
 
+        _computer.Open();
+        _computer.Accept(new UpdateVisitor());
+        _presentMonPoller.Start();
+        _socketHost.StartServer();
+
+        var sharedMemoryData = QueryHardwareData();
+
+        var sensorValueOffset = new Dictionary<int, int>();
+
+        using var memoryStream = new MemoryStream();
+        using var writer = new BinaryWriter(memoryStream);
+        var accumulator = 0;
+
+        writer.Write(sharedMemoryData.Hardwares.Count);
+        writer.Write(sharedMemoryData.Sensors.Count);
+
+        foreach (var hardware in sharedMemoryData.Hardwares)
+        {
+            writer.Write(GetBytes(hardware.Name, SharedMemoryConsts.NameSize));
+            writer.Write(GetBytes(hardware.Identifier, SharedMemoryConsts.IdentifierSize));
+            writer.Write((int)hardware.HardwareType);
+        }
+
+        for (var index = 0; index < sharedMemoryData.Sensors.Count; index++)
+        {
+            var sensor = sharedMemoryData.Sensors[index];
+            sensor.Value = float.IsNaN(sensor.Sensor.Value ?? 0f) ? 0f : (sensor.Sensor.Value ?? 0f);
+
+            writer.Write(GetBytes(sensor.Name, SharedMemoryConsts.NameSize));
+            writer.Write(GetBytes(sensor.Identifier, SharedMemoryConsts.IdentifierSize));
+            writer.Write(GetBytes(sensor.HardwareIdentifier, SharedMemoryConsts.IdentifierSize));
+            writer.Write((int)sensor.SensorType);
+            writer.Write((float)sensor.Value);
+
+            // store the starting offset of the float we just wrote
+            sensorValueOffset[index] = (int)writer.BaseStream.Position - 4;
+        }
+
+        while (!stoppingToken.IsCancellationRequested)
+        {
+            foreach (var hardware in sharedMemoryData.Hardwares)
+            {
+                hardware.Hardware.Update();
+            }
+
+            for (var index = 0; index < sharedMemoryData.Sensors.Count; index++)
+            {
+                var sensor = sharedMemoryData.Sensors[index];
+                sensor.Value = float.IsNaN(sensor.Sensor.Value ?? 0f) ? 0f : (sensor.Sensor.Value ?? 0f);
+
+                // seek to the sensor value offset
+                writer.Seek(sensorValueOffset[index], SeekOrigin.Begin);
+                writer.Write((float)sensor.Value);
+            }
+
+            if (_socketHost.HasConnections())
+            {
+                _socketHost.SendToAll(memoryStream.ToArray());
+            }
+
+            if (accumulator >= 1000)
+            {
+                GC.Collect();
+                accumulator = 0;
+            }
+
+            accumulator += 500;
+            await Task.Delay(500, stoppingToken);
+        }
+
+        Stop();
+        hostApplicationLifetime.StopApplication();
+    }
+
+    private SharedMemoryData QueryHardwareData()
+    {
         var hardwareList = new List<SharedMemoryHardware>();
         var sensorList = new List<SharedMemorySensor>();
         var sharedMemoryData = new SharedMemoryData();
-        var jsonArray = Array.Empty<byte>();
 
-        foreach (var hardware in computer.Hardware)
+        foreach (var hardware in _computer.Hardware)
         {
             hardwareList.Add(MapHardware(hardware));
             foreach (var subHardware in hardware.SubHardware)
@@ -41,10 +122,11 @@ public class MonitorPoller
             }
         }
 
-        foreach (var hardware in computer.Hardware)
+        foreach (var hardware in _computer.Hardware)
         {
             foreach (var sensor in hardware.Sensors)
             {
+                sensor.ValuesTimeWindow = TimeSpan.Zero;
                 sensorList.Add(MapSensor(sensor));
             }
 
@@ -52,58 +134,49 @@ public class MonitorPoller
             {
                 foreach (var sensor in subHardware.Sensors)
                 {
+                    sensor.ValuesTimeWindow = TimeSpan.Zero;
                     sensorList.Add(MapSensor(sensor));
                 }
             }
         }
 
+        sensorList.Add(MapSensor(_presentMonPoller.Displayed));
+        sensorList.Add(MapSensor(_presentMonPoller.Presented));
+        sensorList.Add(MapSensor(_presentMonPoller.Frametime));
+
         sharedMemoryData.Sensors = sensorList;
         sharedMemoryData.Hardwares = hardwareList;
 
-        using var memoryMappedFile = MemoryMappedFile.CreateNew(SharedMemoryConsts.SharedMemoryName, 500_000);
-        using var mmfStream = memoryMappedFile.CreateViewStream();
-        using var writer = new BinaryWriter(mmfStream);
-
-        while (_isOpen)
-        {
-            sharedMemoryData.LastPollTime = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
-
-            foreach (var sensor in sensorList)
-            {
-                sensor.Value = float.IsNaN(sensor.Sensor.Value ?? 0f) ? 0f : (sensor.Sensor.Value ?? 0f);
-            }
-
-            jsonArray = Utf8Json.JsonSerializer.Serialize(sharedMemoryData);
-            writer.Write((int)jsonArray.Length);
-            writer.Write(jsonArray);
-
-            // if (sharedMemoryData.LastPollTime % 10 == 0)
-            // {
-            //     GC.Collect();
-            // }
-
-            writer.Seek(0, SeekOrigin.Begin);
-            await Task.Delay(500);
-        }
+        return sharedMemoryData;
     }
 
-    public void Stop()
+    private void Stop()
     {
-        computer.Close();
+        _computer.Close();
+        _presentMonPoller.Stop();
+        _socketHost.Close();
     }
 
-    private SharedMemoryHardware MapHardware(IHardware hardware) => new()
+    private static SharedMemoryHardware MapHardware(IHardware hardware) => new()
     {
         Name = hardware.Name,
-        Identifier = hardware.Identifier.ToString()
+        Identifier = hardware.Identifier.ToString(),
+        HardwareType = hardware.HardwareType,
+        Hardware = hardware
     };
 
-    private SharedMemorySensor MapSensor(ISensor sensor) => new()
+    private static SharedMemorySensor MapSensor(ISensor sensor) => new()
     {
         Name = sensor.Name,
         Identifier = sensor.Identifier.ToString(),
-        SensorType = (int)sensor.SensorType,
+        SensorType = sensor.SensorType,
         Value = float.IsNaN(sensor.Value ?? 0f) ? 0f : (sensor.Value ?? 0f),
+        HardwareIdentifier = sensor.Hardware.Identifier.ToString(),
         Sensor = sensor
     };
+
+    private static byte[] GetBytes(string str, int length)
+    {
+        return Encoding.UTF8.GetBytes(str.Length > length ? str[..length] : str.PadRight(length, '\0'));
+    }
 }

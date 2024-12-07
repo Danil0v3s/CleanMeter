@@ -1,16 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
-    <bytecodeTargetLevel target="20">
-      <module name="PCMonitoR" target="22" />
-      <module name="PCMonitoR.core.native" target="22" />
-      <module name="PCMonitoR.core.native.main" target="22" />
-      <module name="PCMonitoR.core.native.test" target="22" />
-      <module name="PCMonitoR.main" target="22" />
-      <module name="PCMonitoR.target.server" target="22" />
-      <module name="PCMonitoR.target.server.main" target="22" />
-      <module name="PCMonitoR.target.server.test" target="22" />
-      <module name="PCMonitoR.test" target="22" />
-    </bytecodeTargetLevel>
+    <bytecodeTargetLevel target="20" />
   </component>
 </project>

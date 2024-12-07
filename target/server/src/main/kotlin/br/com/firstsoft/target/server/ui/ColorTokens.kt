@@ -18,4 +18,6 @@ object ColorTokens {
     val LabelGray = Color(0xFF94969C)
     val DarkGray = Color(0xFF0C111D)
     val MutedGray = Color(0xFF475467)
+
+    val Gray200 = Color(0xFFF5F5F6)
 }

@@ -1,33 +1,26 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
-val copyLauncherFiles = tasks.register<Copy>("copyLauncherFiles") {
-    from("../../Launcher/Launcher/bin/Release/net8.0")
-    into(layout.buildDirectory.dir("compose/binaries/main/app/cleanmeter"))
+val copyMonitorFiles = tasks.register<Copy>("copyMonitorFiles") {
+    from("../../HardwareMonitor/HardwareMonitor/bin/Release/net8.0")
+    into(layout.buildDirectory.dir("compose/binaries/main/app/cleanmeter/app/resources"))
 }
 
-val moveBuildResult = tasks.register<Exec>("moveBuild") {
-    finalizedBy(copyLauncherFiles)
-    workingDir(layout.buildDirectory.dir("compose/binaries/main/app/cleanmeter"))
-    commandLine("cmd.exe", "/c", "mkdir", "cleanmeter")
-
-    doLast {
-        file("build/compose/binaries/main/app/cleanmeter/cleanmeter.exe").renameTo(file("build/compose/binaries/main/app/cleanmeter/cleanmeter/cleanmeter.exe"))
-        file("build/compose/binaries/main/app/cleanmeter/runtime").renameTo(file("build/compose/binaries/main/app/cleanmeter/cleanmeter/runtime"))
-        file("build/compose/binaries/main/app/cleanmeter/app").renameTo(file("build/compose/binaries/main/app/cleanmeter/cleanmeter/app"))
-    }
+val copyUpdaterFiles = tasks.register<Copy>("copyUpdaterFiles") {
+    finalizedBy(copyMonitorFiles)
+    from("../../Updater/bin/Release/net8.0")
+    into(layout.buildDirectory.dir("compose/binaries/main/app/cleanmeter/app/resources"))
 }
 
-val compileLauncher = tasks.register<Exec>("compileLauncher") {
-    finalizedBy(moveBuildResult)
-    workingDir("../../Launcher/")
+val compileUpdater = tasks.register<Exec>("compileUpdater") {
+    finalizedBy(copyUpdaterFiles)
+    workingDir("../../Updater/")
     commandLine("dotnet", "build", "--configuration", "Release")
 }
 
-val copyHwinfoToResources = tasks.register<Copy>("copyHwinfoToResources") {
-    finalizedBy(compileLauncher)
-
-    from("../../hwinfo")
-    into(layout.buildDirectory.dir("compose/binaries/main/app/cleanmeter/app/resources"))
+val compileMonitor = tasks.register<Exec>("compileMonitor") {
+    finalizedBy(compileUpdater)
+    workingDir("../../HardwareMonitor/")
+    commandLine("dotnet", "build", "--configuration", "Release")
 }
 
 plugins {
@@ -48,6 +41,7 @@ dependencies {
 
     implementation(projects.core.common)
     implementation(projects.core.native)
+    implementation(projects.core.updater)
 }
 
 sourceSets {
@@ -63,7 +57,10 @@ compose.desktop {
 
         afterEvaluate {
             tasks.named("createDistributable") {
-                finalizedBy(copyHwinfoToResources)
+                finalizedBy(compileMonitor)
+            }
+            tasks.named("runDistributable") {
+                finalizedBy(compileMonitor)
             }
         }
 

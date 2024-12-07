@@ -18,6 +18,7 @@ import br.com.firstsoft.target.server.ui.ColorTokens.DarkGray
 fun CheckboxWithLabel(
     label: String,
     checked: Boolean,
+    enabled: Boolean = true,
     onCheckedChange: (Boolean) -> Unit,
     trailingItem: @Composable (() -> Unit)? = null
 ) {
@@ -27,6 +28,7 @@ fun CheckboxWithLabel(
     ) {
         Checkbox(
             checked = checked,
+            enabled = enabled,
             onCheckedChange = onCheckedChange,
             colors = CheckboxDefaults.colors(checkedColor = DarkGray),
             modifier = Modifier.size(24.dp)

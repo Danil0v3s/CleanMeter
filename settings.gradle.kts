@@ -41,3 +41,5 @@ include(
     "core:native",
     "target:server"
 )
+include("core:updater")
+findProject(":core:updater")?.name = "updater"

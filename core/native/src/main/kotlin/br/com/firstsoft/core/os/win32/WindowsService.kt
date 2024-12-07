@@ -1,5 +1,6 @@
 package br.com.firstsoft.core.os.win32
 
+import br.com.firstsoft.core.os.util.isDev
 import com.sun.jna.Native
 import com.sun.jna.Pointer
 import com.sun.jna.platform.win32.Kernel32
@@ -10,6 +11,12 @@ import com.sun.jna.platform.win32.WinNT
 import com.sun.jna.platform.win32.WinNT.HANDLE
 import com.sun.jna.platform.win32.WinUser
 import java.awt.Component
+import java.io.File
+import java.io.IOException
+import java.nio.file.Files.createFile
+import java.nio.file.Path
+import kotlin.io.path.exists
+import kotlin.system.exitProcess
 
 class WindowsService {
 
@@ -60,6 +67,24 @@ class WindowsService {
                 User32.INSTANCE.GetWindowLong(hwnd, WinUser.GWL_EXSTYLE) or WinUser.WS_EX_LAYERED and WinUser.WS_EX_TRANSPARENT.inv()
             }
             User32.INSTANCE.SetWindowLong(hwnd, WinUser.GWL_EXSTYLE, wl)
+        }
+
+        fun isProcessElevated(): Boolean {
+            try {
+                File.createTempFile("cleanmeter", ".lock", File("C:/")).delete()
+            } catch (ex: Exception) {
+                return false
+            }
+            return true
+        }
+
+        fun tryElevateProcess(isAutostart: Boolean) {
+            if (isAutostart) return
+            if (!isDev() && !WindowsService.isProcessElevated()) {
+                val currentDir = Path.of("").toAbsolutePath().toString()
+                Shell32Impl.INSTANCE.ShellExecuteW(null, "runas", "$currentDir\\cleanmeter.exe", "", "", 10)
+                exitProcess(0)
+            }
         }
     }
 }
