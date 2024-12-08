@@ -52,6 +52,7 @@ import br.com.firstsoft.target.server.ui.ColorTokens.DarkGray
 import br.com.firstsoft.target.server.ui.ColorTokens.Green
 import br.com.firstsoft.target.server.ui.components.SettingsTab
 import br.com.firstsoft.target.server.ui.components.TopBar
+import br.com.firstsoft.target.server.ui.components.UpdateToast
 import br.com.firstsoft.target.server.ui.settings.tabs.AppSettingsUi
 import br.com.firstsoft.target.server.ui.settings.tabs.HelpSettingsUi
 import br.com.firstsoft.target.server.ui.settings.tabs.OverlaySettingsUi
@@ -101,115 +102,7 @@ fun WindowScope.Settings(
             }
 
             if (isUpdateAvailable) {
-                UpdateLabel()
-            }
-        }
-    }
-}
-
-@Composable
-private fun BoxScope.UpdateLabel() {
-    val updateProgress by AutoUpdater.progress.collectAsState()
-    val isUpdating by AutoUpdater.isUpdating.collectAsState()
-    val isUpdateAvailable by AutoUpdater.isUpdateAvailable.collectAsState()
-    var updateArchive by remember { mutableStateOf<File?>(null) }
-    var hasFinishedDownloading by remember { mutableStateOf(false) }
-    val density = LocalDensity.current
-    var visible by remember {
-        mutableStateOf(false)
-    }
-
-    LaunchedEffect(Unit) {
-        delay(1000)
-        visible = true
-    }
-
-    AnimatedVisibility(
-        visible = visible,
-        enter = slideInVertically {
-            with(density) { 40.dp.roundToPx() }
-        },
-        modifier = Modifier.align(Alignment.BottomCenter)
-    ) {
-        Row(
-            modifier = Modifier
-                .padding(bottom = 16.dp)
-                .background(DarkGray, RoundedCornerShape(12.dp))
-                .padding(12.dp)
-                .align(Alignment.BottomCenter)
-                .animateContentSize(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            Text(
-                text = "An update is available",
-                color = Color.White,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Normal,
-                modifier = Modifier.padding(bottom = 2.5.dp),
-            )
-
-            Button(
-                onClick = {
-                    if (hasFinishedDownloading && updateArchive != null) {
-                        AutoUpdater.prepareForManualUpdate(updateArchive!!)
-                    } else {
-                        AutoUpdater.downloadUpdate {
-                            updateArchive = it
-                            hasFinishedDownloading = true
-                        }
-                    }
-                },
-                colors = ButtonDefaults.textButtonColors(
-                    containerColor = Color.White,
-                ),
-                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
-                shape = RoundedCornerShape(8.dp),
-            ) {
-                when {
-                    !isUpdating && isUpdateAvailable -> {
-                        if (hasFinishedDownloading) {
-                            Icon(painterResource("icons/update.svg"), "")
-                            Text(
-                                text = "Install update",
-                                color = Color.DarkGray,
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight(600),
-                                modifier = Modifier.padding(bottom = 2.5.dp, start = 6.dp),
-                            )
-                        } else {
-                            Icon(painterResource("icons/download.svg"), "")
-                            Text(
-                                text = "Download update",
-                                color = Color.DarkGray,
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight(600),
-                                modifier = Modifier.padding(bottom = 2.5.dp, start = 6.dp),
-                            )
-                        }
-                    }
-
-                    isUpdating && updateProgress in 0f..<1f -> {
-                        Box {
-                            Icon(
-                                painterResource("icons/download.svg"),
-                                "",
-                                modifier = Modifier.align(Alignment.Center).size(12.dp)
-                            )
-                            CircularProgressIndicator(
-                                progress = updateProgress,
-                                modifier = Modifier.size(24.dp).align(Alignment.Center),
-                                color = Green,
-                                backgroundColor = ClearGray,
-                                strokeCap = StrokeCap.Round,
-                                strokeWidth = 3.dp
-                            )
-                        }
-                    }
-
-                    else -> Unit
-                }
-
+                UpdateToast()
             }
         }
     }

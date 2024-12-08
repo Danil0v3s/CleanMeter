@@ -41,7 +41,9 @@ object AutoUpdater {
     val isUpdateAvailable: StateFlow<Boolean> = _isUpdateAvailable
 
     private val client = HttpClient(OkHttp)
-    private var currentLiveVersion: Version? = null
+    private var _currentLiveVersion: Version? = null
+    val currentLiveVersion: String
+        get() = _currentLiveVersion.toString()
 
     init {
         checkForUpdates()
@@ -63,15 +65,16 @@ object AutoUpdater {
 
     fun downloadUpdate(onDone: (File) -> Unit) {
         CoroutineScope(Dispatchers.IO).launch {
-            if (_isUpdateAvailable.value && currentLiveVersion != null) {
-                downloadUpdatePackage(currentLiveVersion!!) { file ->
+            if (_isUpdateAvailable.value && _currentLiveVersion != null) {
+                downloadUpdatePackage(_currentLiveVersion!!) { file ->
                     onDone(file)
                 }
             }
         }
     }
 
-    fun prepareForManualUpdate(file: File) {
+    fun prepareForManualUpdate(file: File?) {
+        file ?: return
         if (ApplicationParams.isAutostart) {
             HardwareMonitorProcessManager.stopService()
         } else {
@@ -81,12 +84,16 @@ object AutoUpdater {
         exitProcess(0)
     }
 
+    fun cancelDownload() {
+
+    }
+
     private suspend fun isUpdateAvailable(): Boolean {
         val map = client.getPropertiesMap()
         val liveVersion = map["projectVersion"]?.toVersion(strict = false)
 //        val currentVersion = System.getProperty("jpackage.app-version")?.toVersion(strict = false)
         val currentVersion = "0.0.1".toVersion(strict = false)
-        currentLiveVersion = liveVersion
+        _currentLiveVersion = liveVersion
         return liveVersion != null && currentVersion != null && liveVersion > currentVersion
     }
 
