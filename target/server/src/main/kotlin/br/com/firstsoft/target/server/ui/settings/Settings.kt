@@ -1,45 +1,27 @@
 package br.com.firstsoft.target.server.ui.settings
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.window.WindowDraggableArea
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Icon
 import androidx.compose.material.ScrollableTabRow
-import androidx.compose.material.Text
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.WindowScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import br.com.firstsoft.core.common.hardwaremonitor.cpuReadings
@@ -47,9 +29,7 @@ import br.com.firstsoft.core.common.hardwaremonitor.gpuReadings
 import br.com.firstsoft.core.common.hardwaremonitor.networkReadings
 import br.com.firstsoft.target.server.ui.AppTheme
 import br.com.firstsoft.target.server.ui.ColorTokens.BackgroundOffWhite
-import br.com.firstsoft.target.server.ui.ColorTokens.ClearGray
 import br.com.firstsoft.target.server.ui.ColorTokens.DarkGray
-import br.com.firstsoft.target.server.ui.ColorTokens.Green
 import br.com.firstsoft.target.server.ui.components.SettingsTab
 import br.com.firstsoft.target.server.ui.components.TopBar
 import br.com.firstsoft.target.server.ui.components.UpdateToast
@@ -58,8 +38,7 @@ import br.com.firstsoft.target.server.ui.settings.tabs.HelpSettingsUi
 import br.com.firstsoft.target.server.ui.settings.tabs.OverlaySettingsUi
 import br.com.firstsoft.target.server.ui.settings.tabs.style.StyleUi
 import br.com.firstsoft.updater.AutoUpdater
-import kotlinx.coroutines.delay
-import java.io.File
+import br.com.firstsoft.updater.UpdateState
 
 @Composable
 fun WindowScope.Settings(
@@ -69,7 +48,7 @@ fun WindowScope.Settings(
     getOverlayPosition: () -> IntOffset
 ) = AppTheme {
     val settingsState by viewModel.state.collectAsState(SettingsState())
-    val isUpdateAvailable by AutoUpdater.isUpdateAvailable.collectAsState()
+    val updaterState by AutoUpdater.state.collectAsState()
 
 
     if (settingsState.overlaySettings == null) {
@@ -101,7 +80,7 @@ fun WindowScope.Settings(
                 )
             }
 
-            if (isUpdateAvailable) {
+            if (updaterState !is UpdateState.NotAvailable) {
                 UpdateToast()
             }
         }

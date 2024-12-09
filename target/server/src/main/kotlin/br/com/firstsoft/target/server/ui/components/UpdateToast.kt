@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -45,16 +46,13 @@ import br.com.firstsoft.target.server.ui.ColorTokens.DarkGray
 import br.com.firstsoft.target.server.ui.ColorTokens.Green
 import br.com.firstsoft.target.server.ui.ColorTokens.LabelGray
 import br.com.firstsoft.updater.AutoUpdater
+import br.com.firstsoft.updater.UpdateState
 import kotlinx.coroutines.delay
-import java.io.File
 
 @Composable
 internal fun BoxScope.UpdateToast() {
-    val updateProgress by AutoUpdater.progress.collectAsState()
-    val isUpdating by AutoUpdater.isUpdating.collectAsState()
-    val isUpdateAvailable by AutoUpdater.isUpdateAvailable.collectAsState()
-    var updateArchive by remember { mutableStateOf<File?>(null) }
-    var hasFinishedDownloading by remember { mutableStateOf(false) }
+    val updaterState by AutoUpdater.state.collectAsState()
+
     val density = LocalDensity.current
     var visible by remember {
         mutableStateOf(false)
@@ -63,6 +61,12 @@ internal fun BoxScope.UpdateToast() {
     LaunchedEffect(Unit) {
         delay(1000)
         visible = true
+    }
+
+    LaunchedEffect(updaterState) {
+        if (updaterState is UpdateState.NotAvailable) {
+            visible = false
+        }
     }
 
     AnimatedVisibility(
@@ -86,52 +90,49 @@ internal fun BoxScope.UpdateToast() {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            IconProgress(
-                hasFinishedDownloading = hasFinishedDownloading,
-                isUpdating = isUpdating,
-                isUpdateAvailable = isUpdateAvailable,
-                updateProgress = updateProgress
-            )
-
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = "New update available",
-                    color = Color.White,
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Normal,
-                    lineHeight = 0.sp,
-                    modifier = Modifier.padding(bottom = 2.5.dp),
-                )
-                Text(
-                    text = "v${AutoUpdater.currentLiveVersion}",
-                    color = LabelGray,
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Normal,
-                    lineHeight = 0.sp,
-                    modifier = Modifier.padding(bottom = 2.5.dp),
-                )
-            }
-
+            IconProgress(state = updaterState)
+            BodyText(state = updaterState)
             CallToAction(
-                hasFinishedDownloading = hasFinishedDownloading,
-                isUpdating = isUpdating,
-                isUpdateAvailable = isUpdateAvailable,
-                updateProgress = updateProgress,
+                state = updaterState,
                 onCloseClick = { visible = false },
                 onInstallClick = {
-                    AutoUpdater.prepareForManualUpdate(updateArchive)
+                    AutoUpdater.prepareForManualUpdate()
                 },
                 onUpdateClick = {
-                    AutoUpdater.downloadUpdate {
-                        updateArchive = it
-                        hasFinishedDownloading = true
-                    }
+                    AutoUpdater.downloadUpdate()
                 },
                 onCancelDownloadClick = {
                     AutoUpdater.cancelDownload()
                 },
             )
         }
+    }
+}
+
+@Composable
+private fun RowScope.BodyText(state: UpdateState) {
+    Column(modifier = Modifier.weight(1f)) {
+        Text(
+            text = when (state) {
+                is UpdateState.Available -> "New update available"
+                is UpdateState.Downloaded -> "Update ready to install"
+                is UpdateState.Downloading -> "Downloading update..."
+                UpdateState.NotAvailable -> ""
+            },
+            color = Color.White,
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Normal,
+            lineHeight = 0.sp,
+            modifier = Modifier.padding(bottom = 2.5.dp),
+        )
+        Text(
+            text = "v${AutoUpdater.currentLiveVersion}",
+            color = LabelGray,
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Normal,
+            lineHeight = 0.sp,
+            modifier = Modifier.padding(bottom = 2.5.dp),
+        )
     }
 }
 
@@ -175,67 +176,60 @@ private fun FilledButton(onClick: () -> Unit, label: String) {
 }
 
 @Composable
-private fun CallToAction(
+private fun RowScope.CallToAction(
     onCloseClick: () -> Unit,
     onInstallClick: () -> Unit,
     onUpdateClick: () -> Unit,
     onCancelDownloadClick: () -> Unit,
-    hasFinishedDownloading: Boolean,
-    isUpdating: Boolean,
-    isUpdateAvailable: Boolean,
-    updateProgress: Float
+    state: UpdateState
 ) {
-
-    when {
-        !isUpdating && isUpdateAvailable && hasFinishedDownloading -> {
-            ClearButton(label = "Later", onClick = onCloseClick)
-            FilledButton(label = "Install now", onClick = onInstallClick)
-        }
-        !isUpdating && isUpdateAvailable && !hasFinishedDownloading -> {
+    when (state) {
+        is UpdateState.Available -> {
             ClearButton(label = "Later", onClick = onCloseClick)
             FilledButton(label = "Update now", onClick = onUpdateClick)
         }
-        isUpdating && updateProgress in 0f..<1f -> {
+
+        is UpdateState.Downloaded -> {
+            ClearButton(label = "Later", onClick = onCloseClick)
+            FilledButton(label = "Install now", onClick = onInstallClick)
+        }
+
+        is UpdateState.Downloading -> {
             ClearButton(label = "Cancel", onClick = onCancelDownloadClick)
         }
+
+        is UpdateState.NotAvailable -> Unit
     }
 }
 
 @Composable
-private fun IconProgress(
-    hasFinishedDownloading: Boolean,
-    isUpdating: Boolean,
-    isUpdateAvailable: Boolean,
-    updateProgress: Float
-) {
+private fun IconProgress(state: UpdateState) {
     Box(modifier = Modifier.size(40.dp), contentAlignment = Alignment.Center) {
-        when {
-            !isUpdating && isUpdateAvailable && hasFinishedDownloading -> {
-                Icon(
-                    painter = painterResource("icons/download_done.svg"),
-                    contentDescription = null,
-                    tint = Color.White,
-                    modifier = Modifier.fillMaxSize().background(AlmostDarkGray, RoundedCornerShape(100)).padding(10.dp),
-                )
-            }
-            !isUpdating && isUpdateAvailable && !hasFinishedDownloading -> {
-                Icon(
-                    painter = painterResource("icons/cloud_download.svg"),
-                    contentDescription = null,
-                    tint = Color.White,
-                    modifier = Modifier.fillMaxSize().background(AlmostDarkGray, RoundedCornerShape(100)).padding(10.dp),
-                )
-            }
-            isUpdating && updateProgress in 0f..<1f -> {
-                CircularProgressIndicator(
-                    progress = updateProgress,
-                    modifier = Modifier.fillMaxSize().align(Alignment.Center),
-                    color = Green,
-                    backgroundColor = ClearGray,
-                    strokeCap = StrokeCap.Round,
-                    strokeWidth = 3.dp
-                )
-            }
+        when (state) {
+            is UpdateState.Available -> Icon(
+                painter = painterResource("icons/cloud_download.svg"),
+                contentDescription = null,
+                tint = Color.White,
+                modifier = Modifier.fillMaxSize().background(AlmostDarkGray, RoundedCornerShape(100)).padding(10.dp),
+            )
+
+            is UpdateState.Downloaded -> Icon(
+                painter = painterResource("icons/download_done.svg"),
+                contentDescription = null,
+                tint = Color.White,
+                modifier = Modifier.fillMaxSize().background(AlmostDarkGray, RoundedCornerShape(100)).padding(10.dp),
+            )
+
+            is UpdateState.Downloading -> CircularProgressIndicator(
+                progress = state.progress,
+                modifier = Modifier.fillMaxSize().align(Alignment.Center),
+                color = Green,
+                backgroundColor = ClearGray,
+                strokeCap = StrokeCap.Round,
+                strokeWidth = 3.dp
+            )
+
+            is UpdateState.NotAvailable -> Unit
         }
     }
 }

@@ -14,8 +14,10 @@ import io.ktor.http.contentLength
 import io.ktor.utils.io.ByteReadChannel
 import io.ktor.utils.io.core.isNotEmpty
 import io.ktor.utils.io.core.readBytes
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -25,111 +27,104 @@ import java.io.File
 import java.nio.file.Path
 import kotlin.system.exitProcess
 
+sealed class UpdateState {
+    data object NotAvailable : UpdateState()
+    data class Available(val version: String) : UpdateState()
+    data class Downloading(val version: String, val progress: Float) : UpdateState()
+    data class Downloaded(val version: String, val file: File) : UpdateState()
+}
 
 object AutoUpdater {
 
     private const val propertiesUrl =
         "https://raw.githubusercontent.com/Danil0v3s/CleanMeter/refs/heads/main/gradle.properties"
 
-    private var _progress = MutableStateFlow(0f)
-    val progress: StateFlow<Float> = _progress
-
-    private var _isUpdating = MutableStateFlow(false)
-    val isUpdating: StateFlow<Boolean> = _isUpdating
-
-    private var _isUpdateAvailable = MutableStateFlow(false)
-    val isUpdateAvailable: StateFlow<Boolean> = _isUpdateAvailable
+    private var _state = MutableStateFlow<UpdateState>(UpdateState.NotAvailable)
+    val state: StateFlow<UpdateState> = _state
 
     private val client = HttpClient(OkHttp)
     private var _currentLiveVersion: Version? = null
     val currentLiveVersion: String
         get() = _currentLiveVersion.toString()
 
+    private var downloadJob: Job? = null
+
     init {
         checkForUpdates()
     }
 
-    fun withAutoUpdate(block: () -> Unit) {
-        CoroutineScope(Dispatchers.IO).launch {
-            val isUpdateAvailable = isUpdateAvailable()
-            _isUpdateAvailable.update { isUpdateAvailable }
-
-            downloadUpdate { file ->
-                invokeUpdater(file)
-                exitProcess(0)
-            }
-        }
-
-        block()
-    }
-
-    fun downloadUpdate(onDone: (File) -> Unit) {
-        CoroutineScope(Dispatchers.IO).launch {
-            if (_isUpdateAvailable.value && _currentLiveVersion != null) {
-                downloadUpdatePackage(_currentLiveVersion!!) { file ->
-                    onDone(file)
-                }
-            }
+    fun downloadUpdate() {
+        if (_state.value is UpdateState.Available && _currentLiveVersion != null) {
+            downloadUpdatePackage(_currentLiveVersion!!)
         }
     }
 
-    fun prepareForManualUpdate(file: File?) {
-        file ?: return
+    fun prepareForManualUpdate() {
+        val state = _state.value
+        if (state !is UpdateState.Downloaded) return
+
         if (ApplicationParams.isAutostart) {
             HardwareMonitorProcessManager.stopService()
         } else {
             HardwareMonitorProcessManager.stop()
         }
-        Desktop.getDesktop().open(file.absoluteFile)
+        Desktop.getDesktop().open(state.file?.absoluteFile)
         exitProcess(0)
     }
 
     fun cancelDownload() {
-
+        downloadJob?.cancel()
+        checkForUpdates()
     }
 
     private suspend fun isUpdateAvailable(): Boolean {
         val map = client.getPropertiesMap()
         val liveVersion = map["projectVersion"]?.toVersion(strict = false)
-//        val currentVersion = System.getProperty("jpackage.app-version")?.toVersion(strict = false)
-        val currentVersion = "0.0.1".toVersion(strict = false)
+        val currentVersion = System.getProperty("jpackage.app-version")?.toVersion(strict = false)
         _currentLiveVersion = liveVersion
         return liveVersion != null && currentVersion != null && liveVersion > currentVersion
     }
 
     private fun checkForUpdates() {
         CoroutineScope(Dispatchers.IO).launch {
-            val isUpdateAvailable = isUpdateAvailable()
-            _isUpdateAvailable.update { isUpdateAvailable }
+            if (isUpdateAvailable()) {
+                _state.update { UpdateState.Available(currentLiveVersion) }
+            }
         }
     }
 
-    private suspend fun downloadUpdatePackage(
+    private fun downloadUpdatePackage(
         liveVersion: Version,
-        onDone: (File) -> Unit
     ) {
         val file = File("cleanmeter.windows.$liveVersion.zip")
         if (file.exists()) {
-            onDone(file)
+            _state.update { UpdateState.Downloaded(currentLiveVersion, file) }
             return
         }
-        val url = "https://github.com/Danil0v3s/CleanMeter/releases/download/$liveVersion/cleanmeter.windows.zip"
-        _isUpdating.update { true }
 
-        client.prepareGet(url).execute { response ->
-            val contentLength = (response.contentLength() ?: 0).toFloat()
-            val channel: ByteReadChannel = response.body()
-            while (!channel.isClosedForRead) {
-                val packet = channel.readRemaining(DEFAULT_BUFFER_SIZE.toLong())
-                while (packet.isNotEmpty) {
-                    val bytes = packet.readBytes()
-                    file.appendBytes(bytes)
-                    _progress.update { file.length() / contentLength }
+        val url = "https://github.com/Danil0v3s/CleanMeter/releases/download/$liveVersion/cleanmeter.windows.zip"
+        _state.update { UpdateState.Downloading(currentLiveVersion, 0f) }
+
+        downloadJob = CoroutineScope(Dispatchers.IO).launch {
+            try {
+                client.prepareGet(url).execute { response ->
+                    val contentLength = (response.contentLength() ?: 0).toFloat()
+                    val channel: ByteReadChannel = response.body()
+                    while (!channel.isClosedForRead) {
+                        val packet = channel.readRemaining(DEFAULT_BUFFER_SIZE.toLong())
+                        while (packet.isNotEmpty) {
+                            val bytes = packet.readBytes()
+                            file.appendBytes(bytes)
+                            _state.update { UpdateState.Downloading(currentLiveVersion, file.length() / contentLength) }
+                        }
+                    }
+
+                    _state.update { UpdateState.Downloaded(currentLiveVersion, file) }
+                    println("A file saved to ${file.path}")
                 }
+            } catch (ex: CancellationException) {
+                file.delete()
             }
-            onDone(file)
-            _isUpdating.update { false }
-            println("A file saved to ${file.path}")
         }
     }
 
