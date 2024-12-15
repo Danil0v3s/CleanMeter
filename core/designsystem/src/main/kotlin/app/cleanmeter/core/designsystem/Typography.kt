@@ -18,7 +18,7 @@ class Typography {
         @Composable get() = defaultTextStyle.copy(
             fontSize = 16.sp,
             lineHeight = 0.sp,
-            fontWeight = FontWeight.Medium,
+            fontFamily = fontFamilyMedium,
         )
 
     /**
@@ -30,7 +30,7 @@ class Typography {
         @Composable get() = defaultTextStyle.copy(
             fontSize = 16.sp,
             lineHeight = 0.sp,
-            fontWeight = FontWeight.Medium,
+            fontFamily = fontFamilyMedium,
         )
 
     /**
@@ -42,7 +42,6 @@ class Typography {
         @Composable get() = defaultTextStyle.copy(
             fontSize = 14.sp,
             lineHeight = 0.sp,
-            fontWeight = FontWeight.Normal,
         )
 
     /**
@@ -54,7 +53,7 @@ class Typography {
         @Composable get() = defaultTextStyle.copy(
             fontSize = 14.sp,
             lineHeight = 0.sp,
-            fontWeight = FontWeight.Thin,
+            fontFamily = fontFamilyThin,
         )
 
     /**
@@ -66,7 +65,7 @@ class Typography {
         @Composable get() = defaultTextStyle.copy(
             fontSize = 14.sp,
             lineHeight = 0.sp,
-            fontWeight = FontWeight.Medium,
+            fontFamily = fontFamilyMedium,
         )
 
     /**
@@ -78,7 +77,7 @@ class Typography {
         @Composable get() = defaultTextStyle.copy(
             fontSize = 14.sp,
             lineHeight = 0.sp,
-            fontWeight = FontWeight.SemiBold,
+            fontFamily = fontFamilySemiBold,
         )
 
     /**
@@ -90,7 +89,6 @@ class Typography {
         @Composable get() = defaultTextStyle.copy(
             fontSize = 13.sp,
             lineHeight = 0.sp,
-            fontWeight = FontWeight.Normal,
         )
 
     /**
@@ -102,7 +100,7 @@ class Typography {
         @Composable get() = defaultTextStyle.copy(
             fontSize = 13.sp,
             lineHeight = 0.sp,
-            fontWeight = FontWeight.SemiBold,
+            fontFamily = fontFamilySemiBold
         )
 
     /**
@@ -114,7 +112,6 @@ class Typography {
         @Composable get() = defaultTextStyle.copy(
             fontSize = 12.sp,
             lineHeight = 0.sp,
-            fontWeight = FontWeight.Normal,
         )
 
     /**
@@ -126,24 +123,37 @@ class Typography {
         @Composable get() = defaultTextStyle.copy(
             fontSize = 10.sp,
             lineHeight = 0.sp,
-            fontWeight = FontWeight.Normal,
         )
 
-    private val fontFamily = FontFamily(
-        Font(resource = "font/inter_thin.ttf", weight = FontWeight.Thin),
-        Font(resource = "font/inter_extralight.ttf", weight = FontWeight.ExtraLight),
-        Font(resource = "font/inter_light.ttf", weight = FontWeight.Light),
-        Font(resource = "font/inter_regular.ttf", weight = FontWeight.Normal),
-        Font(resource = "font/inter_medium.ttf", weight = FontWeight.Medium),
-        Font(resource = "font/inter_semibold.ttf", weight = FontWeight.SemiBold),
-        Font(resource = "font/inter_bold.ttf", weight = FontWeight.Bold),
-        Font(resource = "font/inter_extrabold.ttf", weight = FontWeight.ExtraBold),
-        Font(resource = "font/inter_black.ttf", weight = FontWeight.Black),
+//    Font(resource = "font/inter_thin.ttf", weight = FontWeight.Thin),
+//    Font(resource = "font/inter_extralight.ttf", weight = FontWeight.ExtraLight),
+//    Font(resource = "font/inter_light.ttf", weight = FontWeight.Light),
+//    Font(resource = "font/inter_regular.ttf", weight = FontWeight.Normal),
+//    Font(resource = "font/inter_medium.ttf", weight = FontWeight.Medium),
+//    Font(resource = "font/inter_semibold.ttf", weight = FontWeight.SemiBold),
+//    Font(resource = "font/inter_bold.ttf", weight = FontWeight.Bold),
+//    Font(resource = "font/inter_extrabold.ttf", weight = FontWeight.ExtraBold),
+//    Font(resource = "font/inter_black.ttf", weight = FontWeight.Black),
+
+    private val fontFamilyThin = FontFamily(
+        Font(resource = "font/inter_thin.ttf", weight = FontWeight.Normal),
+    )
+
+    private val fontFamilyNormal = FontFamily(
+        Font(resource = "font/inter_regular.ttf", weight = FontWeight.Normal)
+    )
+
+    private val fontFamilyMedium = FontFamily(
+        Font(resource = "font/inter_medium.ttf", weight = FontWeight.Normal),
+    )
+
+    private val fontFamilySemiBold = FontFamily(
+        Font(resource = "font/inter_semibold.ttf", weight = FontWeight.Normal),
     )
 
     private val defaultTextStyle: TextStyle
         @Composable get() = TextStyle(
-            fontFamily = fontFamily,
+            fontFamily = fontFamilyNormal,
             fontWeight = FontWeight.Normal,
             color = LocalColorScheme.current.text.paragraph1
         )

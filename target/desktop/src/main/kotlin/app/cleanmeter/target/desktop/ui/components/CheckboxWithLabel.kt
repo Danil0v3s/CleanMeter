@@ -37,7 +37,7 @@ fun CheckboxWithLabel(
 
         Text(
             text = label,
-            style = LocalTypography.current.labelL.copy(
+            style = LocalTypography.current.labelLMedium.copy(
                 letterSpacing = 0.14.sp,
             ),
             color = DarkGray,
