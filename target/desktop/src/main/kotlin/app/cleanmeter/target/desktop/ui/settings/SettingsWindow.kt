@@ -19,6 +19,7 @@ import com.github.kwhat.jnativehook.GlobalScreen
 
 @Composable
 fun ApplicationScope.SettingsWindow(
+    isDarkTheme: Boolean,
     getOverlayPosition: () -> IntOffset,
     onApplicationExit: () -> Unit,
 ) {
@@ -45,6 +46,7 @@ fun ApplicationScope.SettingsWindow(
         transparent = true,
     ) {
         Settings(
+            isDarkTheme = isDarkTheme,
             onCloseRequest = { isVisible = false },
             onMinimizeRequest = { state.isMinimized = true },
             getOverlayPosition = getOverlayPosition

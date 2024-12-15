@@ -237,7 +237,7 @@ private fun IconProgress(state: UpdateState) {
 @Preview
 @Composable
 private fun UpdateToastPreview() {
-    AppTheme {
+    AppTheme(false) {
         Box(modifier = Modifier.fillMaxSize().padding(8.dp)) {
             UpdateToast()
         }

@@ -9,6 +9,8 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.platform.Font
 import androidx.compose.ui.unit.LayoutDirection
+import app.cleanmeter.core.designsystem.LocalColorScheme
+import app.cleanmeter.core.designsystem.Theme
 
 val fontFamily = FontFamily(
     Font(resource = "font/inter_thin.ttf", weight = FontWeight.Thin),
@@ -23,12 +25,14 @@ val fontFamily = FontFamily(
 )
 
 @Composable
-fun AppTheme(content: @Composable () -> Unit) {
+fun AppTheme(isDarkTheme: Boolean, content: @Composable () -> Unit) {
     MaterialTheme(
         typography = Typography(defaultFontFamily = fontFamily),
     ) {
-        CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
-            content()
+        CompositionLocalProvider(LocalColorScheme provides if (isDarkTheme) Theme.Dark else Theme.Light) {
+            CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
+                content()
+            }
         }
     }
 }
