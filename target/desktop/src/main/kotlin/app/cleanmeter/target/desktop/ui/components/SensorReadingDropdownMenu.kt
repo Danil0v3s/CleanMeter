@@ -53,6 +53,7 @@ import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupPositionProvider
 import androidx.compose.ui.window.PopupProperties
 import app.cleanmeter.core.common.hardwaremonitor.HardwareMonitorData
+import app.cleanmeter.core.designsystem.LocalColorScheme
 import app.cleanmeter.core.designsystem.LocalTypography
 import app.cleanmeter.target.desktop.ui.ColorTokens.AlmostVisibleGray
 import app.cleanmeter.target.desktop.ui.ColorTokens.BarelyVisibleGray
@@ -87,10 +88,10 @@ fun SensorReadingDropdownMenu(
             modifier = Modifier
                 .padding(start = 12.dp, top = 16.dp)
                 .fillMaxWidth()
-                .background(BarelyVisibleGray, RoundedCornerShape(8.dp))
+                .background(LocalColorScheme.current.background.surfaceSunkenSubtle, RoundedCornerShape(8.dp))
                 .padding(16.dp)
-                .border(1.dp, AlmostVisibleGray, RoundedCornerShape(8.dp))
-                .background(Color.White)
+                .border(1.dp, LocalColorScheme.current.border.bolder, RoundedCornerShape(8.dp))
+                .background(LocalColorScheme.current.background.surfaceRaised)
                 .padding(12.dp)
         ) {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {

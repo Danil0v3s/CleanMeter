@@ -29,7 +29,6 @@ import app.cleanmeter.core.common.hardwaremonitor.gpuReadings
 import app.cleanmeter.core.common.hardwaremonitor.networkReadings
 import app.cleanmeter.core.designsystem.LocalColorScheme
 import app.cleanmeter.target.desktop.ui.AppTheme
-import app.cleanmeter.target.desktop.ui.ColorTokens.BackgroundOffWhite
 import app.cleanmeter.target.desktop.ui.ColorTokens.DarkGray
 import app.cleanmeter.target.desktop.ui.components.SettingsTab
 import app.cleanmeter.target.desktop.ui.components.TopBar
@@ -184,7 +183,7 @@ private fun TabRow(selectedTabIndex: Int, onTabIndexChange: (Int) -> Unit) {
             onClick = { onTabIndexChange(3) },
             label = "",
             icon = painterResource("icons/help.svg"),
-            modifier = Modifier.weight(0.1f).padding(start = 4.dp),
+            modifier = Modifier.weight(0.1f),
         )
     }
 }

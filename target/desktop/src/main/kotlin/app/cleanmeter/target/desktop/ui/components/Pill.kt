@@ -36,7 +36,9 @@ fun Pill(
             .conditional(
                 predicate = isHorizontal,
                 ifTrue = {
-                    fillMaxHeight().widthIn(min = minWidth).background(Color.Black.copy(alpha = 0.3f), CircleShape)
+                    fillMaxHeight()
+                        .widthIn(min = minWidth)
+                        .background(Color.Black.copy(alpha = 0.3f), CircleShape)
                 },
                 ifFalse = {
                     background(

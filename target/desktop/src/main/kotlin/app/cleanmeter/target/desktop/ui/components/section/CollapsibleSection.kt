@@ -30,6 +30,7 @@ import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.cleanmeter.core.designsystem.LocalColorScheme
 import app.cleanmeter.target.desktop.ui.ColorTokens.MutedGray
 import app.cleanmeter.target.desktop.ui.components.SectionTitle
 
@@ -43,7 +44,7 @@ fun CollapsibleSection(
     Column(
         modifier = Modifier
             .animateContentSize()
-            .background(Color.White, RoundedCornerShape(12.dp))
+            .background(LocalColorScheme.current.background.surfaceRaised, RoundedCornerShape(12.dp))
             .padding(20.dp),
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {

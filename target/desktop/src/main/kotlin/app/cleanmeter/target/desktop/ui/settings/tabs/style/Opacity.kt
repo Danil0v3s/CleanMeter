@@ -14,9 +14,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import app.cleanmeter.core.designsystem.LocalColorScheme
 import app.cleanmeter.target.desktop.model.OverlaySettings
 import app.cleanmeter.target.desktop.ui.ColorTokens.AlmostVisibleGray
-import app.cleanmeter.target.desktop.ui.ColorTokens.BackgroundOffWhite
 import app.cleanmeter.target.desktop.ui.ColorTokens.DarkGray
 import app.cleanmeter.target.desktop.ui.ColorTokens.LabelGray
 import app.cleanmeter.target.desktop.ui.components.section.CollapsibleSection
@@ -32,6 +32,7 @@ internal fun Opacity(
 ) {
     CollapsibleSection(title = "OPACITY") {
         Column {
+            val surfaceColor = LocalColorScheme.current.background.surface
             Slider(
                 value = overlaySettings.opacity,
                 onValueChange = {
@@ -48,7 +49,7 @@ internal fun Opacity(
                             FloatArray(sliderState.steps + 2) { it.toFloat() / (sliderState.steps + 1) },
                             0f,
                             sliderState.coercedValueAsFraction,
-                            BackgroundOffWhite,
+                            surfaceColor,
                             DarkGray,
                             AlmostVisibleGray,
                             Color.White,

@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.cleanmeter.core.designsystem.LocalColorScheme
 import app.cleanmeter.target.desktop.ui.ColorTokens.MutedGray
 import app.cleanmeter.target.desktop.ui.components.DropdownMenu
 import app.cleanmeter.target.desktop.ui.components.SectionTitle
@@ -26,7 +27,9 @@ fun DropdownSection(
     onValueChanged: (Int) -> Unit,
     selectedIndex: Int,
 ) = Column(
-    modifier = Modifier.background(Color.White, RoundedCornerShape(12.dp)).padding(20.dp),
+    modifier = Modifier
+        .background(LocalColorScheme.current.background.surfaceRaised, RoundedCornerShape(12.dp))
+        .padding(20.dp),
     verticalArrangement = Arrangement.spacedBy(20.dp)
 ) {
     Row(

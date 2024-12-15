@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.cleanmeter.core.designsystem.LocalColorScheme
 import app.cleanmeter.core.designsystem.LocalTypography
 import app.cleanmeter.target.desktop.ui.ColorTokens.BarelyVisibleGray
 import app.cleanmeter.target.desktop.ui.ColorTokens.DarkGray
@@ -36,15 +37,15 @@ internal fun SettingsTab(
 ) = Tab(
     selected = selected,
     onClick = onClick,
-    selectedContentColor = DarkGray,
-    unselectedContentColor = MutedGray,
+    selectedContentColor = LocalColorScheme.current.background.brand,
+    unselectedContentColor = LocalColorScheme.current.background.surfaceRaised,
     modifier = modifier
         .fillMaxHeight()
         .background(
             color = if (selected) DarkGray else Color.White,
             shape = RoundedCornerShape(50)
         )
-        .border(2.dp, BarelyVisibleGray, RoundedCornerShape(50))
+        .border(2.dp, LocalColorScheme.current.border.bold, RoundedCornerShape(50))
         .padding(horizontal = 16.dp),
 ) {
     Row(
@@ -56,12 +57,14 @@ internal fun SettingsTab(
             painter = icon,
             contentDescription = "logo",
             modifier = Modifier.size(16.dp),
-            colorFilter = ColorFilter.tint(if (selected) Color.White else MutedGray),
+            colorFilter = ColorFilter.tint(if (selected) LocalColorScheme.current.icon.inverse else LocalColorScheme.current.icon.bolderActive),
         )
-        Text(
-            text = label,
-            style = LocalTypography.current.titleM,
-            color = if (selected) Color.White else MutedGray,
-        )
+        if (label.isNotEmpty()) {
+            Text(
+                text = label,
+                style = LocalTypography.current.titleM,
+                color = if (selected) LocalColorScheme.current.text.inverse else LocalColorScheme.current.text.paragraph1,
+            )
+        }
     }
 }

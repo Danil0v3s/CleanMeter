@@ -105,8 +105,8 @@ data class ColorScheme(
 internal val defaultColorScheme = ColorScheme(
     background = ColorScheme.Background(
         surface = Primitives.Gray.Gray100,
-        surfaceRaised = Primitives.Plain.White,
-        surfaceOverlay = Primitives.Plain.White,
+        surfaceRaised = Primitives.Plain.PlainWhite,
+        surfaceOverlay = Primitives.Plain.PlainWhite,
         surfaceSunken = Primitives.Gray.Gray300,
         surfaceSunkenSubtle = Primitives.Gray.Gray50,
         brand = Primitives.Gray.Gray950,
@@ -133,7 +133,7 @@ internal val defaultColorScheme = ColorScheme(
         paragraph2 = Primitives.Gray.Gray500,
         disabled = Primitives.Gray.Gray400,
         disabledLighter = Primitives.Gray.Gray300,
-        inverse = Primitives.Plain.White,
+        inverse = Primitives.Plain.PlainWhite,
         inverseSubtler = Primitives.Gray.Gray50,
         success = Primitives.Green.Green900,
         danger = Primitives.Red.Red900,
@@ -141,7 +141,7 @@ internal val defaultColorScheme = ColorScheme(
     ),
     border = ColorScheme.Border(
         subtler = Primitives.Gray.Gray100,
-        inverse = Primitives.Plain.White,
+        inverse = Primitives.Plain.PlainWhite,
         subtle = Primitives.Gray.Gray200,
         bold = Primitives.Gray.Gray300.copy(alpha = 0.5f),
         bolder = Primitives.Gray.Gray300,
@@ -166,7 +166,7 @@ internal val defaultColorScheme = ColorScheme(
         subtleHover = Primitives.Gray.Gray300,
         subtleActive = Primitives.Gray.Gray400,
         disabled = Primitives.Gray.Gray400,
-        inverse = Primitives.Plain.White,
+        inverse = Primitives.Plain.PlainWhite,
         inverseHover = Primitives.Gray.Gray50,
         inverseActive = Primitives.Gray.Gray200,
         success = Primitives.Green.Green500,
