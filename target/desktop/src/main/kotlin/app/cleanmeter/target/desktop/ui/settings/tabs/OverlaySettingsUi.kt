@@ -18,10 +18,10 @@ import androidx.compose.ui.unit.sp
 import app.cleanmeter.core.common.hardwaremonitor.HardwareMonitorData
 import app.cleanmeter.target.desktop.model.OverlaySettings
 import app.cleanmeter.target.desktop.ui.ColorTokens.LabelGray
-import app.cleanmeter.target.desktop.ui.components.CheckboxSection
+import app.cleanmeter.target.desktop.ui.components.section.CheckboxSection
 import app.cleanmeter.target.desktop.ui.components.CheckboxWithLabel
-import app.cleanmeter.target.desktop.ui.components.CustomBodyCheckboxSection
-import app.cleanmeter.target.desktop.ui.components.DropdownSection
+import app.cleanmeter.target.desktop.ui.components.section.CustomBodyCheckboxSection
+import app.cleanmeter.target.desktop.ui.components.section.DropdownSection
 import app.cleanmeter.target.desktop.ui.components.KeyboardShortcutInfoLabel
 import app.cleanmeter.target.desktop.ui.components.SensorReadingDropdownMenu
 import app.cleanmeter.target.desktop.ui.settings.CheckboxSectionOption

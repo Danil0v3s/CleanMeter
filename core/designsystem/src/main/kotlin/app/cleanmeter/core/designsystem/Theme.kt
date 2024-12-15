@@ -7,6 +7,8 @@ object Theme {
 
     val Light: ColorScheme = defaultColorScheme
     val Dark: ColorScheme = darkColorScheme
+    val Typography = Typography()
 }
 
-public val LocalColorScheme = staticCompositionLocalOf<ColorScheme> { Light }
+val LocalColorScheme = staticCompositionLocalOf { Light }
+val LocalTypography = staticCompositionLocalOf { Theme.Typography }

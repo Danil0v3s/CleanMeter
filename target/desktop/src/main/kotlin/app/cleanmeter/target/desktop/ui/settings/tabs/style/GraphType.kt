@@ -10,7 +10,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import app.cleanmeter.target.desktop.model.OverlaySettings
 import app.cleanmeter.target.desktop.ui.components.StyleCard
-import app.cleanmeter.target.desktop.ui.components.ToggleSection
+import app.cleanmeter.target.desktop.ui.components.section.ToggleSection
 
 @Composable
 internal fun GraphType(

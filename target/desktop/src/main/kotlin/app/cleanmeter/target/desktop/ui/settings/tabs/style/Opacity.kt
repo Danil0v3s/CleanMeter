@@ -19,7 +19,7 @@ import app.cleanmeter.target.desktop.ui.ColorTokens.AlmostVisibleGray
 import app.cleanmeter.target.desktop.ui.ColorTokens.BackgroundOffWhite
 import app.cleanmeter.target.desktop.ui.ColorTokens.DarkGray
 import app.cleanmeter.target.desktop.ui.ColorTokens.LabelGray
-import app.cleanmeter.target.desktop.ui.components.CollapsibleSection
+import app.cleanmeter.target.desktop.ui.components.section.CollapsibleSection
 import app.cleanmeter.target.desktop.ui.components.SliderThumb
 import app.cleanmeter.target.desktop.ui.components.coercedValueAsFraction
 import app.cleanmeter.target.desktop.ui.components.drawTrack

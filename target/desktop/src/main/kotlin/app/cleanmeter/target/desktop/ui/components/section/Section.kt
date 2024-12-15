@@ -1,6 +1,5 @@
-package app.cleanmeter.target.desktop.ui.components
+package app.cleanmeter.target.desktop.ui.components.section
 
-import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,15 +16,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.cleanmeter.target.desktop.ui.ColorTokens.MutedGray
+import app.cleanmeter.target.desktop.ui.components.SectionTitle
 
 @Composable
-fun ToggleSection(
+fun Section(
     title: String,
-    isEnabled: Boolean,
-    onSwitchToggle: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
     content: @Composable () -> Unit
 ) = Column(
-    modifier = Modifier.animateContentSize().background(Color.White, RoundedCornerShape(12.dp)).padding(20.dp),
+    modifier = modifier.background(Color.White, RoundedCornerShape(12.dp)).padding(20.dp),
     verticalArrangement = Arrangement.spacedBy(20.dp)
 ) {
     Row(
@@ -33,21 +32,8 @@ fun ToggleSection(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(
-            text = title,
-            fontSize = 13.sp,
-            color = MutedGray,
-            lineHeight = 0.sp,
-            fontWeight = FontWeight.SemiBold,
-            letterSpacing = 1.sp
-        )
-        Toggle(
-            checked = isEnabled,
-            onCheckedChange = onSwitchToggle
-        )
+       SectionTitle(title = title)
     }
 
-    if (isEnabled) {
-        content()
-    }
+    content()
 }

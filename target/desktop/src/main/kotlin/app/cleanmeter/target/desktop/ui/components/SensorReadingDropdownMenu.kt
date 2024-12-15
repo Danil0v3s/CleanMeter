@@ -53,6 +53,7 @@ import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupPositionProvider
 import androidx.compose.ui.window.PopupProperties
 import app.cleanmeter.core.common.hardwaremonitor.HardwareMonitorData
+import app.cleanmeter.core.designsystem.LocalTypography
 import app.cleanmeter.target.desktop.ui.ColorTokens.AlmostVisibleGray
 import app.cleanmeter.target.desktop.ui.ColorTokens.BarelyVisibleGray
 import app.cleanmeter.target.desktop.ui.ColorTokens.DarkGray
@@ -202,11 +203,8 @@ fun SensorReadingDropdownMenu(
                                         ) {
                                             Text(
                                                 text = dropdownLabel(item),
+                                                style = LocalTypography.current.labelLMedium,
                                                 color = DarkGray,
-                                                fontSize = 14.sp,
-                                                fontWeight = FontWeight(550),
-                                                lineHeight = 0.sp,
-                                                modifier = Modifier
                                             )
 
                                             if (index == selectedIndex) {
@@ -257,10 +255,8 @@ private fun Header(
         ) {
             Text(
                 text = "Select $label sensor",
-                fontSize = 13.sp,
+                style = LocalTypography.current.labelMSemiBold,
                 color = MutedGray,
-                lineHeight = 0.sp,
-                fontWeight = FontWeight.SemiBold,
                 textAlign = TextAlign.Center,
             )
 
@@ -298,8 +294,7 @@ private fun Header(
 
             BasicTextField(
                 value = filter,
-                textStyle = TextStyle(
-                    fontSize = 12.sp,
+                textStyle = LocalTypography.current.labelS.copy(
                     lineHeight = 2.sp,
                     textAlign = TextAlign.Start,
                 ),

@@ -24,6 +24,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.cleanmeter.core.designsystem.LocalTypography
 import app.cleanmeter.target.desktop.ui.ColorTokens.BarelyVisibleGray
 import app.cleanmeter.target.desktop.ui.ColorTokens.DarkGray
 import app.cleanmeter.target.desktop.ui.ColorTokens.MutedGray
@@ -58,8 +59,8 @@ internal fun TopBar(
             )
             Text(
                 text = "Clean Meter",
-                fontWeight = FontWeight.Medium,
-                fontSize = 16.sp
+                style = LocalTypography.current.titleMMedium,
+                color = DarkGray
             )
         }
 
@@ -70,14 +71,15 @@ internal fun TopBar(
                 colorFilter = ColorFilter.tint(MutedGray),
                 modifier = Modifier.clickable { onMinimizeRequest() }
             )
-            TooltipArea({
-                Text(
-                    text = "Closing will minimize to the Tray",
-                    fontWeight = FontWeight.Medium,
-                    color = DarkGray,
-                    fontSize = 14.sp
-                )
-            }) {
+            TooltipArea(
+                delayMillis = 0,
+                tooltip = {
+                    Text(
+                        text = "Closing will minimize to the Tray",
+                        style = LocalTypography.current.labelM,
+                        color = DarkGray,
+                    )
+                }) {
                 Image(
                     imageVector = Icons.Rounded.Close,
                     contentDescription = "Close",

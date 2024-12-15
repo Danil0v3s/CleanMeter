@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AdminPanelSettings
 import androidx.compose.runtime.Composable
@@ -20,13 +21,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import app.cleanmeter.core.designsystem.LocalTypography
 import app.cleanmeter.core.os.win32.WinRegistry
 import app.cleanmeter.target.desktop.data.PREFERENCE_START_MINIMIZED
 import app.cleanmeter.target.desktop.data.PreferencesRepository
 import app.cleanmeter.target.desktop.model.OverlaySettings
+import app.cleanmeter.target.desktop.ui.ColorTokens.DarkGray
 import app.cleanmeter.target.desktop.ui.components.CheckboxWithLabel
-import app.cleanmeter.target.desktop.ui.components.Label
-import app.cleanmeter.target.desktop.ui.components.Section
+import app.cleanmeter.target.desktop.ui.components.section.Section
 import app.cleanmeter.target.desktop.ui.settings.FooterUi
 import app.cleanmeter.target.desktop.ui.settings.SettingsEvent
 
@@ -72,9 +74,15 @@ private fun startWithWindowsCheckbox() {
             }
         }
     ) {
-        TooltipArea({
-            Label(text = "Admin rights needed")
-        }) {
+        TooltipArea(
+            delayMillis = 0,
+            tooltip = {
+                Text(
+                    text = "Admin rights needed",
+                    style = LocalTypography.current.labelM,
+                    color = DarkGray,
+                )
+            }) {
             Icon(imageVector = Icons.Filled.AdminPanelSettings, null)
         }
     }

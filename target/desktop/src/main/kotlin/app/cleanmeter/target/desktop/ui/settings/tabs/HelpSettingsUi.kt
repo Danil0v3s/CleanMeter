@@ -22,18 +22,17 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.ParagraphStyle
 import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextIndent
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.cleanmeter.core.designsystem.LocalTypography
 import app.cleanmeter.target.desktop.ui.ColorTokens.DarkGray
 import app.cleanmeter.target.desktop.ui.ColorTokens.LabelGray
-import app.cleanmeter.target.desktop.ui.components.CollapsibleSection
+import app.cleanmeter.target.desktop.ui.components.section.CollapsibleSection
 
 @Composable
 internal fun HelpSettingsUi() {
@@ -66,7 +65,10 @@ internal fun HelpSettingsUi() {
                 "The sensors look wrong" to buildAnnotatedString { append("Try setting up each sensor via the Stats tab") },
                 "Neither sensors dropdown or the overlay are showing up" to buildAnnotatedString {
                     append("You need to have ")
-                    pushStringAnnotation("click", "https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-desktop-8.0.11-windows-x64-installer")
+                    pushStringAnnotation(
+                        "click",
+                        "https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-desktop-8.0.11-windows-x64-installer"
+                    )
                     withStyle(SpanStyle(textDecoration = TextDecoration.Underline)) {
                         append(".NET Core Framework")
                     }
@@ -120,11 +122,8 @@ private fun BulletList(
                 }
             }
         },
-        style = TextStyle(
-            fontSize = 14.sp,
-            color = DarkGray,
-            fontWeight = FontWeight(500)
-        )
+        style = LocalTypography.current.labelLMedium,
+        color = DarkGray,
     )
 }
 
@@ -140,24 +139,16 @@ private fun StyledNumberedList(
                 ) {
                     Text(
                         text = "${index + 1}",
-                        style = TextStyle(
-                            fontSize = 14.sp,
-                            color = Color.White,
-                            fontWeight = FontWeight.Thin,
-                            lineHeight = 0.sp,
-                            textAlign = TextAlign.Center
-                        ),
+                        style = LocalTypography.current.labelLThin,
+                        textAlign = TextAlign.Center,
+                        color = Color.White,
                         modifier = Modifier.align(Alignment.Center).padding(bottom = 2.dp)
                     )
                 }
                 Text(
                     text = item,
-                    style = TextStyle(
-                        fontSize = 14.sp,
-                        color = DarkGray,
-                        fontWeight = FontWeight.Medium,
-                        lineHeight = 0.sp,
-                    )
+                    style = LocalTypography.current.labelLMedium,
+                    color = DarkGray,
                 )
             }
         }
@@ -179,22 +170,15 @@ private fun FrequentlyAskedQuestions(
                         append("  ")
                         append(pair.first)
                     },
-                    style = TextStyle(
-                        fontSize = 14.sp,
-                        color = DarkGray,
-                        fontWeight = FontWeight(500),
-                        lineHeight = 0.sp
-                    )
+                    style = LocalTypography.current.labelLMedium,
+                    color = DarkGray,
                 )
                 Row {
                     Spacer(modifier = Modifier.width(16.dp))
                     ClickableText(
                         text = pair.second,
-                        style = TextStyle(
-                            fontSize = 14.sp,
+                        style = LocalTypography.current.labelL.copy(
                             color = LabelGray,
-                            fontWeight = FontWeight(400),
-                            lineHeight = 0.sp
                         ),
                         onClick = { offset ->
                             pair.second.getStringAnnotations("click", offset, offset).firstOrNull()?.let {

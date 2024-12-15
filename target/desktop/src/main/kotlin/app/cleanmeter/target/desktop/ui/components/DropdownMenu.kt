@@ -26,7 +26,9 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.cleanmeter.core.designsystem.LocalTypography
 import app.cleanmeter.target.desktop.ui.ColorTokens.AlmostVisibleGray
+import app.cleanmeter.target.desktop.ui.ColorTokens.DarkGray
 import app.cleanmeter.target.desktop.ui.ColorTokens.MutedGray
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -91,7 +93,11 @@ fun DropdownMenu(
                         onValueChanged(index)
                     }, modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text(text = item)
+                    Text(
+                        text = item,
+                        style = LocalTypography.current.labelLMedium,
+                        color = DarkGray,
+                    )
                 }
             }
         }

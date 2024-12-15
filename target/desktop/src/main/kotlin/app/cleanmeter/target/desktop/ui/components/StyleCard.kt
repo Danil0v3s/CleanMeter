@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.cleanmeter.core.designsystem.LocalTypography
 import app.cleanmeter.target.desktop.ui.ColorTokens.AlmostVisibleGray
 import app.cleanmeter.target.desktop.ui.ColorTokens.BarelyVisibleGray
 import app.cleanmeter.target.desktop.ui.ColorTokens.DarkGray
@@ -59,12 +60,11 @@ internal fun StyleCard(
         } else {
             Text(
                 text = label,
-                fontSize = 14.sp,
+                style = LocalTypography.current.labelLMedium.copy(
+                    letterSpacing = 0.14.sp
+                ),
                 color = DarkGray,
-                lineHeight = 0.sp,
-                fontWeight = FontWeight(550),
-                letterSpacing = 0.14.sp,
-                modifier = Modifier.align(Alignment.CenterStart)
+                modifier = Modifier.align(Alignment.CenterStart),
             )
         }
     }

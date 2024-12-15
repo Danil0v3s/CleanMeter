@@ -22,17 +22,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import app.cleanmeter.core.designsystem.LocalTypography
 import app.cleanmeter.target.desktop.model.OverlaySettings
 import app.cleanmeter.target.desktop.ui.ColorTokens.AlmostVisibleGray
 import app.cleanmeter.target.desktop.ui.ColorTokens.BarelyVisibleGray
 import app.cleanmeter.target.desktop.ui.ColorTokens.DarkGray
 import app.cleanmeter.target.desktop.ui.ColorTokens.LabelGray
 import app.cleanmeter.target.desktop.ui.ColorTokens.MutedGray
-import app.cleanmeter.target.desktop.ui.components.CollapsibleSection
+import app.cleanmeter.target.desktop.ui.components.section.CollapsibleSection
 import app.cleanmeter.target.desktop.ui.components.StyleCard
 import app.cleanmeter.target.desktop.ui.components.Toggle
 
@@ -188,17 +187,13 @@ internal fun Position(
                         Column {
                             Text(
                                 text = "Use custom position",
-                                fontSize = 13.sp,
+                                style = LocalTypography.current.labelM,
                                 color = DarkGray,
-                                lineHeight = 0.sp,
-                                fontWeight = FontWeight.Normal,
                             )
                             Text(
                                 text = "Unlock to move around the overlay, lock it again to fix it's position.",
-                                fontSize = 12.sp,
+                                style = LocalTypography.current.labelS,
                                 color = LabelGray,
-                                lineHeight = 0.sp,
-                                fontWeight = FontWeight.Normal,
                             )
                         }
                     }
@@ -225,10 +220,8 @@ internal fun Position(
                         ) {
                             Text(
                                 text = "Locked",
-                                fontSize = 13.sp,
+                                style = LocalTypography.current.labelM,
                                 color = if (!overlaySettings.isPositionLocked) AlmostVisibleGray else DarkGray,
-                                lineHeight = 0.sp,
-                                fontWeight = FontWeight.Normal,
                             )
                             Toggle(
                                 customSize = true,
@@ -249,10 +242,8 @@ internal fun Position(
                             )
                             Text(
                                 text = "Unlocked",
-                                fontSize = 13.sp,
+                                style = LocalTypography.current.labelM,
                                 color = if (!overlaySettings.isPositionLocked) DarkGray else AlmostVisibleGray,
-                                lineHeight = 0.sp,
-                                fontWeight = FontWeight.Normal,
                             )
                         }
                     }

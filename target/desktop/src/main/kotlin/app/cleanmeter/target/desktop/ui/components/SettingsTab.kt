@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.cleanmeter.core.designsystem.LocalTypography
 import app.cleanmeter.target.desktop.ui.ColorTokens.BarelyVisibleGray
 import app.cleanmeter.target.desktop.ui.ColorTokens.DarkGray
 import app.cleanmeter.target.desktop.ui.ColorTokens.MutedGray
@@ -59,9 +60,8 @@ internal fun SettingsTab(
         )
         Text(
             text = label,
-            fontWeight = FontWeight.Medium,
+            style = LocalTypography.current.titleM,
             color = if (selected) Color.White else MutedGray,
-            fontSize = 16.sp,
         )
     }
 }

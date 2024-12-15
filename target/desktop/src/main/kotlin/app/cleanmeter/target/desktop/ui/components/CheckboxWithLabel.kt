@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.cleanmeter.core.designsystem.LocalTypography
 import app.cleanmeter.target.desktop.ui.ColorTokens.DarkGray
 
 @Composable
@@ -36,11 +37,10 @@ fun CheckboxWithLabel(
 
         Text(
             text = label,
-            fontSize = 14.sp,
+            style = LocalTypography.current.labelL.copy(
+                letterSpacing = 0.14.sp,
+            ),
             color = DarkGray,
-            lineHeight = 0.sp,
-            fontWeight = FontWeight(550),
-            letterSpacing = 0.14.sp
         )
 
         trailingItem?.invoke()

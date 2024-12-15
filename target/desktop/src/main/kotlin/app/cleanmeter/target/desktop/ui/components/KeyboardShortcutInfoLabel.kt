@@ -18,6 +18,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.cleanmeter.core.designsystem.LocalTypography
 import app.cleanmeter.target.desktop.ui.ColorTokens.BorderGray
 
 @Composable
@@ -39,8 +40,7 @@ internal fun KeyboardShortcutInfoLabel() {
             Text(
                 text = "Hot key for showing/hiding the overlay",
                 color = Color.DarkGray,
-                fontSize = 14.sp,
-                fontWeight = FontWeight(600),
+                style = LocalTypography.current.labelLSemiBold,
                 modifier = Modifier.padding(bottom = 2.5.dp),
             )
         }

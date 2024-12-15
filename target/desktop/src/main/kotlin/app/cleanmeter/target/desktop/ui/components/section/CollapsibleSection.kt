@@ -1,4 +1,4 @@
-package app.cleanmeter.target.desktop.ui.components
+package app.cleanmeter.target.desktop.ui.components.section
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
@@ -31,6 +31,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.cleanmeter.target.desktop.ui.ColorTokens.MutedGray
+import app.cleanmeter.target.desktop.ui.components.SectionTitle
 
 @Composable
 fun CollapsibleSection(
@@ -57,14 +58,7 @@ fun CollapsibleSection(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = title,
-                fontSize = 13.sp,
-                color = MutedGray,
-                lineHeight = 0.sp,
-                fontWeight = FontWeight.SemiBold,
-                letterSpacing = 1.sp
-            )
+            SectionTitle(title = title)
             IconButton(onClick = { expanded = !expanded }, modifier = Modifier.clearAndSetSemantics { }.height(20.dp)) {
                 Icon(
                     imageVector = Icons.Rounded.ChevronRight,
