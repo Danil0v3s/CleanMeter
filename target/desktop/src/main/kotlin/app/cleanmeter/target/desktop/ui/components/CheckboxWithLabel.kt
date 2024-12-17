@@ -9,11 +9,10 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.cleanmeter.core.designsystem.LocalColorScheme
 import app.cleanmeter.core.designsystem.LocalTypography
-import app.cleanmeter.target.desktop.ui.ColorTokens.DarkGray
 
 @Composable
 fun CheckboxWithLabel(
@@ -31,7 +30,10 @@ fun CheckboxWithLabel(
             checked = checked,
             enabled = enabled,
             onCheckedChange = onCheckedChange,
-            colors = CheckboxDefaults.colors(checkedColor = DarkGray),
+            colors = CheckboxDefaults.colors(
+                checkedColor = LocalColorScheme.current.background.brand,
+                uncheckedColor = LocalColorScheme.current.background.surfaceSunken
+            ),
             modifier = Modifier.size(24.dp)
         )
 
@@ -40,7 +42,7 @@ fun CheckboxWithLabel(
             style = LocalTypography.current.labelLMedium.copy(
                 letterSpacing = 0.14.sp,
             ),
-            color = DarkGray,
+            color = LocalColorScheme.current.text.heading,
         )
 
         trailingItem?.invoke()

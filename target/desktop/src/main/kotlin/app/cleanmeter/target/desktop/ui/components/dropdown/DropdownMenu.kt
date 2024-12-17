@@ -1,4 +1,4 @@
-package app.cleanmeter.target.desktop.ui.components
+package app.cleanmeter.target.desktop.ui.components.dropdown
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.fillMaxWidth

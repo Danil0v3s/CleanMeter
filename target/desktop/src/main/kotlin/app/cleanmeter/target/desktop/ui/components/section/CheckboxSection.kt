@@ -14,7 +14,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import app.cleanmeter.core.designsystem.LocalColorScheme
 import app.cleanmeter.target.desktop.ui.components.CheckboxWithLabel
@@ -28,14 +27,9 @@ fun CheckboxSection(
     options: List<CheckboxSectionOption>,
     onOptionToggle: (CheckboxSectionOption) -> Unit,
     onSwitchToggle: (Boolean) -> Unit,
-) = Column(
-    modifier = Modifier
-        .animateContentSize()
-        .background(LocalColorScheme.current.background.surfaceRaised, RoundedCornerShape(12.dp))
-        .padding(20.dp),
-    verticalArrangement = Arrangement.spacedBy(20.dp)
-) {
+) = SectionBody {
     val isAnySelected by remember(options) { derivedStateOf { options.any { it.isSelected } } }
+
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -67,13 +61,7 @@ fun CustomBodyCheckboxSection(
     options: List<CheckboxSectionOption>,
     onSwitchToggle: (Boolean) -> Unit,
     body: @Composable (List<CheckboxSectionOption>) -> Unit,
-) = Column(
-    modifier = Modifier
-        .animateContentSize()
-        .background(LocalColorScheme.current.background.surfaceRaised, RoundedCornerShape(12.dp))
-        .padding(20.dp),
-    verticalArrangement = Arrangement.spacedBy(20.dp)
-) {
+) = SectionBody {
     val isAnySelected by remember(options) { derivedStateOf { options.any { it.isSelected } } }
 
     Row(
