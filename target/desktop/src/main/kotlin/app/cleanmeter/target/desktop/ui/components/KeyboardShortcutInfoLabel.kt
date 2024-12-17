@@ -18,6 +18,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.cleanmeter.core.designsystem.LocalColorScheme
+import app.cleanmeter.core.designsystem.LocalTypography
 import app.cleanmeter.target.desktop.ui.ColorTokens.BorderGray
 
 @Composable
@@ -26,7 +28,7 @@ internal fun KeyboardShortcutInfoLabel() {
         modifier = Modifier
             .fillMaxWidth()
             .background(Color.Transparent, RoundedCornerShape(12.dp))
-            .border(1.dp, BorderGray, RoundedCornerShape(12.dp))
+            .border(1.dp, LocalColorScheme.current.border.bold, RoundedCornerShape(12.dp))
             .padding(20.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
@@ -35,13 +37,12 @@ internal fun KeyboardShortcutInfoLabel() {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            Icon(painterResource("icons/info.svg"), "")
+            Icon(painterResource("icons/info.svg"), "", tint = LocalColorScheme.current.icon.bolderActive)
             Text(
                 text = "Hot key for showing/hiding the overlay",
-                color = Color.DarkGray,
-                fontSize = 14.sp,
-                fontWeight = FontWeight(600),
-                modifier = Modifier.padding(bottom = 2.5.dp),
+                color = LocalColorScheme.current.text.heading,
+                style = LocalTypography.current.labelLMedium,
+                modifier = Modifier.padding(bottom = 1.dp),
             )
         }
         Image(painterResource("icons/hotkey.png"), "")

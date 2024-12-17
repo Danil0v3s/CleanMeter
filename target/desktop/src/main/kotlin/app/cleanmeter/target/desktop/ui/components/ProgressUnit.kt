@@ -8,15 +8,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.cleanmeter.core.designsystem.LocalTypography
 
 @Composable
 fun ProgressUnit(unit: String) {
     Text(
         text = unit,
-        fontSize = 10.sp,
+        style = LocalTypography.current.bodyM,
         color = Color.White,
-        lineHeight = 0.sp,
-        fontWeight = FontWeight.Normal,
         modifier = Modifier.padding(bottom = 1.dp)
     )
 }
@@ -25,9 +24,7 @@ fun ProgressUnit(unit: String) {
 fun ProgressLabel(label: String) {
     Text(
         text = label,
-        fontSize = 16.sp,
+        style = LocalTypography.current.titleM,
         color = Color.White,
-        lineHeight = 0.sp,
-        fontWeight = FontWeight.Normal,
     )
 }

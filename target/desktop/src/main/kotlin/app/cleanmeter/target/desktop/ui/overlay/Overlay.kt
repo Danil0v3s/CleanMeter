@@ -14,7 +14,7 @@ import app.cleanmeter.target.desktop.ui.AppTheme
 fun Overlay(
     data: HardwareMonitorData?,
     overlaySettings: OverlaySettings,
-) = AppTheme {
+) = AppTheme(false) {
     if (
         listOf(
             overlaySettings.sensors.framerate,

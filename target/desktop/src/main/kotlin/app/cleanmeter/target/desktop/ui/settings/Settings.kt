@@ -27,8 +27,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import app.cleanmeter.core.common.hardwaremonitor.cpuReadings
 import app.cleanmeter.core.common.hardwaremonitor.gpuReadings
 import app.cleanmeter.core.common.hardwaremonitor.networkReadings
+import app.cleanmeter.core.designsystem.LocalColorScheme
 import app.cleanmeter.target.desktop.ui.AppTheme
-import app.cleanmeter.target.desktop.ui.ColorTokens.BackgroundOffWhite
 import app.cleanmeter.target.desktop.ui.ColorTokens.DarkGray
 import app.cleanmeter.target.desktop.ui.components.SettingsTab
 import app.cleanmeter.target.desktop.ui.components.TopBar
@@ -42,14 +42,14 @@ import app.cleanmeter.updater.UpdateState
 
 @Composable
 fun WindowScope.Settings(
+    isDarkTheme: Boolean,
     viewModel: SettingsViewModel = viewModel(),
     onCloseRequest: () -> Unit,
     onMinimizeRequest: () -> Unit,
     getOverlayPosition: () -> IntOffset
-) = AppTheme {
+) = AppTheme(isDarkTheme) {
     val settingsState by viewModel.state.collectAsState(SettingsState())
     val updaterState by AutoUpdater.state.collectAsState()
-
 
     if (settingsState.overlaySettings == null) {
         return@AppTheme
@@ -58,7 +58,7 @@ fun WindowScope.Settings(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(BackgroundOffWhite, RoundedCornerShape(12.dp))
+            .background(LocalColorScheme.current.background.surface, RoundedCornerShape(12.dp))
     ) {
         WindowDraggableArea {
             TopBar(onCloseRequest = onCloseRequest, onMinimizeRequest = onMinimizeRequest)
@@ -138,7 +138,7 @@ private fun TabContent(
             onOverlayCustomPositionEnable = { viewModel.onEvent(SettingsEvent.OverlayCustomPositionEnable(it)) },
         )
 
-        2 -> AppSettingsUi()
+        2 -> AppSettingsUi(overlaySettings = settingsState.overlaySettings!!, onEvent = viewModel::onEvent)
         3 -> HelpSettingsUi()
         else -> Unit
     }
@@ -183,7 +183,7 @@ private fun TabRow(selectedTabIndex: Int, onTabIndexChange: (Int) -> Unit) {
             onClick = { onTabIndexChange(3) },
             label = "",
             icon = painterResource("icons/help.svg"),
-            modifier = Modifier.weight(0.1f).padding(start = 4.dp),
+            modifier = Modifier.weight(0.1f),
         )
     }
 }

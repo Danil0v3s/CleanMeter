@@ -9,7 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import app.cleanmeter.target.desktop.model.OverlaySettings
-import app.cleanmeter.target.desktop.ui.components.CollapsibleSection
+import app.cleanmeter.target.desktop.ui.components.section.CollapsibleSection
 import app.cleanmeter.target.desktop.ui.components.StyleCard
 
 @Composable

@@ -30,6 +30,7 @@ sealed class SettingsEvent {
     data class OverlayOrientationSelect(val isHorizontal: Boolean) : SettingsEvent()
     data class OverlayOpacityChange(val opacity: Float) : SettingsEvent()
     data class OverlayGraphChange(val progressType: OverlaySettings.ProgressType) : SettingsEvent()
+    data class DarkThemeToggle(val isEnabled: Boolean) : SettingsEvent()
 }
 
 class SettingsViewModel : ViewModel() {
@@ -73,6 +74,14 @@ class SettingsViewModel : ViewModel() {
             is SettingsEvent.OverlayOrientationSelect -> onOverlayOrientationSelect(event.isHorizontal, this)
             is SettingsEvent.OverlayOpacityChange -> onOverlayOpacityChange(event.opacity, this)
             is SettingsEvent.OverlayGraphChange -> onOverlayGraphChange(event.progressType, this)
+            is SettingsEvent.DarkThemeToggle -> onDarkModeToggle(event.isEnabled, this)
+        }
+    }
+
+    private fun onDarkModeToggle(enabled: Boolean, settingsState: SettingsState) {
+        with(settingsState) {
+            val newSettings = overlaySettings?.copy(isDarkTheme = enabled)
+            OverlaySettingsRepository.setOverlaySettings(newSettings)
         }
     }
 

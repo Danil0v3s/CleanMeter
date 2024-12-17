@@ -18,6 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.cleanmeter.core.designsystem.LocalTypography
 import app.cleanmeter.target.desktop.ui.ColorTokens.OffWhite
 import app.cleanmeter.target.desktop.ui.overlay.conditional
 
@@ -35,7 +36,9 @@ fun Pill(
             .conditional(
                 predicate = isHorizontal,
                 ifTrue = {
-                    fillMaxHeight().widthIn(min = minWidth).background(Color.Black.copy(alpha = 0.3f), CircleShape)
+                    fillMaxHeight()
+                        .widthIn(min = minWidth)
+                        .background(Color.Black.copy(alpha = 0.3f), CircleShape)
                 },
                 ifFalse = {
                     background(
@@ -48,11 +51,10 @@ fun Pill(
     ) {
         Text(
             text = title,
-            fontSize = 10.sp,
+            style = LocalTypography.current.bodyM.copy(
+                letterSpacing = 1.sp,
+            ),
             color = OffWhite,
-            lineHeight = 0.sp,
-            fontWeight = FontWeight.Normal,
-            letterSpacing = 1.sp
         )
 
         content()

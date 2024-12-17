@@ -5,6 +5,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class OverlaySettings(
+    val isDarkTheme: Boolean = false,
     val isHorizontal: Boolean = true,
     val positionIndex: Int = 0,
     val selectedDisplayIndex: Int = 0,

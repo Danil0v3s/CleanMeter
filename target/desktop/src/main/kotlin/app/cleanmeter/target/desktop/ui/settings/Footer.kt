@@ -35,7 +35,9 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.cleanmeter.core.designsystem.LocalTypography
 import app.cleanmeter.target.desktop.ui.ColorTokens.BorderGray
+import app.cleanmeter.target.desktop.ui.ColorTokens.DarkGray
 import app.cleanmeter.target.desktop.ui.ColorTokens.LabelGray
 
 @Composable
@@ -80,11 +82,8 @@ fun FooterUi(modifier: Modifier = Modifier) {
 
             ClickableText(
                 text = text,
-                style = TextStyle(
-                    fontSize = 12.sp,
+                style = LocalTypography.current.labelS.copy(
                     color = LabelGray,
-                    lineHeight = 0.sp,
-                    fontWeight = FontWeight(450),
                     letterSpacing = 0.14.sp,
                 ),
                 onClick = { offset ->
@@ -106,11 +105,10 @@ fun FooterUi(modifier: Modifier = Modifier) {
 
                 Text(
                     text = "Version ${System.getProperty("jpackage.app-version")}",
-                    fontSize = 12.sp,
-                    color = LabelGray,
-                    lineHeight = 0.sp,
-                    fontWeight = FontWeight(450),
-                    letterSpacing = 0.14.sp,
+                    style = LocalTypography.current.labelS.copy(
+                        color = LabelGray,
+                        letterSpacing = 0.14.sp,
+                    )
                 )
             }
         }
@@ -142,8 +140,7 @@ private fun Github(uriHandler: UriHandler) {
             Text(
                 text = "Check the latest build",
                 color = Color.DarkGray,
-                fontSize = 14.sp,
-                fontWeight = FontWeight(600),
+                style = LocalTypography.current.labelLSemiBold,
             )
         }
         Icon(Icons.Rounded.ChevronRight, "")
@@ -174,9 +171,8 @@ private fun RowScope.Donate(uriHandler: UriHandler) {
             Image(painterResource("icons/ko-fi.png"), "")
             Text(
                 text = "Like the work? Support us!",
-                color = Color.DarkGray,
-                fontSize = 14.sp,
-                fontWeight = FontWeight(600),
+                color = DarkGray,
+                style = LocalTypography.current.labelLSemiBold,
             )
         }
         Image(Icons.Rounded.ChevronRight, "")
@@ -207,9 +203,8 @@ private fun RowScope.Discord(uriHandler: UriHandler) {
             Image(painterResource("icons/discord.png"), "")
             Text(
                 text = "Join the discord server!",
-                color = Color.DarkGray,
-                fontSize = 14.sp,
-                fontWeight = FontWeight(600),
+                color = DarkGray,
+                style = LocalTypography.current.labelLSemiBold,
             )
         }
         Image(Icons.Rounded.ChevronRight, "")

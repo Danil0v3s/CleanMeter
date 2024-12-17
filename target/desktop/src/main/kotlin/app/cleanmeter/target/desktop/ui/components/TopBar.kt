@@ -10,20 +10,27 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.ChevronRight
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Minimize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.cleanmeter.core.designsystem.LocalColorScheme
+import app.cleanmeter.core.designsystem.LocalTypography
 import app.cleanmeter.target.desktop.ui.ColorTokens.BarelyVisibleGray
 import app.cleanmeter.target.desktop.ui.ColorTokens.DarkGray
 import app.cleanmeter.target.desktop.ui.ColorTokens.MutedGray
@@ -58,32 +65,36 @@ internal fun TopBar(
             )
             Text(
                 text = "Clean Meter",
-                fontWeight = FontWeight.Medium,
-                fontSize = 16.sp
+                style = LocalTypography.current.titleMMedium,
+                color = LocalColorScheme.current.text.heading,
             )
         }
 
         Row(horizontalArrangement = Arrangement.spacedBy(16.dp), verticalAlignment = Alignment.CenterVertically) {
-            Image(
-                imageVector = Icons.Rounded.Minimize,
-                contentDescription = "Minimize",
-                colorFilter = ColorFilter.tint(MutedGray),
-                modifier = Modifier.clickable { onMinimizeRequest() }
-            )
-            TooltipArea({
-                Text(
-                    text = "Closing will minimize to the Tray",
-                    fontWeight = FontWeight.Medium,
-                    color = DarkGray,
-                    fontSize = 14.sp
+            IconButton(onClick = { onMinimizeRequest() }, modifier = Modifier.size(20.dp).clearAndSetSemantics { }) {
+                Icon(
+                    imageVector = Icons.Rounded.Minimize,
+                    contentDescription = "Minimize window",
+                    tint = LocalColorScheme.current.icon.bolderActive,
                 )
-            }) {
-                Image(
-                    imageVector = Icons.Rounded.Close,
-                    contentDescription = "Close",
-                    colorFilter = ColorFilter.tint(MutedGray),
-                    modifier = Modifier.clickable { onCloseRequest() }
-                )
+            }
+
+            TooltipArea(
+                delayMillis = 0,
+                tooltip = {
+                    Text(
+                        text = "Closing will minimize to the Tray",
+                        style = LocalTypography.current.labelM,
+                        color = DarkGray,
+                    )
+                }) {
+                IconButton(onClick = { onCloseRequest() }, modifier = Modifier.size(20.dp).clearAndSetSemantics { }) {
+                    Icon(
+                        imageVector = Icons.Rounded.Close,
+                        contentDescription = "Close window to tray",
+                        tint = LocalColorScheme.current.icon.bolderActive,
+                    )
+                }
             }
         }
     }

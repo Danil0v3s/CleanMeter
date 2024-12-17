@@ -36,6 +36,7 @@ fun composeApp() = application {
     )
 
     SettingsWindow(
+        isDarkTheme = state.overlaySettings.isDarkTheme,
         getOverlayPosition = { overlayPosition },
         onApplicationExit = {
             if (!ApplicationParams.isAutostart) {
