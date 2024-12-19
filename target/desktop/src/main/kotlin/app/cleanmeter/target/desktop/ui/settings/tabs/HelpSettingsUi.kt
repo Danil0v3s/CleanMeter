@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.ClickableText
@@ -29,6 +30,7 @@ import androidx.compose.ui.text.style.TextIndent
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.cleanmeter.core.designsystem.LocalColorScheme
 import app.cleanmeter.core.designsystem.LocalTypography
 import app.cleanmeter.target.desktop.ui.ColorTokens.DarkGray
 import app.cleanmeter.target.desktop.ui.ColorTokens.LabelGray
@@ -123,7 +125,7 @@ private fun BulletList(
             }
         },
         style = LocalTypography.current.labelLMedium,
-        color = DarkGray,
+        color = LocalColorScheme.current.text.heading,
     )
 }
 
@@ -134,21 +136,20 @@ private fun StyledNumberedList(
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         items.forEachIndexed { index, item ->
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Box(
-                    modifier = Modifier.background(DarkGray, CircleShape).size(26.dp)
-                ) {
-                    Text(
-                        text = "${index + 1}",
-                        style = LocalTypography.current.labelLThin,
-                        textAlign = TextAlign.Center,
-                        color = Color.White,
-                        modifier = Modifier.align(Alignment.Center).padding(bottom = 2.dp)
-                    )
-                }
+                Text(
+                    text = "${index + 1}",
+                    style = LocalTypography.current.labelSSemiBold,
+                    textAlign = TextAlign.Center,
+                    color = LocalColorScheme.current.text.inverse,
+                    modifier = Modifier
+                        .background(LocalColorScheme.current.background.brand, CircleShape)
+                        .size(26.dp)
+                        .wrapContentHeight(align = Alignment.CenterVertically)
+                )
                 Text(
                     text = item,
                     style = LocalTypography.current.labelLMedium,
-                    color = DarkGray,
+                    color = LocalColorScheme.current.text.heading,
                 )
             }
         }
@@ -171,14 +172,14 @@ private fun FrequentlyAskedQuestions(
                         append(pair.first)
                     },
                     style = LocalTypography.current.labelLMedium,
-                    color = DarkGray,
+                    color = LocalColorScheme.current.text.heading,
                 )
                 Row {
                     Spacer(modifier = Modifier.width(16.dp))
                     ClickableText(
                         text = pair.second,
                         style = LocalTypography.current.labelL.copy(
-                            color = LabelGray,
+                            color = LocalColorScheme.current.text.paragraph1,
                         ),
                         onClick = { offset ->
                             pair.second.getStringAnnotations("click", offset, offset).firstOrNull()?.let {

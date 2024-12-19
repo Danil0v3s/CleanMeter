@@ -115,6 +115,18 @@ class Typography {
         )
 
     /**
+     * fontSize = 12.sp,
+     * lineHeight = 0.sp,
+     * fontWeight = W400,
+     */
+    val labelSSemiBold: TextStyle
+        @Composable get() = defaultTextStyle.copy(
+            fontSize = 12.sp,
+            lineHeight = 0.sp,
+            fontFamily = fontFamilySemiBold
+        )
+
+    /**
      * fontSize = 10.sp,
      * lineHeight = 0.sp,
      * fontWeight = W400,
