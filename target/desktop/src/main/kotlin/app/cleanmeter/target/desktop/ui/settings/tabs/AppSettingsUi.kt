@@ -21,6 +21,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import app.cleanmeter.core.designsystem.LocalColorScheme
 import app.cleanmeter.core.designsystem.LocalTypography
 import app.cleanmeter.core.os.win32.WinRegistry
 import app.cleanmeter.target.desktop.data.PREFERENCE_START_MINIMIZED
@@ -80,10 +81,14 @@ private fun startWithWindowsCheckbox() {
                 Text(
                     text = "Admin rights needed",
                     style = LocalTypography.current.labelM,
-                    color = DarkGray,
+                    color = LocalColorScheme.current.text.heading,
                 )
             }) {
-            Icon(imageVector = Icons.Filled.AdminPanelSettings, null)
+            Icon(
+                imageVector = Icons.Filled.AdminPanelSettings,
+                contentDescription = null,
+                tint = LocalColorScheme.current.icon.bolderActive
+            )
         }
     }
 }
