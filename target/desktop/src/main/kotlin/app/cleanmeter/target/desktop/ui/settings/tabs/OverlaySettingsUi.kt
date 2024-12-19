@@ -16,8 +16,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.cleanmeter.core.common.hardwaremonitor.HardwareMonitorData
+import app.cleanmeter.core.designsystem.LocalColorScheme
 import app.cleanmeter.target.desktop.model.OverlaySettings
-import app.cleanmeter.target.desktop.ui.ColorTokens.LabelGray
 import app.cleanmeter.target.desktop.ui.components.section.CheckboxSection
 import app.cleanmeter.target.desktop.ui.components.CheckboxWithLabel
 import app.cleanmeter.target.desktop.ui.components.section.CustomBodyCheckboxSection
@@ -194,7 +194,7 @@ fun OverlaySettingsUi(
     Text(
         text = "May your frames be high, and temps be low.",
         fontSize = 12.sp,
-        color = LabelGray,
+        color = LocalColorScheme.current.text.disabled,
         lineHeight = 0.sp,
         fontWeight = FontWeight(550),
         letterSpacing = 0.14.sp,

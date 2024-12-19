@@ -19,7 +19,6 @@ import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ChevronRight
-import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -30,18 +29,13 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.UriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.cleanmeter.core.designsystem.LocalColorScheme
 import app.cleanmeter.core.designsystem.LocalTypography
-import app.cleanmeter.target.desktop.ui.ColorTokens.BorderGray
-import app.cleanmeter.target.desktop.ui.ColorTokens.DarkGray
-import app.cleanmeter.target.desktop.ui.ColorTokens.LabelGray
 
 @Composable
 fun FooterUi(modifier: Modifier = Modifier) {

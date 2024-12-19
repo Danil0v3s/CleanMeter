@@ -2,7 +2,6 @@ package app.cleanmeter.target.desktop.ui.settings.tabs
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,7 +17,6 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.ParagraphStyle
@@ -32,8 +30,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.cleanmeter.core.designsystem.LocalColorScheme
 import app.cleanmeter.core.designsystem.LocalTypography
-import app.cleanmeter.target.desktop.ui.ColorTokens.DarkGray
-import app.cleanmeter.target.desktop.ui.ColorTokens.LabelGray
 import app.cleanmeter.target.desktop.ui.components.section.CollapsibleSection
 
 @Composable

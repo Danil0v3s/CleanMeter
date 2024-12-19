@@ -14,12 +14,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.cleanmeter.core.designsystem.LocalColorScheme
 import app.cleanmeter.core.designsystem.LocalTypography
-import app.cleanmeter.target.desktop.ui.ColorTokens.OffWhite
 import app.cleanmeter.target.desktop.ui.overlay.conditional
 
 @Composable
@@ -54,7 +53,7 @@ fun Pill(
             style = LocalTypography.current.bodyM.copy(
                 letterSpacing = 1.sp,
             ),
-            color = OffWhite,
+            color = LocalColorScheme.current.text.inverseSubtler,
         )
 
         content()

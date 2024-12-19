@@ -29,7 +29,6 @@ import app.cleanmeter.core.common.hardwaremonitor.gpuReadings
 import app.cleanmeter.core.common.hardwaremonitor.networkReadings
 import app.cleanmeter.core.designsystem.LocalColorScheme
 import app.cleanmeter.target.desktop.ui.AppTheme
-import app.cleanmeter.target.desktop.ui.ColorTokens.DarkGray
 import app.cleanmeter.target.desktop.ui.components.SettingsTab
 import app.cleanmeter.target.desktop.ui.components.TopBar
 import app.cleanmeter.target.desktop.ui.components.UpdateToast
@@ -151,7 +150,7 @@ private fun TabRow(selectedTabIndex: Int, onTabIndexChange: (Int) -> Unit) {
             selectedTabIndex = selectedTabIndex,
             modifier = Modifier.weight(1f).height(44.dp),
             backgroundColor = Color.Transparent,
-            contentColor = DarkGray,
+            contentColor = LocalColorScheme.current.background.brand,
             edgePadding = 0.dp,
             indicator = { tabPositions -> },
             divider = {}

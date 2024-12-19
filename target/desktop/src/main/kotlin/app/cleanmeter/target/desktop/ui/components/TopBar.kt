@@ -3,7 +3,6 @@ package app.cleanmeter.target.desktop.ui.components
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.TooltipArea
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,26 +13,18 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ChevronRight
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Minimize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import app.cleanmeter.core.designsystem.LocalColorScheme
 import app.cleanmeter.core.designsystem.LocalTypography
-import app.cleanmeter.target.desktop.ui.ColorTokens.BarelyVisibleGray
-import app.cleanmeter.target.desktop.ui.ColorTokens.DarkGray
-import app.cleanmeter.target.desktop.ui.ColorTokens.MutedGray
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -41,6 +32,7 @@ internal fun TopBar(
     onCloseRequest: () -> Unit,
     onMinimizeRequest: () -> Unit,
 ) {
+    val colorScheme = LocalColorScheme.current
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -48,7 +40,7 @@ internal fun TopBar(
             .drawBehind {
                 val y = size.height - 2.dp.toPx() / 2
                 drawLine(
-                    color = BarelyVisibleGray,
+                    color = colorScheme.border.bold,
                     start = Offset(0f, y),
                     end = Offset(size.width, y),
                     strokeWidth = 2.dp.toPx()
@@ -85,7 +77,7 @@ internal fun TopBar(
                     Text(
                         text = "Closing will minimize to the Tray",
                         style = LocalTypography.current.labelM,
-                        color = DarkGray,
+                        color = LocalColorScheme.current.text.heading,
                     )
                 }) {
                 IconButton(onClick = { onCloseRequest() }, modifier = Modifier.size(20.dp).clearAndSetSemantics { }) {

@@ -31,8 +31,8 @@ import androidx.compose.ui.unit.sp
 import app.cleanmeter.core.common.hardwaremonitor.FPS
 import app.cleanmeter.core.common.hardwaremonitor.Frametime
 import app.cleanmeter.core.common.hardwaremonitor.HardwareMonitorData
+import app.cleanmeter.core.designsystem.LocalColorScheme
 import app.cleanmeter.target.desktop.model.OverlaySettings
-import app.cleanmeter.target.desktop.ui.ColorTokens.OffWhite
 import app.cleanmeter.target.desktop.ui.components.Pill
 import app.cleanmeter.target.desktop.ui.overlay.conditional
 import java.util.*
@@ -85,7 +85,7 @@ internal fun FpsSection(overlaySettings: OverlaySettings, data: HardwareMonitorD
                     Text(
                         text = "FPS",
                         fontSize = 10.sp,
-                        color = OffWhite,
+                        color = LocalColorScheme.current.text.inverseSubtler,
                         lineHeight = 0.sp,
                         fontWeight = FontWeight.Normal,
                         letterSpacing = 1.sp

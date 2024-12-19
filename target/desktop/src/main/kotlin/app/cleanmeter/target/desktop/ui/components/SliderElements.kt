@@ -20,14 +20,14 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import app.cleanmeter.target.desktop.ui.ColorTokens.DarkGray
+import app.cleanmeter.core.designsystem.LocalColorScheme
 
 @Composable
 fun SliderThumb() {
     Spacer(
         Modifier
             .size(20.dp)
-            .border(2.dp, DarkGray, CircleShape)
+            .border(2.dp, LocalColorScheme.current.border.brand, CircleShape)
             .indication(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = androidx.compose.material.ripple.rememberRipple(

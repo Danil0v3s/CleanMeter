@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
@@ -36,15 +37,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import app.cleanmeter.core.designsystem.LocalColorScheme
+import app.cleanmeter.core.designsystem.LocalTypography
 import app.cleanmeter.target.desktop.ui.AppTheme
-import app.cleanmeter.target.desktop.ui.ColorTokens.AlmostDarkGray
-import app.cleanmeter.target.desktop.ui.ColorTokens.ClearGray
-import app.cleanmeter.target.desktop.ui.ColorTokens.DarkGray
-import app.cleanmeter.target.desktop.ui.ColorTokens.Green
-import app.cleanmeter.target.desktop.ui.ColorTokens.LabelGray
 import app.cleanmeter.updater.AutoUpdater
 import app.cleanmeter.updater.UpdateState
 import kotlinx.coroutines.delay
@@ -83,8 +79,8 @@ internal fun BoxScope.UpdateToast() {
             modifier = Modifier
                 .padding(bottom = 16.dp)
                 .fillMaxWidth(0.8f)
-                .background(DarkGray, RoundedCornerShape(100))
-                .padding(16.dp)
+                .background(LocalColorScheme.current.background.brand, RoundedCornerShape(100))
+                .padding(horizontal = 16.dp, vertical = 14.dp)
                 .align(Alignment.BottomCenter)
                 .animateContentSize(),
             verticalAlignment = Alignment.CenterVertically,
@@ -119,19 +115,15 @@ private fun RowScope.BodyText(state: UpdateState) {
                 is UpdateState.Downloading -> "Downloading update..."
                 UpdateState.NotAvailable -> ""
             },
-            color = Color.White,
-            fontSize = 14.sp,
-            fontWeight = FontWeight.Normal,
-            lineHeight = 0.sp,
-            modifier = Modifier.padding(bottom = 2.5.dp),
+            color = LocalColorScheme.current.text.inverse,
+            style = LocalTypography.current.labelLMedium,
+            modifier = Modifier.wrapContentHeight(align = Alignment.CenterVertically),
         )
         Text(
             text = "v${AutoUpdater.currentLiveVersion}",
-            color = LabelGray,
-            fontSize = 14.sp,
-            fontWeight = FontWeight.Normal,
-            lineHeight = 0.sp,
-            modifier = Modifier.padding(bottom = 2.5.dp),
+            color = LocalColorScheme.current.text.disabled,
+            style = LocalTypography.current.labelLMedium,
+            modifier = Modifier.wrapContentHeight(align = Alignment.CenterVertically),
         )
     }
 }
@@ -147,10 +139,9 @@ private fun ClearButton(onClick: () -> Unit, label: String) {
     ) {
         Text(
             text = label,
-            color = Color.White,
-            fontSize = 14.sp,
-            fontWeight = FontWeight.Normal,
-            modifier = Modifier.padding(bottom = 2.5.dp),
+            style = LocalTypography.current.labelLMedium,
+            color = LocalColorScheme.current.text.inverse,
+            modifier = Modifier.wrapContentHeight(align = Alignment.CenterVertically),
         )
     }
 }
@@ -160,17 +151,16 @@ private fun FilledButton(onClick: () -> Unit, label: String) {
     Button(
         onClick = onClick,
         colors = ButtonDefaults.textButtonColors(
-            containerColor = Color.White,
+            containerColor = LocalColorScheme.current.background.surfaceRaised,
         ),
         contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
         shape = RoundedCornerShape(100),
     ) {
         Text(
             text = label,
-            color = Color.DarkGray,
-            fontSize = 14.sp,
-            fontWeight = FontWeight(600),
-            modifier = Modifier.padding(bottom = 2.5.dp),
+            color = LocalColorScheme.current.text.heading,
+            style = LocalTypography.current.labelLMedium,
+            modifier = Modifier.wrapContentHeight(align = Alignment.CenterVertically),
         )
     }
 }
@@ -209,22 +199,22 @@ private fun IconProgress(state: UpdateState) {
             is UpdateState.Available -> Icon(
                 painter = painterResource("icons/cloud_download.svg"),
                 contentDescription = null,
-                tint = Color.White,
-                modifier = Modifier.fillMaxSize().background(AlmostDarkGray, RoundedCornerShape(100)).padding(10.dp),
+                tint = LocalColorScheme.current.border.inverse,
+                modifier = Modifier.fillMaxSize().background(LocalColorScheme.current.background.brandSubtle, RoundedCornerShape(100)).padding(10.dp),
             )
 
             is UpdateState.Downloaded -> Icon(
                 painter = painterResource("icons/download_done.svg"),
                 contentDescription = null,
-                tint = Color.White,
-                modifier = Modifier.fillMaxSize().background(AlmostDarkGray, RoundedCornerShape(100)).padding(10.dp),
+                tint = LocalColorScheme.current.border.inverse,
+                modifier = Modifier.fillMaxSize().background(LocalColorScheme.current.background.brandSubtle, RoundedCornerShape(100)).padding(10.dp),
             )
 
             is UpdateState.Downloading -> CircularProgressIndicator(
                 progress = state.progress,
                 modifier = Modifier.fillMaxSize().align(Alignment.Center),
-                color = Green,
-                backgroundColor = ClearGray,
+                color = LocalColorScheme.current.background.successHover,
+                backgroundColor = LocalColorScheme.current.background.surfaceRaised.copy(alpha = 0.3f),
                 strokeCap = StrokeCap.Round,
                 strokeWidth = 3.dp
             )

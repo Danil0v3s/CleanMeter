@@ -27,7 +27,6 @@ import app.cleanmeter.core.os.win32.WinRegistry
 import app.cleanmeter.target.desktop.data.PREFERENCE_START_MINIMIZED
 import app.cleanmeter.target.desktop.data.PreferencesRepository
 import app.cleanmeter.target.desktop.model.OverlaySettings
-import app.cleanmeter.target.desktop.ui.ColorTokens.DarkGray
 import app.cleanmeter.target.desktop.ui.components.CheckboxWithLabel
 import app.cleanmeter.target.desktop.ui.components.section.Section
 import app.cleanmeter.target.desktop.ui.settings.FooterUi
