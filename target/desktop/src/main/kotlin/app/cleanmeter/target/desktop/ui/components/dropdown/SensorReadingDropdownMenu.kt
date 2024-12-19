@@ -6,7 +6,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,11 +13,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ExposedDropdownMenuBox
 import androidx.compose.material.Icon
@@ -37,10 +34,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.drawWithCache
-import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.CornerRadius
@@ -61,11 +56,6 @@ import androidx.compose.ui.window.PopupProperties
 import app.cleanmeter.core.common.hardwaremonitor.HardwareMonitorData
 import app.cleanmeter.core.designsystem.LocalColorScheme
 import app.cleanmeter.core.designsystem.LocalTypography
-import app.cleanmeter.target.desktop.ui.ColorTokens.AlmostVisibleGray
-import app.cleanmeter.target.desktop.ui.ColorTokens.BarelyVisibleGray
-import app.cleanmeter.target.desktop.ui.ColorTokens.DarkGray
-import app.cleanmeter.target.desktop.ui.ColorTokens.Gray200
-import app.cleanmeter.target.desktop.ui.ColorTokens.MutedGray
 import app.cleanmeter.target.desktop.ui.overlay.conditional
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -138,7 +128,6 @@ private fun DropdownContent(
             .background(LocalColorScheme.current.background.surfaceSunkenSubtle, RoundedCornerShape(8.dp)).padding(16.dp)
             .border(1.dp, LocalColorScheme.current.border.bolder, RoundedCornerShape(8.dp))
             .background(LocalColorScheme.current.background.surfaceRaised).padding(12.dp)
-
     ) {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             if (label != null) {
@@ -260,7 +249,9 @@ private fun DropdownContent(
 
 @Composable
 private fun Header(
-    label: String, onCloseRequest: () -> Unit, onFilterChange: (String) -> Unit
+    label: String,
+    onCloseRequest: () -> Unit,
+    onFilterChange: (String) -> Unit
 ) {
     var filter by remember { mutableStateOf("") }
     val colorScheme = LocalColorScheme.current
