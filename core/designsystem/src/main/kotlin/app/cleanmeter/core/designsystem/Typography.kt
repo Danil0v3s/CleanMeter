@@ -12,7 +12,7 @@ class Typography {
     /**
      * fontSize = 16.sp,
      * lineHeight = 0.sp,
-     * fontWeight = FontWeight.Medium,
+     * fontWeight = W500,
      */
     val titleM: TextStyle
         @Composable get() = defaultTextStyle.copy(
@@ -24,7 +24,7 @@ class Typography {
     /**
      * fontSize = 16.sp,
      * lineHeight = 0.sp,
-     * fontWeight = FontWeight.Medium,
+     * fontWeight = W500,
      */
     val titleMMedium: TextStyle
         @Composable get() = defaultTextStyle.copy(
@@ -36,7 +36,7 @@ class Typography {
     /**
      * fontSize = 14.sp,
      * lineHeight = 0.sp,
-     * fontWeight = FontWeight.Normal,
+     * fontWeight = W400,
      */
     val labelL: TextStyle
         @Composable get() = defaultTextStyle.copy(
@@ -47,7 +47,7 @@ class Typography {
     /**
      * fontSize = 14.sp,
      * lineHeight = 0.sp,
-     * fontWeight = FontWeight.Thin,
+     * fontWeight = W100,
      */
     val labelLThin: TextStyle
         @Composable get() = defaultTextStyle.copy(
@@ -59,7 +59,7 @@ class Typography {
     /**
      * fontSize = 14.sp,
      * lineHeight = 0.sp,
-     * fontWeight = FontWeight.Medium,
+     * fontWeight = W500,
      */
     val labelLMedium: TextStyle
         @Composable get() = defaultTextStyle.copy(
@@ -71,7 +71,7 @@ class Typography {
     /**
      * fontSize = 14.sp,
      * lineHeight = 0.sp,
-     * fontWeight = FontWeight.SemiBold,
+     * fontWeight = W600,
      */
     val labelLSemiBold: TextStyle
         @Composable get() = defaultTextStyle.copy(
@@ -83,7 +83,7 @@ class Typography {
     /**
      * fontSize = 13.sp,
      * lineHeight = 0.sp,
-     * fontWeight = FontWeight.Normal,
+     * fontWeight = W400,
      */
     val labelM: TextStyle
         @Composable get() = defaultTextStyle.copy(
@@ -94,7 +94,7 @@ class Typography {
     /**
      * fontSize = 13.sp,
      * lineHeight = 0.sp,
-     * fontWeight = FontWeight.SemiBold,
+     * fontWeight = W600,
      */
     val labelMSemiBold: TextStyle
         @Composable get() = defaultTextStyle.copy(
@@ -106,7 +106,7 @@ class Typography {
     /**
      * fontSize = 12.sp,
      * lineHeight = 0.sp,
-     * fontWeight = FontWeight.Normal,
+     * fontWeight = W400,
      */
     val labelS: TextStyle
         @Composable get() = defaultTextStyle.copy(
@@ -117,7 +117,7 @@ class Typography {
     /**
      * fontSize = 10.sp,
      * lineHeight = 0.sp,
-     * fontWeight = FontWeight.Normal,
+     * fontWeight = W400,
      */
     val bodyM: TextStyle
         @Composable get() = defaultTextStyle.copy(
