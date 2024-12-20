@@ -80,8 +80,7 @@ object AutoUpdater {
     private suspend fun isUpdateAvailable(): Boolean {
         val map = client.getPropertiesMap()
         val liveVersion = map["projectVersion"]?.toVersion(strict = false)
-//        val currentVersion = System.getProperty("jpackage.app-version")?.toVersion(strict = false)
-        val currentVersion = "0.0.7"?.toVersion(strict = false)
+        val currentVersion = System.getProperty("jpackage.app-version")?.toVersion(strict = false)
         _currentLiveVersion = liveVersion
         return liveVersion != null && currentVersion != null && liveVersion > currentVersion
     }
