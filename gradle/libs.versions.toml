@@ -2,7 +2,7 @@
 kotlin = "2.0.20"
 ktor = "2.3.12"
 jackson = "2.11.2"
-compose = "1.6.11"
+compose = "1.7.1"
 
 [plugins]
 jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose" }
@@ -37,3 +37,4 @@ jackson-dataformat = { module = "com.fasterxml.jackson.dataformat:jackson-datafo
 jna = "net.java.dev.jna:jna-platform:5.12.1"
 oshi = "com.github.oshi:oshi-core:6.6.5"
 jnativehook = "com.github.kwhat:jnativehook:2.2.2"
+haze = "dev.chrisbanes.haze:haze:1.1.1"

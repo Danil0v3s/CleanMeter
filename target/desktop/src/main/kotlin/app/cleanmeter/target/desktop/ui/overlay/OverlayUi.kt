@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,6 +29,8 @@ import app.cleanmeter.target.desktop.ui.overlay.sections.FpsSection
 import app.cleanmeter.target.desktop.ui.overlay.sections.GpuSection
 import app.cleanmeter.target.desktop.ui.overlay.sections.NetSection
 import app.cleanmeter.target.desktop.ui.overlay.sections.RamSection
+import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.haze
 
 inline fun Modifier.conditional(
     predicate: Boolean,

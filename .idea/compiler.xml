@@ -2,8 +2,8 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel target="20">
-      <module name="CleanMeter.core.design-system.main" target="22" />
-      <module name="CleanMeter.core.design-system.test" target="22" />
+      <module name="CleanMeter.core.designsystem.main" target="22" />
+      <module name="CleanMeter.core.designsystem.test" target="22" />
       <module name="CleanMeter.target.app.main" target="22" />
       <module name="CleanMeter.target.app.test" target="22" />
       <module name="CleanMeter.target.server.main" target="22" />

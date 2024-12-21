@@ -8,6 +8,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SliderState
 import androidx.compose.runtime.Composable
@@ -28,13 +29,6 @@ fun SliderThumb() {
         Modifier
             .size(20.dp)
             .border(2.dp, LocalColorScheme.current.border.brand, CircleShape)
-            .indication(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = androidx.compose.material.ripple.rememberRipple(
-                    bounded = false,
-                    radius = 20.dp
-                )
-            )
             .hoverable(interactionSource = remember { MutableInteractionSource() })
             .background(Color.White, CircleShape)
     )

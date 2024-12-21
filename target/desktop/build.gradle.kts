@@ -42,7 +42,7 @@ dependencies {
     implementation(projects.core.common)
     implementation(projects.core.native)
     implementation(projects.core.updater)
-    implementation(projects.core.designsystem)
+    implementation(projects.core.designSystem)
 }
 
 sourceSets {
