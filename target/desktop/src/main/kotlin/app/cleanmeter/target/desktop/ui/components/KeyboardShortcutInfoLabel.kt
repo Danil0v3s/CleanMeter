@@ -6,7 +6,9 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
@@ -26,7 +28,7 @@ internal fun KeyboardShortcutInfoLabel() {
             .fillMaxWidth()
             .background(Color.Transparent, RoundedCornerShape(12.dp))
             .border(1.dp, LocalColorScheme.current.border.bold, RoundedCornerShape(12.dp))
-            .padding(20.dp),
+            .padding(vertical = 22.dp, horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -34,14 +36,22 @@ internal fun KeyboardShortcutInfoLabel() {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            Icon(painterResource("icons/info.svg"), "", tint = LocalColorScheme.current.icon.bolderActive)
+            Icon(
+                painter = painterResource("icons/info.svg"),
+                contentDescription = "",
+                tint = LocalColorScheme.current.icon.bolderActive
+            )
             Text(
                 text = "Hot key for showing/hiding the overlay",
                 color = LocalColorScheme.current.text.heading,
                 style = LocalTypography.current.labelLMedium,
-                modifier = Modifier.padding(bottom = 1.dp),
+                modifier = Modifier.wrapContentHeight(align = Alignment.CenterVertically),
             )
         }
-        Image(painterResource("icons/hotkey.png"), "")
+        Image(
+            painter = painterResource("icons/hotkey.png"),
+            contentDescription = "",
+            modifier = Modifier.height(32.dp)
+        )
     }
 }

@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.unit.dp
+import app.cleanmeter.core.designsystem.LocalColorScheme
 import app.cleanmeter.target.desktop.ui.components.SectionTitle
 
 @Composable
@@ -49,7 +50,8 @@ fun CollapsibleSection(
                     contentDescription = "Trailing icon for exposed dropdown menu",
                     modifier = Modifier
                         .rotate(if (expanded) 270f else 90f)
-                        .height(20.dp)
+                        .height(20.dp),
+                    tint = LocalColorScheme.current.icon.bolderActive
                 )
             }
         }

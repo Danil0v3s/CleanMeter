@@ -30,7 +30,7 @@ fun SliderThumb() {
             .size(20.dp)
             .border(2.dp, LocalColorScheme.current.border.brand, CircleShape)
             .hoverable(interactionSource = remember { MutableInteractionSource() })
-            .background(Color.White, CircleShape)
+            .background(LocalColorScheme.current.background.surfaceRaised, CircleShape)
     )
 }
 

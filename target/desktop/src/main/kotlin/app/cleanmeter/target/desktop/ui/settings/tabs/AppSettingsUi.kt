@@ -61,7 +61,7 @@ fun AppSettingsUi(
         ) {
             StyleCard(
                 label = "Light",
-                isSelected = overlaySettings.isHorizontal,
+                isSelected = !overlaySettings.isDarkTheme,
                 modifier = Modifier.weight(.3f).aspectRatio(1.15f),
                 onClick = { onEvent(SettingsEvent.DarkThemeToggle(false)) },
                 content = {
@@ -74,7 +74,7 @@ fun AppSettingsUi(
 
             StyleCard(
                 label = "Dark",
-                isSelected = !overlaySettings.isHorizontal,
+                isSelected = overlaySettings.isDarkTheme,
                 modifier = Modifier.weight(.3f).aspectRatio(1.15f),
                 onClick = { onEvent(SettingsEvent.DarkThemeToggle(true)) },
                 content = {
@@ -88,7 +88,7 @@ fun AppSettingsUi(
 
             StyleCard(
                 label = "System",
-                isSelected = !overlaySettings.isHorizontal,
+                isSelected = !overlaySettings.isDarkTheme,
                 modifier = Modifier.weight(.3f).aspectRatio(1.15f),
                 onClick = { onEvent(SettingsEvent.DarkThemeToggle(true)) },
                 content = {

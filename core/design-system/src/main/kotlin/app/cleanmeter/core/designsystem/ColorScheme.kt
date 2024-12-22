@@ -177,6 +177,33 @@ internal val defaultColorScheme = ColorScheme(
 
 internal val darkColorScheme = defaultColorScheme.copy(
     background = defaultColorScheme.background.copy(
-        surface = Primitives.Gray.Gray800
+        surface = Primitives.Gray.Gray950,
+        surfaceRaised = Primitives.Gray.Gray800,
+        surfaceSunken = Primitives.Gray.Gray600,
+        surfaceSunkenSubtle = Primitives.Gray.Gray900,
+        brand = Primitives.Gray.Gray25,
+        brandSubtle = Primitives.Gray.Gray200,
+        brandHover = Primitives.Gray.Gray100,
+        brandActive = Primitives.Gray.Gray200,
+        success = Primitives.Green.Green100,
+        successSubtle = Primitives.Green.Green400,
     ),
+    text = defaultColorScheme.text.copy(
+        heading = Primitives.Gray.Gray25,
+        subHeading = Primitives.Gray.Gray600,
+        paragraph1 = Primitives.Gray.Gray500,
+        paragraph2 = Primitives.Gray.Gray600,
+        disabled = Primitives.Gray.Gray600,
+        inverse = Primitives.Gray.Gray950,
+        inverseSubtler = Primitives.Gray.Gray300,
+    ),
+    border = defaultColorScheme.border.copy(
+        subtle = Primitives.Gray.Gray700,
+        bold = Primitives.Gray.Gray300.copy(alpha = 0.3f), // todo correct primitive is #5F6169
+        bolder = Primitives.Gray.Gray600,
+        brand = Primitives.Gray.Gray25,
+    ),
+    icon = defaultColorScheme.icon.copy(
+        inverse = Primitives.Gray.Gray950,
+    )
 )

@@ -29,8 +29,6 @@ import app.cleanmeter.target.desktop.ui.overlay.sections.FpsSection
 import app.cleanmeter.target.desktop.ui.overlay.sections.GpuSection
 import app.cleanmeter.target.desktop.ui.overlay.sections.NetSection
 import app.cleanmeter.target.desktop.ui.overlay.sections.RamSection
-import dev.chrisbanes.haze.HazeState
-import dev.chrisbanes.haze.haze
 
 inline fun Modifier.conditional(
     predicate: Boolean,

@@ -32,7 +32,8 @@ fun CheckboxWithLabel(
             onCheckedChange = onCheckedChange,
             colors = CheckboxDefaults.colors(
                 checkedColor = LocalColorScheme.current.background.brand,
-                uncheckedColor = LocalColorScheme.current.background.surfaceSunken
+                uncheckedColor = LocalColorScheme.current.background.surfaceSunken,
+                checkmarkColor = LocalColorScheme.current.background.surfaceRaised
             ),
             modifier = Modifier.size(24.dp)
         )
