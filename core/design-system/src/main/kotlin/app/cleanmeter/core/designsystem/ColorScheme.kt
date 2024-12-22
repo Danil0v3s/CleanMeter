@@ -1,6 +1,7 @@
 package app.cleanmeter.core.designsystem
 
 import androidx.compose.runtime.Immutable
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 
 @Immutable
@@ -9,6 +10,7 @@ data class ColorScheme(
     val text: Text,
     val border: Border,
     val icon: Icon,
+    val gradient: Gradient,
 ) {
     @Immutable
     data class Background(
@@ -100,6 +102,11 @@ data class ColorScheme(
         val danger: Color,
         val warning: Color,
     )
+
+    @Immutable
+    data class Gradient(
+        val gradient1: Brush
+    )
 }
 
 internal val defaultColorScheme = ColorScheme(
@@ -172,6 +179,11 @@ internal val defaultColorScheme = ColorScheme(
         success = Primitives.Green.Green500,
         danger = Primitives.Red.Red500,
         warning = Primitives.Yellow.Yellow300,
+    ),
+    gradient = ColorScheme.Gradient(
+        gradient1 = Brush.verticalGradient(
+            listOf(Color(0xFF404040), Color(0xFF303030))
+        )
     )
 )
 
@@ -205,5 +217,10 @@ internal val darkColorScheme = defaultColorScheme.copy(
     ),
     icon = defaultColorScheme.icon.copy(
         inverse = Primitives.Gray.Gray950,
+    ),
+    gradient = defaultColorScheme.gradient.copy(
+        gradient1 = Brush.verticalGradient(
+            listOf(Color(0xFFF0F1F1), Color(0xFFECECED))
+        )
     )
 )

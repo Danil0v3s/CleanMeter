@@ -48,10 +48,6 @@ internal fun KeyboardShortcutInfoLabel() {
                 modifier = Modifier.wrapContentHeight(align = Alignment.CenterVertically),
             )
         }
-        Image(
-            painter = painterResource("icons/hotkey.png"),
-            contentDescription = "",
-            modifier = Modifier.height(32.dp)
-        )
+        HotKeySymbol(listOf("Ctrl", "Alt", "F10"))
     }
 }
