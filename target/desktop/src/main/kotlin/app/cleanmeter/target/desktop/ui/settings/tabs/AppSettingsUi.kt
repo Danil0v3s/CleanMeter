@@ -62,7 +62,7 @@ fun AppSettingsUi(
             StyleCard(
                 label = "Light",
                 isSelected = !overlaySettings.isDarkTheme,
-                modifier = Modifier.weight(.3f).aspectRatio(1.15f),
+                modifier = Modifier.weight(.5f).height(210.dp),
                 onClick = { onEvent(SettingsEvent.DarkThemeToggle(false)) },
                 content = {
                     Image(
@@ -75,7 +75,7 @@ fun AppSettingsUi(
             StyleCard(
                 label = "Dark",
                 isSelected = overlaySettings.isDarkTheme,
-                modifier = Modifier.weight(.3f).aspectRatio(1.15f),
+                modifier = Modifier.weight(.5f).height(210.dp),
                 onClick = { onEvent(SettingsEvent.DarkThemeToggle(true)) },
                 content = {
                     Image(
@@ -86,19 +86,19 @@ fun AppSettingsUi(
                 }
             )
 
-            StyleCard(
-                label = "System",
-                isSelected = !overlaySettings.isDarkTheme,
-                modifier = Modifier.weight(.3f).aspectRatio(1.15f),
-                onClick = { onEvent(SettingsEvent.DarkThemeToggle(true)) },
-                content = {
-                    Image(
-                        painter = painterResource("icons/dynamic_mode.png"),
-                        contentDescription = "dynamic mode image",
-                        modifier = Modifier.align(Alignment.Center)
-                    )
-                }
-            )
+//            StyleCard(
+//                label = "System",
+//                isSelected = !overlaySettings.isDarkTheme,
+//                modifier = Modifier.weight(.3f).aspectRatio(1.15f),
+//                onClick = { onEvent(SettingsEvent.DarkThemeToggle(true)) },
+//                content = {
+//                    Image(
+//                        painter = painterResource("icons/dynamic_mode.png"),
+//                        contentDescription = "dynamic mode image",
+//                        modifier = Modifier.align(Alignment.Center)
+//                    )
+//                }
+//            )
         }
     }
 
