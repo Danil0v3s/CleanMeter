@@ -2,13 +2,13 @@ package app.cleanmeter.target.desktop.ui.settings.tabs
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.ClickableText
@@ -17,23 +17,20 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.ParagraphStyle
 import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextIndent
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import app.cleanmeter.target.desktop.ui.ColorTokens.DarkGray
-import app.cleanmeter.target.desktop.ui.ColorTokens.LabelGray
-import app.cleanmeter.target.desktop.ui.components.CollapsibleSection
+import app.cleanmeter.core.designsystem.LocalColorScheme
+import app.cleanmeter.core.designsystem.LocalTypography
+import app.cleanmeter.target.desktop.ui.components.section.CollapsibleSection
 
 @Composable
 internal fun HelpSettingsUi() {
@@ -66,7 +63,10 @@ internal fun HelpSettingsUi() {
                 "The sensors look wrong" to buildAnnotatedString { append("Try setting up each sensor via the Stats tab") },
                 "Neither sensors dropdown or the overlay are showing up" to buildAnnotatedString {
                     append("You need to have ")
-                    pushStringAnnotation("click", "https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-desktop-8.0.11-windows-x64-installer")
+                    pushStringAnnotation(
+                        "click",
+                        "https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-desktop-8.0.11-windows-x64-installer"
+                    )
                     withStyle(SpanStyle(textDecoration = TextDecoration.Underline)) {
                         append(".NET Core Framework")
                     }
@@ -120,11 +120,8 @@ private fun BulletList(
                 }
             }
         },
-        style = TextStyle(
-            fontSize = 14.sp,
-            color = DarkGray,
-            fontWeight = FontWeight(500)
-        )
+        style = LocalTypography.current.labelLMedium,
+        color = LocalColorScheme.current.text.heading,
     )
 }
 
@@ -135,29 +132,20 @@ private fun StyledNumberedList(
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         items.forEachIndexed { index, item ->
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Box(
-                    modifier = Modifier.background(DarkGray, CircleShape).size(26.dp)
-                ) {
-                    Text(
-                        text = "${index + 1}",
-                        style = TextStyle(
-                            fontSize = 14.sp,
-                            color = Color.White,
-                            fontWeight = FontWeight.Thin,
-                            lineHeight = 0.sp,
-                            textAlign = TextAlign.Center
-                        ),
-                        modifier = Modifier.align(Alignment.Center).padding(bottom = 2.dp)
-                    )
-                }
+                Text(
+                    text = "${index + 1}",
+                    style = LocalTypography.current.labelSSemiBold,
+                    textAlign = TextAlign.Center,
+                    color = LocalColorScheme.current.text.inverse,
+                    modifier = Modifier
+                        .background(LocalColorScheme.current.background.brand, CircleShape)
+                        .size(26.dp)
+                        .wrapContentHeight(align = Alignment.CenterVertically)
+                )
                 Text(
                     text = item,
-                    style = TextStyle(
-                        fontSize = 14.sp,
-                        color = DarkGray,
-                        fontWeight = FontWeight.Medium,
-                        lineHeight = 0.sp,
-                    )
+                    style = LocalTypography.current.labelLMedium,
+                    color = LocalColorScheme.current.text.heading,
                 )
             }
         }
@@ -179,22 +167,15 @@ private fun FrequentlyAskedQuestions(
                         append("  ")
                         append(pair.first)
                     },
-                    style = TextStyle(
-                        fontSize = 14.sp,
-                        color = DarkGray,
-                        fontWeight = FontWeight(500),
-                        lineHeight = 0.sp
-                    )
+                    style = LocalTypography.current.labelLMedium,
+                    color = LocalColorScheme.current.text.heading,
                 )
                 Row {
                     Spacer(modifier = Modifier.width(16.dp))
                     ClickableText(
                         text = pair.second,
-                        style = TextStyle(
-                            fontSize = 14.sp,
-                            color = LabelGray,
-                            fontWeight = FontWeight(400),
-                            lineHeight = 0.sp
+                        style = LocalTypography.current.labelL.copy(
+                            color = LocalColorScheme.current.text.paragraph1,
                         ),
                         onClick = { offset ->
                             pair.second.getStringAnnotations("click", offset, offset).firstOrNull()?.let {

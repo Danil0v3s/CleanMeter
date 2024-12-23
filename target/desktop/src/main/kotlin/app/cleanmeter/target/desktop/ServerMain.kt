@@ -8,6 +8,8 @@ import app.cleanmeter.core.os.win32.WindowsService
 
 
 fun main(vararg args: String) = singleInstance(args) {
+    System.setProperty("awt.useSystemAAFontSettings","on");
+    System.setProperty("swing.aatext", "true");
     WindowsService.tryElevateProcess(ApplicationParams.isAutostart)
 
     if (isDev()) {

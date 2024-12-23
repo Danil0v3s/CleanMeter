@@ -14,13 +14,10 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import app.cleanmeter.target.desktop.ui.ColorTokens.AlmostVisibleGray
-import app.cleanmeter.target.desktop.ui.ColorTokens.BarelyVisibleGray
-import app.cleanmeter.target.desktop.ui.ColorTokens.DarkGray
+import app.cleanmeter.core.designsystem.LocalColorScheme
+import app.cleanmeter.core.designsystem.LocalTypography
 import app.cleanmeter.target.desktop.ui.overlay.conditional
 
 @Composable
@@ -33,12 +30,11 @@ internal fun StyleCard(
     content: @Composable BoxScope.() -> Unit,
 ) = Column(
     modifier = modifier
-        .aspectRatio(1.15f)
-        .background(Color.White, RoundedCornerShape(8.dp))
+        .background(LocalColorScheme.current.background.surfaceRaised, RoundedCornerShape(8.dp))
         .conditional(
             predicate = isSelected,
-            ifTrue = { border(2.dp, DarkGray, RoundedCornerShape(8.dp)) },
-            ifFalse = { border(1.dp, AlmostVisibleGray, RoundedCornerShape(8.dp)) }
+            ifTrue = { border(2.dp, LocalColorScheme.current.border.brand, RoundedCornerShape(8.dp)) },
+            ifFalse = { border(1.dp, LocalColorScheme.current.border.bold, RoundedCornerShape(8.dp)) }
         )
         .padding(4.dp)
         .clickable { onClick() }
@@ -47,7 +43,7 @@ internal fun StyleCard(
         modifier = Modifier
             .fillMaxWidth()
             .aspectRatio(16 / 9f)
-            .background(BarelyVisibleGray, RoundedCornerShape(4.dp))
+            .background(LocalColorScheme.current.background.surfaceSunkenSubtle, RoundedCornerShape(4.dp))
             .padding(8.dp),
         content = content,
         contentAlignment = Alignment.Center
@@ -59,12 +55,11 @@ internal fun StyleCard(
         } else {
             Text(
                 text = label,
-                fontSize = 14.sp,
-                color = DarkGray,
-                lineHeight = 0.sp,
-                fontWeight = FontWeight(550),
-                letterSpacing = 0.14.sp,
-                modifier = Modifier.align(Alignment.CenterStart)
+                style = LocalTypography.current.labelLMedium.copy(
+                    letterSpacing = 0.14.sp
+                ),
+                color = LocalColorScheme.current.text.heading,
+                modifier = Modifier.align(Alignment.CenterStart),
             )
         }
     }

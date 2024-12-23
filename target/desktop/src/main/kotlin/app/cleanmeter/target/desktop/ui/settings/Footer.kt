@@ -23,20 +23,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.UriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import app.cleanmeter.target.desktop.ui.ColorTokens.BorderGray
-import app.cleanmeter.target.desktop.ui.ColorTokens.LabelGray
+import app.cleanmeter.core.designsystem.LocalColorScheme
+import app.cleanmeter.core.designsystem.LocalTypography
 
 @Composable
 fun FooterUi(modifier: Modifier = Modifier) {
@@ -80,11 +79,8 @@ fun FooterUi(modifier: Modifier = Modifier) {
 
             ClickableText(
                 text = text,
-                style = TextStyle(
-                    fontSize = 12.sp,
-                    color = LabelGray,
-                    lineHeight = 0.sp,
-                    fontWeight = FontWeight(450),
+                style = LocalTypography.current.labelS.copy(
+                    color = LocalColorScheme.current.text.disabled,
                     letterSpacing = 0.14.sp,
                 ),
                 onClick = { offset ->
@@ -106,11 +102,10 @@ fun FooterUi(modifier: Modifier = Modifier) {
 
                 Text(
                     text = "Version ${System.getProperty("jpackage.app-version")}",
-                    fontSize = 12.sp,
-                    color = LabelGray,
-                    lineHeight = 0.sp,
-                    fontWeight = FontWeight(450),
-                    letterSpacing = 0.14.sp,
+                    style = LocalTypography.current.labelS.copy(
+                        color = LocalColorScheme.current.text.disabled,
+                        letterSpacing = 0.14.sp,
+                    )
                 )
             }
         }
@@ -121,15 +116,13 @@ fun FooterUi(modifier: Modifier = Modifier) {
 private fun Github(uriHandler: UriHandler) {
     Row(
         modifier = Modifier
-            .clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = null
-            ) {
+            .clip(RoundedCornerShape(12.dp))
+            .clickable {
                 uriHandler.openUri("https://github.com/Danil0v3s/CleanMeter/releases/latest")
             }
             .fillMaxWidth()
             .background(Color.Transparent, RoundedCornerShape(12.dp))
-            .border(1.dp, BorderGray, RoundedCornerShape(12.dp))
+            .border(1.dp, LocalColorScheme.current.border.bold, RoundedCornerShape(12.dp))
             .padding(12.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
@@ -141,9 +134,8 @@ private fun Github(uriHandler: UriHandler) {
             Image(painterResource("icons/github.png"), "", modifier = Modifier.size(32.dp))
             Text(
                 text = "Check the latest build",
-                color = Color.DarkGray,
-                fontSize = 14.sp,
-                fontWeight = FontWeight(600),
+                color = LocalColorScheme.current.text.heading,
+                style = LocalTypography.current.labelLMedium,
             )
         }
         Icon(Icons.Rounded.ChevronRight, "")
@@ -154,15 +146,13 @@ private fun Github(uriHandler: UriHandler) {
 private fun RowScope.Donate(uriHandler: UriHandler) {
     Row(
         modifier = Modifier
-            .clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = null
-            ) {
+            .clip(RoundedCornerShape(12.dp))
+            .clickable {
                 uriHandler.openUri("https://ko-fi.com/danil0v3s")
             }
             .weight(.5f)
             .background(Color.Transparent, RoundedCornerShape(12.dp))
-            .border(1.dp, BorderGray, RoundedCornerShape(12.dp))
+            .border(1.dp, LocalColorScheme.current.border.bold, RoundedCornerShape(12.dp))
             .padding(12.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
@@ -174,9 +164,8 @@ private fun RowScope.Donate(uriHandler: UriHandler) {
             Image(painterResource("icons/ko-fi.png"), "")
             Text(
                 text = "Like the work? Support us!",
-                color = Color.DarkGray,
-                fontSize = 14.sp,
-                fontWeight = FontWeight(600),
+                color = LocalColorScheme.current.text.heading,
+                style = LocalTypography.current.labelLMedium,
             )
         }
         Image(Icons.Rounded.ChevronRight, "")
@@ -187,15 +176,13 @@ private fun RowScope.Donate(uriHandler: UriHandler) {
 private fun RowScope.Discord(uriHandler: UriHandler) {
     Row(
         modifier = Modifier
-            .clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = null
-            ) {
+            .clip(RoundedCornerShape(12.dp))
+            .clickable {
                 uriHandler.openUri("https://discord.gg/phqwe89cvE")
             }
             .weight(.5f)
             .background(Color.Transparent, RoundedCornerShape(12.dp))
-            .border(1.dp, BorderGray, RoundedCornerShape(12.dp))
+            .border(1.dp, LocalColorScheme.current.border.bold, RoundedCornerShape(12.dp))
             .padding(12.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
@@ -207,9 +194,8 @@ private fun RowScope.Discord(uriHandler: UriHandler) {
             Image(painterResource("icons/discord.png"), "")
             Text(
                 text = "Join the discord server!",
-                color = Color.DarkGray,
-                fontSize = 14.sp,
-                fontWeight = FontWeight(600),
+                color = LocalColorScheme.current.text.heading,
+                style = LocalTypography.current.labelLMedium,
             )
         }
         Image(Icons.Rounded.ChevronRight, "")

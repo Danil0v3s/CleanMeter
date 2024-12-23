@@ -40,5 +40,6 @@ include(
     "core:common",
     "core:native",
     "core:updater",
-    "target:desktop"
+    "core:design-system",
+    "target:desktop",
 )
