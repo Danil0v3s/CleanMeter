@@ -17,13 +17,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.unit.dp
+import app.cleanmeter.target.desktop.model.OverlaySettings
 import app.cleanmeter.target.desktop.ui.ColorTokens.ClearGray
 import app.cleanmeter.target.desktop.ui.ColorTokens.Green
 import app.cleanmeter.target.desktop.ui.ColorTokens.Red
 import app.cleanmeter.target.desktop.ui.ColorTokens.Yellow
-import app.cleanmeter.target.desktop.model.OverlaySettings
 import kotlin.math.abs
 
 @Composable
@@ -35,9 +36,10 @@ fun Progress(
     boundaries: OverlaySettings.Sensor.GraphSensor.Boundaries
 ) {
     val color = when {
-        value > boundaries.high.div(100f) -> Red
+        value in 0f..boundaries.low.div(100f) -> Green
         value in boundaries.low.div(100f)..boundaries.medium.div(100f) -> Yellow
-        else -> Green
+        value > boundaries.high.div(100f) -> Red
+        else -> White
     }
 
     Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
