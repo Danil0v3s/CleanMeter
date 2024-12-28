@@ -3,6 +3,8 @@ package app.cleanmeter.target.desktop.ui.settings
 import androidx.compose.ui.unit.IntOffset
 import androidx.lifecycle.ViewModel
 import app.cleanmeter.core.common.hardwaremonitor.HardwareMonitorData
+import app.cleanmeter.core.os.hardwaremonitor.Packet
+import app.cleanmeter.core.os.hardwaremonitor.SocketClient
 import app.cleanmeter.target.desktop.data.ObserveHardwareReadings
 import app.cleanmeter.target.desktop.data.OverlaySettingsRepository
 import app.cleanmeter.target.desktop.model.OverlaySettings
@@ -31,6 +33,7 @@ sealed class SettingsEvent {
     data class OverlayOpacityChange(val opacity: Float) : SettingsEvent()
     data class OverlayGraphChange(val progressType: OverlaySettings.ProgressType) : SettingsEvent()
     data class DarkThemeToggle(val isEnabled: Boolean) : SettingsEvent()
+    data class FpsApplicationSelect(val applicationName: String) : SettingsEvent()
 }
 
 class SettingsViewModel : ViewModel() {
@@ -75,7 +78,12 @@ class SettingsViewModel : ViewModel() {
             is SettingsEvent.OverlayOpacityChange -> onOverlayOpacityChange(event.opacity, this)
             is SettingsEvent.OverlayGraphChange -> onOverlayGraphChange(event.progressType, this)
             is SettingsEvent.DarkThemeToggle -> onDarkModeToggle(event.isEnabled, this)
+            is SettingsEvent.FpsApplicationSelect -> onFpsApplicationSelect(event.applicationName, this)
         }
+    }
+
+    private fun onFpsApplicationSelect(applicationName: String, settingsState: SettingsState) {
+        SocketClient.sendPacket(Packet.SelectPresentMonApp(applicationName))
     }
 
     private fun onDarkModeToggle(enabled: Boolean, settingsState: SettingsState) {

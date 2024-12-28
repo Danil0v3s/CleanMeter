@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Run" type="JetRunConfigurationType">
+  <configuration default="false" name="Run Standalone" type="JetRunConfigurationType">
     <envs>
       <env name="env" value="dev" />
     </envs>
@@ -8,7 +8,6 @@
     <shortenClasspath name="NONE" />
     <method v="2">
       <option name="Make" enabled="true" />
-      <option name="Gradle.BeforeRunTask" enabled="false" tasks="compileMonitor" externalProjectPath="$PROJECT_DIR$/target/desktop" vmOptions="" scriptParameters="" />
     </method>
   </configuration>
 </component>

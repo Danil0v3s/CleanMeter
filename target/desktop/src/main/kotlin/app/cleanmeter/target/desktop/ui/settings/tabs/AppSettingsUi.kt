@@ -18,6 +18,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AdminPanelSettings
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -110,33 +111,34 @@ fun AppSettingsUi(
 private fun startWithWindowsCheckbox() {
     var state by remember { mutableStateOf(WinRegistry.isAppRegisteredToStartWithWindows()) }
 
-    CheckboxWithLabel(
-        label = "Start with Windows",
-        checked = state,
-        onCheckedChange = { value ->
-            state = value
-            if (value) {
-                WinRegistry.registerAppToStartWithWindows()
-            } else {
-                WinRegistry.removeAppFromStartWithWindows()
-            }
+    LaunchedEffect(Unit) {
+        if (state) {
+            WinRegistry.removeAppFromStartWithWindows()
         }
-    ) {
-        TooltipArea(
-            delayMillis = 0,
-            tooltip = {
-                Text(
-                    text = "Admin rights needed",
-                    style = LocalTypography.current.labelM,
-                    color = LocalColorScheme.current.text.heading,
-                )
-            }) {
-            Icon(
-                imageVector = Icons.Filled.AdminPanelSettings,
-                contentDescription = null,
-                tint = LocalColorScheme.current.icon.bolderActive
+    }
+
+    TooltipArea(
+        delayMillis = 0,
+        tooltip = {
+            Text(
+                text = "Temporarily disabled.",
+                style = LocalTypography.current.labelM,
+                color = LocalColorScheme.current.text.heading,
             )
-        }
+        }) {
+        CheckboxWithLabel(
+            label = "Start with Windows",
+            checked = state,
+            enabled = false,
+            onCheckedChange = { value ->
+                state = value
+                if (value) {
+                    WinRegistry.registerAppToStartWithWindows()
+                } else {
+                    WinRegistry.removeAppFromStartWithWindows()
+                }
+            }
+        )
     }
 }
 

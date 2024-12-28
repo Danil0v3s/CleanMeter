@@ -8,7 +8,13 @@ import java.nio.charset.Charset
 import java.util.Locale
 
 internal fun getByteBuffer(input: InputStream, length: Int): ByteBuffer {
+    if (length <= 0) return ByteBuffer.allocate(0).order(ByteOrder.LITTLE_ENDIAN)
     return ByteBuffer.wrap(input.readNBytes(length)).order(ByteOrder.LITTLE_ENDIAN)
+}
+
+internal fun getByteBuffer(input: ByteArray, length: Int, offset: Int): ByteBuffer {
+    if (length <= 0) return ByteBuffer.allocate(0)
+    return ByteBuffer.wrap(input).slice(offset, length).order(ByteOrder.LITTLE_ENDIAN)
 }
 
 internal fun getByteBuffer(pointer: Pointer, size: Int, offset: Int = 0): ByteBuffer {

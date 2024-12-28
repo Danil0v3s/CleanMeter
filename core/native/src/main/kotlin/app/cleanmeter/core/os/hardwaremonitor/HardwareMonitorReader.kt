@@ -4,13 +4,15 @@ import app.cleanmeter.core.common.hardwaremonitor.HardwareMonitorData
 import app.cleanmeter.core.os.util.getByteBuffer
 import app.cleanmeter.core.os.util.readString
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import java.io.InputStream
-import java.net.InetSocketAddress
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.mapNotNull
 import java.net.Socket
-import java.net.SocketException
 import java.nio.ByteBuffer
 
 private const val HARDWARE_SIZE = 260
@@ -18,57 +20,52 @@ private const val SENSOR_SIZE = 392
 private const val NAME_SIZE = 128
 private const val IDENTIFIER_SIZE = 128
 private const val HEADER_SIZE = 8
+private const val LENGTH_SIZE = 2
+
+enum class Command(val value: Short) {
+    Data(0),
+    RefreshPresentMonApps(1),
+    SelectPresentMonApp(2),
+    PresentMonApps(3);
+
+    companion object {
+        fun fromValue(value: Short) = entries.find { it.value == value } ?: Data
+    }
+}
 
 object HardwareMonitorReader {
 
-    val currentData = flow {
-        var socket = Socket()
-
-        while (true) {
-
-            // try open a connection with HardwareMonitor
-            if (!socket.isConnected) {
-                try {
-                    println("Trying to connect")
-                    socket = Socket()
-                    socket.connect(InetSocketAddress("0.0.0.0", 31337))
-                    println("Connected ${socket.isConnected}")
-                } catch (ex: Exception) {
-                    println("Couldn't connect ${ex.message}")
-                    if (ex !is SocketException) {
-                        ex.printStackTrace()
-                    }
-                } finally {
-                    delay(500)
-                    continue
-                }
-            }
-
-            val inputStream = socket.inputStream
-            while (socket.isConnected) {
-                try {
+    private var _currentData: HardwareMonitorData = HardwareMonitorData(0L, emptyList(), emptyList(), emptyList())
+    val currentData: Flow<HardwareMonitorData> = SocketClient
+        .packetFlow
+        .mapNotNull { packet ->
+            when (packet) {
+                is Packet.Data -> {
                     // read first 8 bytes to get the amount of hardware and sensors
-                    val (hardware, sensor) = readHardwareAndSensorCount(inputStream)
+                    val (hardware, sensor) = readHardwareAndSensorCount(packet.data)
+                    if (hardware + sensor <= 0) return@mapNotNull null
 
-                    // if both are 0, bail
-                    if (hardware + sensor == 0) continue
-
-                    // we know the length in bytes of hardware and sensor, so we know the length of the packet
-                    val buffer = getByteBuffer(inputStream, hardware * HARDWARE_SIZE + sensor * SENSOR_SIZE)
+                    val buffer = getByteBuffer(packet.data, hardware * HARDWARE_SIZE + sensor * SENSOR_SIZE, HEADER_SIZE)
                     val hardwares = readHardware(buffer, hardware)
                     val sensors = readSensor(buffer, sensor)
-                    emit(HardwareMonitorData(0L, hardwares, sensors))
-                } catch (e: SocketException) {
-                    socket.close()
-                    socket = Socket()
-                    e.printStackTrace()
+                    _currentData = _currentData.copy(Hardwares = hardwares, Sensors = sensors)
+                    _currentData
                 }
+
+                is Packet.PresentMonApps -> {
+                    val appsCount = getByteBuffer(packet.data, LENGTH_SIZE, 0).short
+                    val buffer = getByteBuffer(packet.data, appsCount.toInt() * NAME_SIZE, LENGTH_SIZE)
+                    val apps = listOf("Auto") + readPresentMonApps(buffer, appsCount)
+                    _currentData = _currentData.copy(PresentMonApps = apps)
+                    _currentData
+                }
+
+                is Packet.SelectPresentMonApp -> null
             }
         }
-    }.flowOn(Dispatchers.IO)
 
-    private fun readHardwareAndSensorCount(input: InputStream): Pair<Int, Int> {
-        val buffer = getByteBuffer(input, HEADER_SIZE)
+    private fun readHardwareAndSensorCount(input: ByteArray): Pair<Int, Int> {
+        val buffer = getByteBuffer(input, HEADER_SIZE, 0)
         return buffer.int to buffer.int
     }
 
@@ -96,6 +93,14 @@ object HardwareMonitorReader {
                     Value = buffer.float,
                 )
                 add(sensor)
+            }
+        }
+    }
+
+    private fun readPresentMonApps(buffer: ByteBuffer, count: Short): List<String> {
+        return buildList {
+            for (i in 0 until count) {
+                add(buffer.readString(NAME_SIZE))
             }
         }
     }

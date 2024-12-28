@@ -35,8 +35,10 @@ public class MonitorPoller(
 
         _computer.Open();
         _computer.Accept(new UpdateVisitor());
-        _presentMonPoller.Start();
+        _presentMonPoller.Start(stoppingToken);
         _socketHost.StartServer();
+        _socketHost.onClientData += OnClientData;
+        _socketHost.onClientConnected += OnClientConnected;
 
         var sharedMemoryData = QueryHardwareData();
 
@@ -46,6 +48,7 @@ public class MonitorPoller(
         using var writer = new BinaryWriter(memoryStream);
         var accumulator = 0;
 
+        writer.Write((short)MonitorPacketCommand.Data);
         writer.Write(sharedMemoryData.Hardwares.Count);
         writer.Write(sharedMemoryData.Sensors.Count);
 
@@ -97,6 +100,7 @@ public class MonitorPoller(
             {
                 GC.Collect();
                 accumulator = 0;
+                SendPresentMonAppsToClients();
             }
 
             accumulator += 500;
@@ -105,6 +109,60 @@ public class MonitorPoller(
 
         Stop();
         hostApplicationLifetime.StopApplication();
+    }
+
+    private void OnClientConnected()
+    {
+        SendPresentMonAppsToClients();
+    }
+
+    private void OnClientData(byte[] data)
+    {
+        var cmd = (MonitorPacketCommand) BitConverter.ToInt16(data, 0);
+        logger.LogInformation("Received command from client: {Command}", cmd);
+        switch (cmd)
+        {
+            case MonitorPacketCommand.RefreshPresentMonApps:
+                SendPresentMonAppsToClients();
+                break;
+            case MonitorPacketCommand.SelectPresentMonApp:
+                SelectPresentMonApp(data);
+                break;
+            
+            // server -> client cases 
+            case MonitorPacketCommand.Data:
+            case MonitorPacketCommand.PresentMonApps:
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+    }
+
+    private void SelectPresentMonApp(byte[] data)
+    {
+        // start at 2 because the first 2 were the command
+        var size = BitConverter.ToInt16(data, 2);
+        var appName = Encoding.UTF8.GetString(data, 4, size);
+        _presentMonPoller.SetSelectedApp(appName);
+    }
+
+    private void SendPresentMonAppsToClients()
+    {
+        using var memoryStream = new MemoryStream();
+        using var writer = new BinaryWriter(memoryStream);
+        
+        writer.Write((short)MonitorPacketCommand.PresentMonApps);
+        //logger.LogInformation("Sending presentmon apps to clients {Count}", _presentMonPoller.CurrentApps.Count);
+        writer.Write((short)_presentMonPoller.CurrentApps.Count);
+        foreach (var app in _presentMonPoller.CurrentApps)
+        {
+            writer.Write(GetBytes(app, SharedMemoryConsts.NameSize));
+        }
+        
+        if (_socketHost.HasConnections())
+        {
+            _socketHost.SendToAll(memoryStream.ToArray());
+        }
     }
 
     private SharedMemoryData QueryHardwareData()
@@ -155,6 +213,7 @@ public class MonitorPoller(
         _computer.Close();
         _presentMonPoller.Stop();
         _socketHost.Close();
+        _socketHost.onClientData -= OnClientData;
     }
 
     private static SharedMemoryHardware MapHardware(IHardware hardware) => new()
