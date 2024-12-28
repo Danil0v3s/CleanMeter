@@ -20,7 +20,8 @@ internal fun RamSection(overlaySettings: OverlaySettings, data: HardwareMonitorD
                 value = data.RamUsagePercent,
                 label = String.format("%02.1f", data.RamUsage, Locale.US),
                 unit = "GB",
-                progressType = overlaySettings.progressType
+                progressType = overlaySettings.progressType,
+                boundaries = overlaySettings.sensors.ramUsage.boundaries,
             )
         }
     }

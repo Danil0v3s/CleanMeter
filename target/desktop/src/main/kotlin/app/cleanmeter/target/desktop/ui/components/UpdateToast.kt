@@ -117,13 +117,13 @@ private fun RowScope.BodyText(state: UpdateState) {
             },
             color = LocalColorScheme.current.text.inverse,
             style = LocalTypography.current.labelLMedium,
-            modifier = Modifier.wrapContentHeight(align = Alignment.CenterVertically),
+            modifier = Modifier.wrapContentHeight(),
         )
         Text(
             text = "v${AutoUpdater.currentLiveVersion}",
             color = LocalColorScheme.current.text.disabled,
             style = LocalTypography.current.labelLMedium,
-            modifier = Modifier.wrapContentHeight(align = Alignment.CenterVertically),
+            modifier = Modifier.wrapContentHeight(),
         )
     }
 }
@@ -141,7 +141,7 @@ private fun ClearButton(onClick: () -> Unit, label: String) {
             text = label,
             style = LocalTypography.current.labelLMedium,
             color = LocalColorScheme.current.text.inverse,
-            modifier = Modifier.wrapContentHeight(align = Alignment.CenterVertically),
+            modifier = Modifier.wrapContentHeight(),
         )
     }
 }
@@ -160,7 +160,7 @@ private fun FilledButton(onClick: () -> Unit, label: String) {
             text = label,
             color = LocalColorScheme.current.text.heading,
             style = LocalTypography.current.labelLMedium,
-            modifier = Modifier.wrapContentHeight(align = Alignment.CenterVertically),
+            modifier = Modifier.wrapContentHeight(),
         )
     }
 }

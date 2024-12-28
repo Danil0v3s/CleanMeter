@@ -31,6 +31,7 @@ import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.unit.dp
 import app.cleanmeter.core.designsystem.LocalColorScheme
 import app.cleanmeter.core.designsystem.LocalTypography
+import app.cleanmeter.target.desktop.ui.components.Disclaimer
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -94,23 +95,7 @@ fun DropdownMenu(
             }
 
             if (disclaimer != null) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Outlined.Info,
-                        contentDescription = "Trailing icon for exposed dropdown menu",
-                        tint = LocalColorScheme.current.icon.bolderActive,
-                        modifier = Modifier.size(16.dp)
-                    )
-                    Text(
-                        text = disclaimer,
-                        color = LocalColorScheme.current.text.disabled,
-                        style = LocalTypography.current.labelSMedium,
-                        modifier = Modifier.wrapContentHeight(align = Alignment.CenterVertically)
-                    )
-                }
+                Disclaimer(disclaimer)
             }
         }
 

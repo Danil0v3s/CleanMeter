@@ -20,7 +20,8 @@ internal fun CpuSection(overlaySettings: OverlaySettings, data: HardwareMonitorD
                     customReadingId = overlaySettings.sensors.cpuTemp.customReadingId,
                     progressType = overlaySettings.progressType,
                     progressUnit = "°C",
-                    label = { "${it.toInt()}" }
+                    label = { "${it.toInt()}" },
+                    boundaries = overlaySettings.sensors.cpuTemp.boundaries,
                 )
             }
 
@@ -30,7 +31,8 @@ internal fun CpuSection(overlaySettings: OverlaySettings, data: HardwareMonitorD
                     customReadingId = overlaySettings.sensors.cpuUsage.customReadingId,
                     progressType = overlaySettings.progressType,
                     progressUnit = "%",
-                    label = { String.format("%02d", it.toInt(), Locale.US) }
+                    label = { String.format("%02d", it.toInt(), Locale.US) },
+                    boundaries = overlaySettings.sensors.cpuUsage.boundaries,
                 )
             }
         }

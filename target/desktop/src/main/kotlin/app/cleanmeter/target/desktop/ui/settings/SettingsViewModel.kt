@@ -34,6 +34,7 @@ sealed class SettingsEvent {
     data class OverlayGraphChange(val progressType: OverlaySettings.ProgressType) : SettingsEvent()
     data class DarkThemeToggle(val isEnabled: Boolean) : SettingsEvent()
     data class FpsApplicationSelect(val applicationName: String) : SettingsEvent()
+    data class BoundarySet(val sensorType: SensorType, val boundaries: OverlaySettings.Sensor.GraphSensor.Boundaries) : SettingsEvent()
 }
 
 class SettingsViewModel : ViewModel() {
@@ -79,7 +80,80 @@ class SettingsViewModel : ViewModel() {
             is SettingsEvent.OverlayGraphChange -> onOverlayGraphChange(event.progressType, this)
             is SettingsEvent.DarkThemeToggle -> onDarkModeToggle(event.isEnabled, this)
             is SettingsEvent.FpsApplicationSelect -> onFpsApplicationSelect(event.applicationName, this)
+            is SettingsEvent.BoundarySet -> onBoundarySet(event.sensorType, event.boundaries, this)
         }
+    }
+
+    private fun onBoundarySet(
+        sensorType: SensorType,
+        boundaries: OverlaySettings.Sensor.GraphSensor.Boundaries,
+        settingsState: SettingsState
+    ) {
+        if (settingsState.overlaySettings == null) return
+
+        val newSettings = when (sensorType) {
+            SensorType.CpuTemp -> {
+                val sensor = settingsState.overlaySettings.sensors.cpuTemp
+                settingsState.overlaySettings.copy(
+                    sensors = settingsState.overlaySettings.sensors.copy(
+                        cpuTemp = sensor.copy(boundaries = boundaries),
+                    )
+                )
+            }
+
+            SensorType.CpuUsage -> {
+                val sensor = settingsState.overlaySettings.sensors.cpuUsage
+                settingsState.overlaySettings.copy(
+                    sensors = settingsState.overlaySettings.sensors.copy(
+                        cpuUsage = sensor.copy(boundaries = boundaries),
+                    )
+                )
+            }
+
+            SensorType.GpuTemp -> {
+                val sensor = settingsState.overlaySettings.sensors.gpuTemp
+                settingsState.overlaySettings.copy(
+                    sensors = settingsState.overlaySettings.sensors.copy(
+                        gpuTemp = sensor.copy(boundaries = boundaries),
+                    )
+                )
+            }
+
+            SensorType.GpuUsage -> {
+                val sensor = settingsState.overlaySettings.sensors.gpuUsage
+                settingsState.overlaySettings.copy(
+                    sensors = settingsState.overlaySettings.sensors.copy(
+                        gpuUsage = sensor.copy(boundaries = boundaries),
+                    )
+                )
+            }
+
+            SensorType.VramUsage -> {
+                val sensor = settingsState.overlaySettings.sensors.vramUsage
+                settingsState.overlaySettings.copy(
+                    sensors = settingsState.overlaySettings.sensors.copy(
+                        vramUsage = sensor.copy(boundaries = boundaries),
+                    )
+                )
+            }
+
+            SensorType.RamUsage -> {
+                val sensor = settingsState.overlaySettings.sensors.ramUsage
+                settingsState.overlaySettings.copy(
+                    sensors = settingsState.overlaySettings.sensors.copy(
+                        ramUsage = sensor.copy(boundaries = boundaries),
+                    )
+                )
+            }
+            SensorType.Framerate -> settingsState.overlaySettings
+            SensorType.Frametime -> settingsState.overlaySettings
+            SensorType.TotalVramUsed -> settingsState.overlaySettings
+            SensorType.UpRate -> settingsState.overlaySettings
+            SensorType.DownRate -> settingsState.overlaySettings
+            SensorType.NetGraph -> settingsState.overlaySettings
+        }
+
+        OverlaySettingsRepository.setOverlaySettings(newSettings)
     }
 
     private fun onFpsApplicationSelect(applicationName: String, settingsState: SettingsState) {
