@@ -45,6 +45,8 @@ fun StatsUi(
     getNetworkSensorReadings: () -> List<HardwareMonitorData.Sensor>,
     getHardwareSensors: () -> List<HardwareMonitorData.Hardware>,
     getPresentMonApps: () -> List<String>,
+    onBoundaryChange: (SensorType, OverlaySettings.Sensor.GraphSensor.Boundaries) -> Unit,
+    getSensor: (SensorType) -> OverlaySettings.Sensor,
 ) = Column(
     modifier = Modifier.padding(bottom = 8.dp, top = 20.dp).verticalScroll(rememberScrollState()),
     verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -68,6 +70,8 @@ fun StatsUi(
         onOptionsToggle = onOptionsToggle,
         getGpuSensorReadings = getGpuSensorReadings,
         onCustomSensorSelect = onCustomSensorSelect,
+        onBoundaryChange = onBoundaryChange,
+        getSensor = getSensor,
     )
 
     CpuStats(
@@ -76,6 +80,8 @@ fun StatsUi(
         onOptionsToggle = onOptionsToggle,
         getCpuSensorReadings = getCpuSensorReadings,
         onCustomSensorSelect = onCustomSensorSelect,
+        onBoundaryChange = onBoundaryChange,
+        getSensor = getSensor,
     )
 
     RamStats(

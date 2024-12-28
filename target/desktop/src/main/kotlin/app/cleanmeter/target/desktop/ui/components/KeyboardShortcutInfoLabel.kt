@@ -45,7 +45,7 @@ internal fun KeyboardShortcutInfoLabel() {
                 text = "Hot key for showing/hiding the overlay",
                 color = LocalColorScheme.current.text.heading,
                 style = LocalTypography.current.labelLMedium,
-                modifier = Modifier.wrapContentHeight(align = Alignment.CenterVertically),
+                modifier = Modifier.wrapContentHeight(),
             )
         }
         HotKeySymbol(listOf("Ctrl", "Alt", "F10"))

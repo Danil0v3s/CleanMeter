@@ -8,7 +8,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import app.cleanmeter.core.common.hardwaremonitor.HardwareMonitorData
+import app.cleanmeter.target.desktop.model.OverlaySettings
 import app.cleanmeter.target.desktop.ui.components.CheckboxWithLabel
+import app.cleanmeter.target.desktop.ui.components.SensorBoundaryInput
 import app.cleanmeter.target.desktop.ui.components.dropdown.SensorReadingDropdownMenu
 import app.cleanmeter.target.desktop.ui.components.section.CustomBodyCheckboxSection
 import app.cleanmeter.target.desktop.ui.settings.CheckboxSectionOption
@@ -22,6 +24,8 @@ internal fun GpuStats(
     onOptionsToggle: (CheckboxSectionOption) -> Unit,
     getGpuSensorReadings: () -> List<HardwareMonitorData.Sensor>,
     onCustomSensorSelect: (SensorType, String) -> Unit,
+    onBoundaryChange: (SensorType, OverlaySettings.Sensor.GraphSensor.Boundaries) -> Unit,
+    getSensor: (SensorType) -> OverlaySettings.Sensor,
 ) {
     CustomBodyCheckboxSection(
         title = "GPU",
@@ -48,14 +52,17 @@ internal fun GpuStats(
                         if (readings.isNotEmpty() && option.isSelected && option.useCustomSensor) {
                             SensorReadingDropdownMenu(
                                 options = readings,
-                                onValueChanged = {
-                                    onCustomSensorSelect(option.type, it.Identifier)
-                                },
+                                onValueChanged = { onCustomSensorSelect(option.type, it.Identifier) },
                                 selectedIndex = readings
                                     .indexOfFirst { it.Identifier == option.optionReadingId }
                                     .coerceAtLeast(0),
                                 label = "Sensor:",
                                 sensorName = option.name,
+                            )
+                            SensorBoundaryInput(
+                                sensor = getSensor(option.type),
+                                sensorType = option.type,
+                                onBoundaryChange = onBoundaryChange,
                             )
                         }
                     }

@@ -142,7 +142,7 @@ private fun DropdownContent(
             Text(
                 text = "${selectedOption.Name} - ${selectedOption.SensorType}",
                 color = LocalColorScheme.current.text.heading,
-                style = LocalTypography.current.labelL,
+                style = LocalTypography.current.labelLMedium,
                 modifier = Modifier.align(Alignment.CenterVertically)
             )
         }

@@ -121,6 +121,25 @@ private fun TabContent(
             getNetworkSensorReadings = { settingsState.hardwareData?.networkReadings() ?: emptyList() },
             getHardwareSensors = { settingsState.hardwareData?.Hardwares ?: emptyList() },
             getPresentMonApps = { settingsState.hardwareData?.PresentMonApps ?: emptyList() },
+            onBoundaryChange = { sensorType, boundaries ->
+                viewModel.onEvent(SettingsEvent.BoundarySet(sensorType, boundaries))
+            },
+            getSensor = {
+                when (it) {
+                    SensorType.Framerate -> settingsState.overlaySettings.sensors.framerate
+                    SensorType.Frametime -> settingsState.overlaySettings.sensors.frametime
+                    SensorType.CpuTemp -> settingsState.overlaySettings.sensors.cpuTemp
+                    SensorType.CpuUsage -> settingsState.overlaySettings.sensors.cpuUsage
+                    SensorType.GpuTemp -> settingsState.overlaySettings.sensors.gpuTemp
+                    SensorType.GpuUsage -> settingsState.overlaySettings.sensors.gpuUsage
+                    SensorType.VramUsage -> settingsState.overlaySettings.sensors.vramUsage
+                    SensorType.TotalVramUsed -> settingsState.overlaySettings.sensors.totalVramUsed
+                    SensorType.RamUsage -> settingsState.overlaySettings.sensors.ramUsage
+                    SensorType.UpRate -> settingsState.overlaySettings.sensors.upRate
+                    SensorType.DownRate -> settingsState.overlaySettings.sensors.downRate
+                    SensorType.NetGraph -> settingsState.overlaySettings.sensors.upRate // no sensor for netgraph
+                }
+            }
         )
 
         1 -> StyleUi(

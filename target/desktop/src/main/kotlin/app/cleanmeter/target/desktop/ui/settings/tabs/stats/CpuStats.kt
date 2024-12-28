@@ -8,7 +8,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import app.cleanmeter.core.common.hardwaremonitor.HardwareMonitorData
+import app.cleanmeter.target.desktop.model.OverlaySettings
 import app.cleanmeter.target.desktop.ui.components.CheckboxWithLabel
+import app.cleanmeter.target.desktop.ui.components.SensorBoundaryInput
 import app.cleanmeter.target.desktop.ui.components.dropdown.SensorReadingDropdownMenu
 import app.cleanmeter.target.desktop.ui.components.section.CustomBodyCheckboxSection
 import app.cleanmeter.target.desktop.ui.settings.CheckboxSectionOption
@@ -22,6 +24,8 @@ internal fun CpuStats(
     onOptionsToggle: (CheckboxSectionOption) -> Unit,
     getCpuSensorReadings: () -> List<HardwareMonitorData.Sensor>,
     onCustomSensorSelect: (SensorType, String) -> Unit,
+    onBoundaryChange: (SensorType, OverlaySettings.Sensor.GraphSensor.Boundaries) -> Unit,
+    getSensor: (SensorType) -> OverlaySettings.Sensor,
 ) {
     CustomBodyCheckboxSection(
         title = "CPU",
@@ -49,6 +53,11 @@ internal fun CpuStats(
                                     .coerceAtLeast(0),
                                 label = "Sensor:",
                                 sensorName = option.name,
+                            )
+                            SensorBoundaryInput(
+                                sensor = getSensor(option.type),
+                                sensorType = option.type,
+                                onBoundaryChange = onBoundaryChange,
                             )
                         }
                     }

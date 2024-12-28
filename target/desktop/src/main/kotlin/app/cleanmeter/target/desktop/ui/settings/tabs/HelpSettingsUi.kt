@@ -140,7 +140,7 @@ private fun StyledNumberedList(
                     modifier = Modifier
                         .background(LocalColorScheme.current.background.brand, CircleShape)
                         .size(26.dp)
-                        .wrapContentHeight(align = Alignment.CenterVertically)
+                        .wrapContentHeight()
                 )
                 Text(
                     text = item,
