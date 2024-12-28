@@ -22,7 +22,8 @@ internal fun GpuSection(overlaySettings: OverlaySettings, data: HardwareMonitorD
                     customReadingId = overlaySettings.sensors.gpuTemp.customReadingId,
                     progressType = overlaySettings.progressType,
                     progressUnit = "°C",
-                    label = { "${it.toInt()}" }
+                    label = { "${it.toInt()}" },
+                    boundaries = overlaySettings.sensors.gpuTemp.boundaries,
                 )
             }
 
@@ -32,7 +33,8 @@ internal fun GpuSection(overlaySettings: OverlaySettings, data: HardwareMonitorD
                     customReadingId = overlaySettings.sensors.gpuUsage.customReadingId,
                     progressType = overlaySettings.progressType,
                     progressUnit = "%",
-                    label = { String.format("%02d", it.toInt(), Locale.US) }
+                    label = { String.format("%02d", it.toInt(), Locale.US) },
+                    boundaries = overlaySettings.sensors.gpuUsage.boundaries,
                 )
             }
 
@@ -44,7 +46,8 @@ internal fun GpuSection(overlaySettings: OverlaySettings, data: HardwareMonitorD
                     value = vramUsage / 100f,
                     label = String.format("%02.1f", totalVramUsed / 1000, Locale.US),
                     unit = "GB",
-                    progressType = overlaySettings.progressType
+                    progressType = overlaySettings.progressType,
+                    boundaries = overlaySettings.sensors.vramUsage.boundaries,
                 )
             }
         }

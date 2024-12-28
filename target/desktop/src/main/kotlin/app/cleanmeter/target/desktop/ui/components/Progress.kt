@@ -31,13 +31,15 @@ fun Progress(
     value: Float,
     label: String,
     unit: String,
-    progressType: OverlaySettings.ProgressType
+    progressType: OverlaySettings.ProgressType,
+    boundaries: OverlaySettings.Sensor.GraphSensor.Boundaries
 ) {
     val color = when {
-        value > 0.8f -> Red
-        value in 0.6f..0.8f -> Yellow
+        value > boundaries.high.div(100f) -> Red
+        value in boundaries.low.div(100f)..boundaries.medium.div(100f) -> Yellow
         else -> Green
     }
+
     Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
         when (progressType) {
             OverlaySettings.ProgressType.Circular -> CircularProgressIndicator(
@@ -88,35 +90,40 @@ private fun ProgressPreview() {
             value = 0.5f,
             label = "05",
             progressType = OverlaySettings.ProgressType.Bar,
-            unit = "C"
+            unit = "C",
+            boundaries = OverlaySettings.Sensor.GraphSensor.Boundaries()
         )
 
         Progress(
             value = 0.6f,
             label = "06",
             progressType = OverlaySettings.ProgressType.Bar,
-            unit = "C"
+            unit = "C",
+            boundaries = OverlaySettings.Sensor.GraphSensor.Boundaries()
         )
 
         Progress(
             value = 0.7f,
             label = "07",
             progressType = OverlaySettings.ProgressType.Bar,
-            unit = "C"
+            unit = "C",
+            boundaries = OverlaySettings.Sensor.GraphSensor.Boundaries()
         )
 
         Progress(
             value = 0.8f,
             label = "08",
             progressType = OverlaySettings.ProgressType.Bar,
-            unit = "C"
+            unit = "C",
+            boundaries = OverlaySettings.Sensor.GraphSensor.Boundaries()
         )
 
         Progress(
             value = 0.9f,
             label = "09",
             progressType = OverlaySettings.ProgressType.Bar,
-            unit = "C"
+            unit = "C",
+            boundaries = OverlaySettings.Sensor.GraphSensor.Boundaries()
         )
     }
 }

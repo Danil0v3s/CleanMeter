@@ -12,6 +12,7 @@ internal fun CustomReadingProgress(
     customReadingId: String,
     progressType: OverlaySettings.ProgressType,
     progressUnit: String,
+    boundaries: OverlaySettings.Sensor.GraphSensor.Boundaries
 ) {
     val reading = data.getReading(customReadingId)
     val value = (reading?.Value ?: 1f).coerceAtLeast(1f)
@@ -20,6 +21,7 @@ internal fun CustomReadingProgress(
         value = value / 100f,
         label = label(value),
         unit = progressUnit,
-        progressType = progressType
+        progressType = progressType,
+        boundaries = boundaries
     )
 }

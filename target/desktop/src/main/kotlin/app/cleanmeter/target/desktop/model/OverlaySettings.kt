@@ -1,9 +1,11 @@
 package app.cleanmeter.target.desktop.model
 
+import androidx.compose.runtime.Immutable
 import app.cleanmeter.target.desktop.ui.settings.SensorType
 import kotlinx.serialization.Serializable
 
 @Serializable
+@Immutable
 data class OverlaySettings(
     val isDarkTheme: Boolean = false,
     val isHorizontal: Boolean = true,
@@ -18,11 +20,13 @@ data class OverlaySettings(
     val sensors: Sensors = Sensors(),
 ) {
     @Serializable
+    @Immutable
     enum class ProgressType {
         Circular, Bar, None
     }
 
     @Serializable
+    @Immutable
     data class Sensors(
         val framerate: Sensor.Framerate = Sensor.Framerate(),
         val frametime: Sensor.Frametime = Sensor.Frametime(),
@@ -38,30 +42,106 @@ data class OverlaySettings(
     )
 
     @Serializable
-    sealed class Sensor(val sensorType: SensorType) {
+    @Immutable
+    sealed class Sensor {
         abstract val isEnabled: Boolean
+        abstract val customReadingId: String
 
         @Serializable
-        data class Framerate(override val isEnabled: Boolean = true, val customReadingId: String = "") : Sensor(SensorType.Framerate)
+        @Immutable
+        abstract class GraphSensor : Sensor() {
+            abstract val boundaries: Boundaries
+
+            @Serializable
+            @Immutable
+            data class Boundaries(
+                val low: Int = 60,
+                val medium: Int = 80,
+                val high: Int = 90,
+            )
+        }
+
         @Serializable
-        data class Frametime(override val isEnabled: Boolean = true, val customReadingId: String = "") : Sensor(SensorType.Frametime)
+        @Immutable
+        data class Framerate(
+            override val isEnabled: Boolean = true,
+            override val customReadingId: String = ""
+        ) : Sensor()
+
         @Serializable
-        data class CpuTemp(override val isEnabled: Boolean = true, val customReadingId: String = "") : Sensor(SensorType.CpuTemp)
+        @Immutable
+        data class Frametime(
+            override val isEnabled: Boolean = true,
+            override val customReadingId: String = ""
+        ) : Sensor()
+
         @Serializable
-        data class CpuUsage(override val isEnabled: Boolean = true, val customReadingId: String = "") : Sensor(SensorType.CpuUsage)
+        @Immutable
+        data class CpuTemp(
+            override val isEnabled: Boolean = true,
+            override val customReadingId: String = "",
+            override val boundaries: Boundaries = Boundaries(),
+        ) : GraphSensor()
+
         @Serializable
-        data class GpuTemp(override val isEnabled: Boolean = true, val customReadingId: String = "") : Sensor(SensorType.GpuTemp)
+        @Immutable
+        data class CpuUsage(
+            override val isEnabled: Boolean = true,
+            override val customReadingId: String = "",
+            override val boundaries: Boundaries = Boundaries(),
+        ) : GraphSensor()
+
         @Serializable
-        data class GpuUsage(override val isEnabled: Boolean = true, val customReadingId: String = "") : Sensor(SensorType.GpuUsage)
+        @Immutable
+        data class GpuTemp(
+            override val isEnabled: Boolean = true,
+            override val customReadingId: String = "",
+            override val boundaries: Boundaries = Boundaries(),
+        ) : GraphSensor()
+
         @Serializable
-        data class VramUsage(override val isEnabled: Boolean = true, val customReadingId: String = "") : Sensor(SensorType.VramUsage)
+        @Immutable
+        data class GpuUsage(
+            override val isEnabled: Boolean = true,
+            override val customReadingId: String = "",
+            override val boundaries: Boundaries = Boundaries(),
+        ) : GraphSensor()
+
         @Serializable
-        data class TotalVramUsed(override val isEnabled: Boolean = true, val customReadingId: String = "") : Sensor(SensorType.TotalVramUsed)
+        @Immutable
+        data class VramUsage(
+            override val isEnabled: Boolean = true,
+            override val customReadingId: String = "",
+            override val boundaries: Boundaries = Boundaries(),
+        ) : GraphSensor()
+
         @Serializable
-        data class RamUsage(override val isEnabled: Boolean = true, val customReadingId: String = "") : Sensor(SensorType.RamUsage)
+        @Immutable
+        data class TotalVramUsed(
+            override val isEnabled: Boolean = true,
+            override val customReadingId: String = "",
+        ) : Sensor()
+
         @Serializable
-        data class UpRate(override val isEnabled: Boolean = true, val customReadingId: String = "") : Sensor(SensorType.UpRate)
+        @Immutable
+        data class RamUsage(
+            override val isEnabled: Boolean = true,
+            override val customReadingId: String = "",
+            override val boundaries: Boundaries = Boundaries(),
+        ) : GraphSensor()
+
         @Serializable
-        data class DownRate(override val isEnabled: Boolean = true, val customReadingId: String = "") : Sensor(SensorType.DownRate)
+        @Immutable
+        data class UpRate(
+            override val isEnabled: Boolean = true,
+            override val customReadingId: String = ""
+        ) : Sensor()
+
+        @Serializable
+        @Immutable
+        data class DownRate(
+            override val isEnabled: Boolean = true,
+            override val customReadingId: String = ""
+        ) : Sensor()
     }
 }
