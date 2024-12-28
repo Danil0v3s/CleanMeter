@@ -113,10 +113,14 @@ private fun TabContent(
             onDisplaySelect = {
                 viewModel.onEvent(SettingsEvent.DisplaySelect(it))
             },
+            onFpsApplicationSelect = {
+                viewModel.onEvent(SettingsEvent.FpsApplicationSelect(it))
+            },
             getCpuSensorReadings = { settingsState.hardwareData?.cpuReadings() ?: emptyList() },
             getGpuSensorReadings = { settingsState.hardwareData?.gpuReadings() ?: emptyList() },
             getNetworkSensorReadings = { settingsState.hardwareData?.networkReadings() ?: emptyList() },
             getHardwareSensors = { settingsState.hardwareData?.Hardwares ?: emptyList() },
+            getPresentMonApps = { settingsState.hardwareData?.PresentMonApps ?: emptyList() },
         )
 
         1 -> StyleUi(

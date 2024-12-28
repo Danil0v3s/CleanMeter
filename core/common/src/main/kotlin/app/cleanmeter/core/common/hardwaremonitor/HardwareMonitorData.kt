@@ -6,7 +6,8 @@ import kotlinx.serialization.Serializable
 data class HardwareMonitorData(
     val LastPollTime: Long,
     val Hardwares: List<Hardware>,
-    val Sensors: List<Sensor>
+    val Sensors: List<Sensor>,
+    val PresentMonApps: List<String>,
 ) {
     @Serializable
     data class Hardware(

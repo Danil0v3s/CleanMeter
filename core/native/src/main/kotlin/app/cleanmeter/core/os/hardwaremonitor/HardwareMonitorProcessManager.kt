@@ -10,6 +10,12 @@ import java.util.*
 object HardwareMonitorProcessManager {
     private var process: Process? = null
 
+    fun checkRuntime() {
+        ProcessBuilder().apply {
+            command("dotnet --list-runtimes")
+        }.start()
+    }
+
     fun start() {
         val currentDir = Path.of("").toAbsolutePath().toString()
         val file = if (isDev()) {

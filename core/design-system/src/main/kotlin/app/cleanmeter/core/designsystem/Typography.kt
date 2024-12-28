@@ -119,6 +119,18 @@ class Typography {
      * lineHeight = 0.sp,
      * fontWeight = W400,
      */
+    val labelSMedium: TextStyle
+        @Composable get() = defaultTextStyle.copy(
+            fontSize = 12.sp,
+            lineHeight = 0.sp,
+            fontFamily = fontFamilyMedium,
+        )
+
+    /**
+     * fontSize = 12.sp,
+     * lineHeight = 0.sp,
+     * fontWeight = W600,
+     */
     val labelSSemiBold: TextStyle
         @Composable get() = defaultTextStyle.copy(
             fontSize = 12.sp,
@@ -148,7 +160,7 @@ class Typography {
 //    Font(resource = "font/inter_black.ttf", weight = FontWeight.Black),
 
     private val fontFamilyThin = FontFamily(
-        Font(resource = "font/inter_thin.ttf", weight = FontWeight.Normal),
+        Font(resource = "font/inter_thin.ttf", weight = FontWeight.SemiBold),
     )
 
     private val fontFamilyNormal = FontFamily(

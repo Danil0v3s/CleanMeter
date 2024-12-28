@@ -16,7 +16,7 @@ var builder = Host.CreateDefaultBuilder(args)
             Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "LogFiles",
                 $"{DateTime.Now.Year}-{DateTime.Now.Month}-{DateTime.Now.Day}", "Log.txt"),
             rollingInterval: RollingInterval.Infinite,
-            outputTemplate: "[{Timestamp:yyyy-MM-dd HH:mm:ss.fff} [{Level}] {Message}{NewLine}{Exception}")
+            outputTemplate: "[{Timestamp:yyyy-MM-dd HH:mm:ss.fff}] [{Level}] {Message}{NewLine}{Exception}")
         .WriteTo.Console()
     );
 
