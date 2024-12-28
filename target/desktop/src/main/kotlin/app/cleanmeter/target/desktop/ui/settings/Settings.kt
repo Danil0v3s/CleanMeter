@@ -34,7 +34,7 @@ import app.cleanmeter.target.desktop.ui.components.TopBar
 import app.cleanmeter.target.desktop.ui.components.UpdateToast
 import app.cleanmeter.target.desktop.ui.settings.tabs.AppSettingsUi
 import app.cleanmeter.target.desktop.ui.settings.tabs.HelpSettingsUi
-import app.cleanmeter.target.desktop.ui.settings.tabs.OverlaySettingsUi
+import app.cleanmeter.target.desktop.ui.settings.tabs.stats.StatsUi
 import app.cleanmeter.target.desktop.ui.settings.tabs.style.StyleUi
 import app.cleanmeter.updater.AutoUpdater
 import app.cleanmeter.updater.UpdateState
@@ -94,7 +94,7 @@ private fun TabContent(
     getOverlayPosition: () -> IntOffset
 ) {
     when (selectedTabIndex) {
-        0 -> OverlaySettingsUi(
+        0 -> StatsUi(
             overlaySettings = settingsState.overlaySettings!!,
             onSectionSwitchToggle = { sectionType, isEnabled ->
                 viewModel.onEvent(
