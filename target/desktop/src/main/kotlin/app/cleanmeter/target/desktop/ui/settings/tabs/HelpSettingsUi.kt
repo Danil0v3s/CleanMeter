@@ -1,23 +1,31 @@
 package app.cleanmeter.target.desktop.ui.settings.tabs
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Icon
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.ParagraphStyle
 import androidx.compose.ui.text.SpanStyle
@@ -30,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.cleanmeter.core.designsystem.LocalColorScheme
 import app.cleanmeter.core.designsystem.LocalTypography
+import app.cleanmeter.target.desktop.ui.components.HotKeySymbol
 import app.cleanmeter.target.desktop.ui.components.section.CollapsibleSection
 
 @Composable
@@ -101,6 +110,33 @@ internal fun HelpSettingsUi() {
                 }
             )
         }
+
+        CollapsibleSection(title = "HOTKEYS") {
+            Hotkey(label = "Toggle the overlay", "F10")
+            Hotkey(label = "Toggle data recording", "F11")
+        }
+    }
+}
+
+@Composable
+private fun Hotkey(label: String, key: String) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Text(
+                text = label,
+                color = LocalColorScheme.current.text.heading,
+                style = LocalTypography.current.labelLMedium,
+                modifier = Modifier.wrapContentHeight(),
+            )
+        }
+        HotKeySymbol(listOf("Ctrl", "Alt", key))
     }
 }
 

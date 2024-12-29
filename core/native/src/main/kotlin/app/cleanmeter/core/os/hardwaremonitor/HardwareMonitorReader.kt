@@ -40,7 +40,7 @@ object HardwareMonitorReader {
                     val buffer = getByteBuffer(packet.data, hardware * HARDWARE_SIZE + sensor * SENSOR_SIZE, HEADER_SIZE)
                     val hardwares = readHardware(buffer, hardware)
                     val sensors = readSensor(buffer, sensor)
-                    _currentData = _currentData.copy(Hardwares = hardwares, Sensors = sensors)
+                    _currentData = _currentData.copy(Hardwares = hardwares, Sensors = sensors, LastPollTime = System.currentTimeMillis())
                     _currentData
                 }
 
@@ -48,7 +48,7 @@ object HardwareMonitorReader {
                     val appsCount = getByteBuffer(packet.data, LENGTH_SIZE, 0).short
                     val buffer = getByteBuffer(packet.data, appsCount.toInt() * NAME_SIZE, LENGTH_SIZE)
                     val apps = listOf("Auto") + readPresentMonApps(buffer, appsCount)
-                    _currentData = _currentData.copy(PresentMonApps = apps)
+                    _currentData = _currentData.copy(PresentMonApps = apps, LastPollTime = System.currentTimeMillis())
                     _currentData
                 }
 
