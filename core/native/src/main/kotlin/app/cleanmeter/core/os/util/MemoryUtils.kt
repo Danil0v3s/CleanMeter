@@ -5,7 +5,7 @@ import java.io.InputStream
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.charset.Charset
-import java.util.Locale
+import java.util.*
 
 internal fun getByteBuffer(input: InputStream, length: Int): ByteBuffer {
     if (length <= 0) return ByteBuffer.allocate(0).order(ByteOrder.LITTLE_ENDIAN)

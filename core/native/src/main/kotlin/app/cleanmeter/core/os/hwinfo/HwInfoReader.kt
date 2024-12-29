@@ -5,13 +5,13 @@ import app.cleanmeter.core.common.hwinfo.SensorElement
 import app.cleanmeter.core.common.hwinfo.SensorReadingElement
 import app.cleanmeter.core.common.hwinfo.SensorReadingType
 import app.cleanmeter.core.common.hwinfo.SensorSharedMem
+import app.cleanmeter.core.os.util.getByteBuffer
+import app.cleanmeter.core.os.util.readString
+import app.cleanmeter.core.os.win32.WindowsService
 import com.sun.jna.Pointer
 import com.sun.jna.platform.win32.WinNT
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
-import app.cleanmeter.core.os.util.getByteBuffer
-import app.cleanmeter.core.os.util.readString
-import app.cleanmeter.core.os.win32.WindowsService
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import kotlin.coroutines.cancellation.CancellationException

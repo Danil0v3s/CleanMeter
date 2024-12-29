@@ -6,19 +6,17 @@ import app.cleanmeter.core.common.mahm.EntryFlag
 import app.cleanmeter.core.common.mahm.GPUEntry
 import app.cleanmeter.core.common.mahm.Header
 import app.cleanmeter.core.common.mahm.SourceID
+import app.cleanmeter.core.os.mahm.MAHMSizes.MAX_STRING_LENGTH
+import app.cleanmeter.core.os.util.getByteBuffer
+import app.cleanmeter.core.os.util.readString
+import app.cleanmeter.core.os.win32.WindowsService
 import com.sun.jna.Pointer
 import com.sun.jna.platform.win32.WinNT
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
-import app.cleanmeter.core.os.mahm.MAHMSizes.MAX_STRING_LENGTH
-import app.cleanmeter.core.os.util.getByteBuffer
-import app.cleanmeter.core.os.util.readString
-import app.cleanmeter.core.os.win32.WindowsService
 import java.nio.ByteBuffer
-import java.nio.ByteOrder
-import java.nio.charset.StandardCharsets
 
 object MAHMSizes {
     const val HEADER_SIZE = 32

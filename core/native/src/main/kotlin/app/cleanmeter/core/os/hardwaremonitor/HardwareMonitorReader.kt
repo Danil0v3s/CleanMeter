@@ -3,16 +3,8 @@ package app.cleanmeter.core.os.hardwaremonitor
 import app.cleanmeter.core.common.hardwaremonitor.HardwareMonitorData
 import app.cleanmeter.core.os.util.getByteBuffer
 import app.cleanmeter.core.os.util.readString
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.mapNotNull
-import java.net.Socket
 import java.nio.ByteBuffer
 
 private const val HARDWARE_SIZE = 260

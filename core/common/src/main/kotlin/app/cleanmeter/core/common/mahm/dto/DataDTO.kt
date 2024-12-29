@@ -1,9 +1,9 @@
 package app.cleanmeter.core.common.mahm.dto
 
-import kotlinx.serialization.Serializable
 import app.cleanmeter.core.common.mahm.Data
 import app.cleanmeter.core.common.mahm.Entry
 import app.cleanmeter.core.common.mahm.SourceID
+import kotlinx.serialization.Serializable
 
 @Serializable
 data class DataDTO(

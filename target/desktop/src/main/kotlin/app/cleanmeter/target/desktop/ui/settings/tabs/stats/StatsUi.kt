@@ -9,7 +9,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -17,13 +16,8 @@ import app.cleanmeter.core.common.hardwaremonitor.HardwareMonitorData
 import app.cleanmeter.core.designsystem.LocalColorScheme
 import app.cleanmeter.core.designsystem.LocalTypography
 import app.cleanmeter.target.desktop.model.OverlaySettings
-import app.cleanmeter.target.desktop.ui.components.section.CheckboxSection
-import app.cleanmeter.target.desktop.ui.components.CheckboxWithLabel
-import app.cleanmeter.target.desktop.ui.components.section.CustomBodyCheckboxSection
-import app.cleanmeter.target.desktop.ui.components.section.DropdownSection
 import app.cleanmeter.target.desktop.ui.components.KeyboardShortcutInfoLabel
-import app.cleanmeter.target.desktop.ui.components.dropdown.DropdownMenu
-import app.cleanmeter.target.desktop.ui.components.dropdown.SensorReadingDropdownMenu
+import app.cleanmeter.target.desktop.ui.components.section.DropdownSection
 import app.cleanmeter.target.desktop.ui.settings.CheckboxSectionOption
 import app.cleanmeter.target.desktop.ui.settings.SectionType
 import app.cleanmeter.target.desktop.ui.settings.SensorType

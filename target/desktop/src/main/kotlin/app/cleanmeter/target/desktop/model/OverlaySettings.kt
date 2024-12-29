@@ -1,7 +1,6 @@
 package app.cleanmeter.target.desktop.model
 
 import androidx.compose.runtime.Immutable
-import app.cleanmeter.target.desktop.ui.settings.SensorType
 import kotlinx.serialization.Serializable
 
 @Serializable

@@ -12,10 +12,7 @@ import com.sun.jna.platform.win32.WinNT.HANDLE
 import com.sun.jna.platform.win32.WinUser
 import java.awt.Component
 import java.io.File
-import java.io.IOException
-import java.nio.file.Files.createFile
 import java.nio.file.Path
-import kotlin.io.path.exists
 import kotlin.system.exitProcess
 
 class WindowsService {
