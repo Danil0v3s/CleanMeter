@@ -17,8 +17,8 @@ fun main(vararg args: String) = singleInstance(args) {
             ProcessManager.stop()
         })
     } else {
-        KeyboardManager.registerKeyboardHook()
     }
+        KeyboardManager.registerKeyboardHook()
 
     if (!ApplicationParams.isAutostart) {
         ProcessManager.start()

@@ -2,7 +2,7 @@ package app.cleanmeter.target.desktop.ui.overlay
 
 import androidx.lifecycle.ViewModel
 import app.cleanmeter.core.common.hardwaremonitor.HardwareMonitorData
-import app.cleanmeter.target.desktop.data.ObserveHardwareReadings
+import app.cleanmeter.core.os.hardwaremonitor.HardwareMonitorReader
 import app.cleanmeter.target.desktop.data.OverlaySettingsRepository
 import app.cleanmeter.target.desktop.model.OverlaySettings
 import kotlinx.coroutines.CoroutineScope
@@ -40,9 +40,11 @@ class OverlayViewModel : ViewModel() {
 
     private fun observeHwInfo() {
         CoroutineScope(Dispatchers.IO).launch {
-            ObserveHardwareReadings.data.collectLatest { hwInfoData ->
-                _state.update { it.copy(hardwareData = hwInfoData) }
-            }
+            HardwareMonitorReader
+                .currentData
+                .collectLatest { hwInfoData ->
+                    _state.update { it.copy(hardwareData = hwInfoData) }
+                }
         }
     }
 }

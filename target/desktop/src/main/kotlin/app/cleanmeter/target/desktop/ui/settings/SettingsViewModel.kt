@@ -3,9 +3,11 @@ package app.cleanmeter.target.desktop.ui.settings
 import androidx.compose.ui.unit.IntOffset
 import androidx.lifecycle.ViewModel
 import app.cleanmeter.core.common.hardwaremonitor.HardwareMonitorData
+import app.cleanmeter.core.os.hardwaremonitor.HardwareMonitorReader
 import app.cleanmeter.core.os.hardwaremonitor.Packet
 import app.cleanmeter.core.os.hardwaremonitor.SocketClient
-import app.cleanmeter.target.desktop.data.ObserveHardwareReadings
+import app.cleanmeter.target.desktop.KeyboardEvent
+import app.cleanmeter.target.desktop.KeyboardManager
 import app.cleanmeter.target.desktop.data.OverlaySettingsRepository
 import app.cleanmeter.target.desktop.model.OverlaySettings
 import kotlinx.coroutines.CoroutineScope
@@ -13,12 +15,21 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChangedBy
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import java.io.File
+import java.io.Writer
 
 data class SettingsState(
     val overlaySettings: OverlaySettings? = null,
-    val hardwareData: HardwareMonitorData? = null
+    val hardwareData: HardwareMonitorData? = null,
+    val isRecording: Boolean = false,
 )
 
 sealed class SettingsEvent {
@@ -43,9 +54,13 @@ class SettingsViewModel : ViewModel() {
     val state: Flow<SettingsState>
         get() = _state
 
+    private val dataHistory = emptyList<HardwareMonitorData>().toMutableList()
+
     init {
         observeOverlaySettings()
-        observeHwInfo()
+        observeData()
+        observeRecordingHotkey()
+        observeRecordingState()
     }
 
     private fun observeOverlaySettings() {
@@ -58,11 +73,46 @@ class SettingsViewModel : ViewModel() {
         }
     }
 
-    private fun observeHwInfo() {
+    private fun observeData() {
         CoroutineScope(Dispatchers.IO).launch {
-            ObserveHardwareReadings.data.collectLatest { hwInfoData ->
-                _state.update { it.copy(hardwareData = hwInfoData) }
-            }
+            HardwareMonitorReader
+                .currentData
+                .collectLatest { hwInfoData ->
+                    _state.update { it.copy(hardwareData = hwInfoData) }
+                }
+        }
+    }
+
+    private fun observeRecordingHotkey() {
+        CoroutineScope(Dispatchers.Default).launch {
+            KeyboardManager
+                .filter(KeyboardEvent.ToggleRecording)
+                .collectLatest {
+                    println("Toggle recording ${_state.value.isRecording}")
+                    _state.update { it.copy(isRecording = !it.isRecording) }
+                }
+        }
+    }
+
+    private fun observeRecordingState() {
+        CoroutineScope(Dispatchers.Default).launch {
+            _state
+                .collectLatest { state ->
+                    when {
+                        state.isRecording && state.hardwareData != null -> {
+                            dataHistory.add(state.hardwareData)
+                            return@collectLatest
+                        }
+                        !state.isRecording && dataHistory.isNotEmpty() -> {
+                            File("cleanmeter.recording.${System.currentTimeMillis()}.json").printWriter().use {
+                                it.append(Json.encodeToString(dataHistory))
+                                dataHistory.clear()
+                            }
+                        }
+                        dataHistory.isNotEmpty() -> dataHistory.clear()
+                        else -> Unit
+                    }
+                }
         }
     }
 
@@ -145,6 +195,7 @@ class SettingsViewModel : ViewModel() {
                     )
                 )
             }
+
             SensorType.Framerate -> settingsState.overlaySettings
             SensorType.Frametime -> settingsState.overlaySettings
             SensorType.TotalVramUsed -> settingsState.overlaySettings
