@@ -18,7 +18,9 @@ enum class Command(val value: Short) {
     Data(0),
     RefreshPresentMonApps(1),
     SelectPresentMonApp(2),
-    PresentMonApps(3);
+    PresentMonApps(3),
+    SelectPollingRate(4),
+    ;
 
     companion object {
         fun fromValue(value: Short) = entries.find { it.value == value } ?: Data
@@ -53,6 +55,7 @@ object HardwareMonitorReader {
                 }
 
                 is Packet.SelectPresentMonApp -> null
+                is Packet.SelectPollingRate -> null
             }
         }
 

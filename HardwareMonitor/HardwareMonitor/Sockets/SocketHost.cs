@@ -61,28 +61,17 @@ public class SocketHost(ILogger logger)
     {
         var listWithSize = memoryStream.ToList();
         listWithSize.InsertRange(2, BitConverter.GetBytes(listWithSize.Count - 2));
-        for (var i = 0; i < _clients.Count; i++)
+        foreach (var client in _clients)
         {
-            if (_clients[i].IsConnected())
+            try
             {
-                _clients[i].SendAsync(listWithSize.ToArray(), SocketFlags.None);
+                client.SendAsync(listWithSize.ToArray(), SocketFlags.None);
+            }
+            catch (SocketException)
+            {
+                continue;
             }
         }
         listWithSize.Clear();
-    }
-}
-
-static class SocketExtensions
-{
-    public static bool IsConnected(this Socket socket)
-    {
-        try
-        {
-            return !(socket.Poll(1, SelectMode.SelectRead) && socket.Available == 0);
-        }
-        catch (SocketException)
-        {
-            return false;
-        }
     }
 }
