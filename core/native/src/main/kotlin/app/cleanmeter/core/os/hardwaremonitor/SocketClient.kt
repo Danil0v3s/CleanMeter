@@ -19,14 +19,37 @@ private const val COMMAND_SIZE = 2
 private const val LENGTH_SIZE = 4
 
 sealed class Packet {
+    open fun toByteArray(): ByteArray = ByteArray(0)
+
     data class Data(val data: ByteArray) : Packet()
     data class PresentMonApps(val data: ByteArray) : Packet()
-    data class SelectPresentMonApp(val name: String) : Packet()
+    data class SelectPresentMonApp(val name: String) : Packet() {
+        override fun toByteArray(): ByteArray {
+            val nameBytes = name.toByteArray()
+            val buffer = ByteBuffer.allocate(2 + 2 + nameBytes.count()).order(ByteOrder.LITTLE_ENDIAN).apply {
+                putShort(Command.SelectPresentMonApp.value)
+                putShort(nameBytes.size.toShort())
+                put(nameBytes)
+            }.array()
+            return buffer
+        }
+    }
+
+    data class SelectPollingRate(val interval: Short) : Packet() {
+        override fun toByteArray(): ByteArray {
+            val buffer = ByteBuffer.allocate(2 + 2).order(ByteOrder.LITTLE_ENDIAN).apply {
+                putShort(Command.SelectPollingRate.value)
+                putShort(interval)
+            }.array()
+            return buffer
+        }
+    }
 }
 
 object SocketClient {
 
     private var socket = Socket()
+    private var pollingRate = 500L
 
     private val packetChannel = Channel<Packet>(Channel.CONFLATED)
     val packetFlow: Flow<Packet> = packetChannel.receiveAsFlow()
@@ -46,17 +69,17 @@ object SocketClient {
                     println("Connected ${socket.isConnected}")
                 } catch (ex: Exception) {
                     println("Couldn't connect ${ex.message}")
-//                    if (ex !is SocketException) {
+                    if (ex !is SocketException) {
                         ex.printStackTrace()
-//                    }
+                    }
                 } finally {
-                    delay(500)
+                    delay(pollingRate)
                     continue
                 }
             }
 
             val inputStream = socket.inputStream
-            while(socket.isConnected) {
+            while (socket.isConnected) {
                 try {
                     val command = getCommand(inputStream)
                     val size = getSize(inputStream)
@@ -65,6 +88,7 @@ object SocketClient {
                         Command.PresentMonApps -> packetChannel.trySend(Packet.PresentMonApps(inputStream.readNBytes(size)))
                         Command.RefreshPresentMonApps -> Unit
                         Command.SelectPresentMonApp -> Unit
+                        Command.SelectPollingRate -> Unit
                     }
                 } catch (e: SocketException) {
                     socket.close()
@@ -85,17 +109,15 @@ object SocketClient {
         return buffer.int
     }
 
-    fun sendPacket(selectPresentMonApp: Packet.SelectPresentMonApp) {
+    fun setPollingRate(pollingRate: Long) {
+        println("Setting PollingRate to $pollingRate")
+        this.pollingRate = pollingRate
+    }
+
+    fun sendPacket(packet: Packet) {
         if (socket.isConnected) {
-            val nameBytes = selectPresentMonApp.name.toByteArray()
-            val buffer = ByteBuffer.allocate(2 + 2 + nameBytes.count()).order(ByteOrder.LITTLE_ENDIAN).apply {
-                putShort(Command.SelectPresentMonApp.value)
-                putShort(nameBytes.size.toShort())
-                put(nameBytes)
-            }.array()
-            println("Sending ${buffer.count()} bytes")
             socket.outputStream.apply {
-                write(buffer)
+                write(packet.toByteArray())
                 flush()
             }
         }

@@ -28,6 +28,9 @@ public class MonitorPoller(
 
     private SocketHost _socketHost = new(logger);
     private readonly PresentMonPoller _presentMonPoller = new(logger);
+    
+    private short _pollingRate = 500;
+    private const short MinimalPollingRate = 50;
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -36,6 +39,7 @@ public class MonitorPoller(
         _computer.Open();
         _computer.Accept(new UpdateVisitor());
         _presentMonPoller.Start(stoppingToken);
+        _presentMonPoller.onUpdateApps += SendPresentMonAppsToClients;
         _socketHost.StartServer();
         _socketHost.onClientData += OnClientData;
         _socketHost.onClientConnected += OnClientConnected;
@@ -100,11 +104,10 @@ public class MonitorPoller(
             {
                 GC.Collect();
                 accumulator = 0;
-                SendPresentMonAppsToClients();
             }
 
             accumulator += 500;
-            await Task.Delay(500, stoppingToken);
+            await Task.Delay(_pollingRate, stoppingToken);
         }
 
         Stop();
@@ -128,6 +131,9 @@ public class MonitorPoller(
             case MonitorPacketCommand.SelectPresentMonApp:
                 SelectPresentMonApp(data);
                 break;
+            case MonitorPacketCommand.SelectPollingRate:
+                SelectPollingRate(data);
+                break;
             
             // server -> client cases 
             case MonitorPacketCommand.Data:
@@ -136,6 +142,14 @@ public class MonitorPoller(
             default:
                 throw new ArgumentOutOfRangeException();
         }
+    }
+
+    private void SelectPollingRate(byte[] data)
+    {
+        // start at 2 because the first 2 were the command
+        var pollingRate = BitConverter.ToInt16(data, 2);
+        _pollingRate = Math.Max(pollingRate, MinimalPollingRate);
+        logger.LogInformation("Selected polling rate of {PollingRate}", _pollingRate);
     }
 
     private void SelectPresentMonApp(byte[] data)

@@ -6,4 +6,5 @@ public enum MonitorPacketCommand : short
     RefreshPresentMonApps = 1,
     SelectPresentMonApp = 2,
     PresentMonApps = 3,
+    SelectPollingRate = 4
 }

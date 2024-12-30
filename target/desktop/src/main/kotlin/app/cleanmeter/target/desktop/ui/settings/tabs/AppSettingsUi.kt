@@ -31,6 +31,7 @@ import app.cleanmeter.target.desktop.data.PreferencesRepository
 import app.cleanmeter.target.desktop.model.OverlaySettings
 import app.cleanmeter.target.desktop.ui.components.CheckboxWithLabel
 import app.cleanmeter.target.desktop.ui.components.StyleCard
+import app.cleanmeter.target.desktop.ui.components.dropdown.DropdownMenu
 import app.cleanmeter.target.desktop.ui.components.section.Section
 import app.cleanmeter.target.desktop.ui.settings.FooterUi
 import app.cleanmeter.target.desktop.ui.settings.SettingsEvent
@@ -100,6 +101,18 @@ fun AppSettingsUi(
 //                }
 //            )
         }
+    }
+
+    Section(title = "RECORDING") {
+        val options = listOf("50", "100", "250", "300", "350", "400", "500")
+        DropdownMenu(
+            label = "Polling Rate:",
+            disclaimer = "The interval in milliseconds the app will update data. Be mindful, this can impact performance!",
+            options = options,
+            selectedIndex = options.indexOf(overlaySettings.pollingRate.toString()),
+            onValueChanged = { onEvent(SettingsEvent.PollingRateSelect(options[it].toLong())) },
+            modifier = Modifier.padding(top = 8.dp)
+        )
     }
 
     FooterUi(modifier = Modifier)

@@ -19,6 +19,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
@@ -46,6 +47,7 @@ sealed class SettingsEvent {
     data class DarkThemeToggle(val isEnabled: Boolean) : SettingsEvent()
     data class FpsApplicationSelect(val applicationName: String) : SettingsEvent()
     data class BoundarySet(val sensorType: SensorType, val boundaries: OverlaySettings.Sensor.GraphSensor.Boundaries) : SettingsEvent()
+    data class PollingRateSelect(val pollingRate: Long) : SettingsEvent()
     data object ConsentGiven : SettingsEvent()
 }
 
@@ -62,6 +64,7 @@ class SettingsViewModel : ViewModel() {
         observeData()
         observeRecordingHotkey()
         observeRecordingState()
+        sendInitialPollingRate()
 
         _state.update {
             it.copy(
@@ -125,6 +128,18 @@ class SettingsViewModel : ViewModel() {
         }
     }
 
+    private fun sendInitialPollingRate() {
+        CoroutineScope(Dispatchers.IO).launch {
+            // wait for first item
+            HardwareMonitorReader.currentData.first()
+
+            _state.value.overlaySettings?.let {
+                SocketClient.setPollingRate(it.pollingRate)
+                SocketClient.sendPacket(Packet.SelectPollingRate(it.pollingRate.toShort()))
+            }
+        }
+    }
+
     fun onEvent(event: SettingsEvent) = with(_state.value) {
         when (event) {
             is SettingsEvent.OptionsToggle -> onOptionsToggle(event.data, this)
@@ -141,7 +156,19 @@ class SettingsViewModel : ViewModel() {
             is SettingsEvent.FpsApplicationSelect -> onFpsApplicationSelect(event.applicationName, this)
             is SettingsEvent.BoundarySet -> onBoundarySet(event.sensorType, event.boundaries, this)
             is SettingsEvent.ConsentGiven -> onConsentGiven()
+            is SettingsEvent.PollingRateSelect -> onPollingRateSelect(event.pollingRate, this)
         }
+    }
+
+    private fun onPollingRateSelect(pollingRate: Long, settingsState: SettingsState) {
+        if (settingsState.overlaySettings == null) return
+
+        val newSettings = settingsState.overlaySettings.copy(pollingRate = pollingRate)
+
+        SocketClient.setPollingRate(pollingRate)
+        SocketClient.sendPacket(Packet.SelectPollingRate(pollingRate.toShort()))
+
+        OverlaySettingsRepository.setOverlaySettings(newSettings)
     }
 
     private fun onConsentGiven() {

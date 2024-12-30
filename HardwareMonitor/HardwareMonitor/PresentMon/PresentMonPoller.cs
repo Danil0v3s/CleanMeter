@@ -15,12 +15,13 @@ public class PresentMonPoller(ILogger logger)
     public PresentMonSensor Frametime { get; private set; }
     public HashSet<string> CurrentApps { get; private set; }
 
+    public Action onUpdateApps;
+
     private Process _process;
     private CultureInfo _cultureInfo = (CultureInfo)CultureInfo.CurrentCulture.Clone();
 
     private string _currentSelectedApp = NO_SELECTED_APP;
     
-
     public async void Start(CancellationToken stoppingToken)
     {
         _cultureInfo.NumberFormat.NumberDecimalSeparator = ".";
@@ -105,6 +106,7 @@ public class PresentMonPoller(ILogger logger)
         }
         _currentSelectedApp = appName;
     }
+
     private async Task TerminateCurrentPresentMon()
     {
         var processStartInfo = new ProcessStartInfo
@@ -128,6 +130,7 @@ public class PresentMonPoller(ILogger logger)
     {
         if (cancellationToken.IsCancellationRequested) return;
         await Task.Delay(10_000, cancellationToken);
+        onUpdateApps?.Invoke();
         CurrentApps.Clear();
         ClearCurrentAppsAsync(cancellationToken);
     }
