@@ -7,6 +7,7 @@ import java.util.prefs.Preferences
 
 const val OVERLAY_SETTINGS_PREFERENCE_KEY = "OVERLAY_SETTINGS_PREFERENCE_KEY"
 const val PREFERENCE_START_MINIMIZED = "PREFERENCE_START_MINIMIZED"
+const val PREFERENCE_PERMISSION_CONSENT = "PREFERENCE_PERMISSION_CONSENT"
 
 object PreferencesRepository {
 
@@ -24,6 +25,7 @@ object PreferencesRepository {
 
     fun setPreference(key: String, value: String) = prefs.put(key, value)
     fun setPreferenceBoolean(key: String, value: Boolean) = prefs.putBoolean(key, value)
+    fun clear() = prefs.clear()
 }
 
 fun PreferencesRepository.loadOverlaySettings(): OverlaySettings {
