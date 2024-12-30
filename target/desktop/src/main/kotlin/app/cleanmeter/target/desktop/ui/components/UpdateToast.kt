@@ -1,5 +1,7 @@
 package app.cleanmeter.target.desktop.ui.components
 
+import ClearButton
+import FilledButton
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.slideInVertically
@@ -128,42 +130,7 @@ private fun RowScope.BodyText(state: UpdateState) {
     }
 }
 
-@Composable
-private fun ClearButton(onClick: () -> Unit, label: String) {
-    Button(
-        onClick = onClick,
-        colors = ButtonDefaults.textButtonColors(
-            containerColor = Color.Transparent,
-        ),
-        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
-    ) {
-        Text(
-            text = label,
-            style = LocalTypography.current.labelLMedium,
-            color = LocalColorScheme.current.text.inverse,
-            modifier = Modifier.wrapContentHeight(),
-        )
-    }
-}
 
-@Composable
-private fun FilledButton(onClick: () -> Unit, label: String) {
-    Button(
-        onClick = onClick,
-        colors = ButtonDefaults.textButtonColors(
-            containerColor = LocalColorScheme.current.background.surfaceRaised,
-        ),
-        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
-        shape = RoundedCornerShape(100),
-    ) {
-        Text(
-            text = label,
-            color = LocalColorScheme.current.text.heading,
-            style = LocalTypography.current.labelLMedium,
-            modifier = Modifier.wrapContentHeight(),
-        )
-    }
-}
 
 @Composable
 private fun RowScope.CallToAction(

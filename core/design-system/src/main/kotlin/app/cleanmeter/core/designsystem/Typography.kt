@@ -10,15 +10,27 @@ import androidx.compose.ui.unit.sp
 class Typography {
 
     /**
+     * fontSize = 32.sp,
+     * lineHeight = 0.sp,
+     * fontWeight = W400,
+     */
+    val titleXXL: TextStyle
+        @Composable get() = defaultTextStyle.copy(
+            fontSize = 32.sp,
+            lineHeight = 0.sp,
+            fontFamily = fontFamilyNormal,
+        )
+
+    /**
      * fontSize = 16.sp,
      * lineHeight = 0.sp,
-     * fontWeight = W500,
+     * fontWeight = W400,
      */
     val titleM: TextStyle
         @Composable get() = defaultTextStyle.copy(
             fontSize = 16.sp,
             lineHeight = 0.sp,
-            fontFamily = fontFamilyMedium,
+            fontFamily = fontFamilyNormal,
         )
 
     /**

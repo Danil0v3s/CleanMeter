@@ -3,7 +3,7 @@
     <envs>
       <env name="env" value="dev" />
     </envs>
-    <option name="MAIN_CLASS_NAME" value="app.cleanmeter.target.desktop.ServerMainKt" />
+    <option name="MAIN_CLASS_NAME" value="app.cleanmeter.target.desktop.DesktopMainKt" />
     <module name="CleanMeter.target.desktop.main" />
     <shortenClasspath name="NONE" />
     <method v="2">

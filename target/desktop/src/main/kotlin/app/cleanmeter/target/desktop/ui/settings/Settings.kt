@@ -1,33 +1,45 @@
 package app.cleanmeter.target.desktop.ui.settings
 
+import FilledButton
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.window.WindowDraggableArea
 import androidx.compose.material.ScrollableTabRow
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.WindowScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import app.cleanmeter.core.common.hardwaremonitor.cpuReadings
 import app.cleanmeter.core.common.hardwaremonitor.gpuReadings
 import app.cleanmeter.core.common.hardwaremonitor.networkReadings
 import app.cleanmeter.core.designsystem.LocalColorScheme
+import app.cleanmeter.core.designsystem.LocalTypography
 import app.cleanmeter.target.desktop.ui.AppTheme
 import app.cleanmeter.target.desktop.ui.components.SettingsTab
 import app.cleanmeter.target.desktop.ui.components.TopBar
@@ -45,7 +57,8 @@ fun WindowScope.Settings(
     viewModel: SettingsViewModel = viewModel(),
     onCloseRequest: () -> Unit,
     onMinimizeRequest: () -> Unit,
-    getOverlayPosition: () -> IntOffset
+    getOverlayPosition: () -> IntOffset,
+    onExitRequest: () -> Unit,
 ) = AppTheme(isDarkTheme) {
     val settingsState by viewModel.state.collectAsState(SettingsState())
     val updaterState by AutoUpdater.state.collectAsState()
@@ -66,22 +79,94 @@ fun WindowScope.Settings(
         var selectedTabIndex by remember { mutableStateOf(0) }
 
         Box(modifier = Modifier.fillMaxSize()) {
-            Column(modifier = Modifier.fillMaxSize().padding(24.dp)) {
-                TabRow(selectedTabIndex) {
-                    selectedTabIndex = it
+            if (!settingsState.adminConsent) {
+                AdminConsent(
+                    isDarkTheme = isDarkTheme,
+                    onDeny = onExitRequest,
+                    onAllow = {
+                        viewModel.onEvent(SettingsEvent.ConsentGiven)
+                    }
+                )
+            } else {
+                Column(modifier = Modifier.fillMaxSize().padding(24.dp)) {
+                    TabRow(selectedTabIndex) {
+                        selectedTabIndex = it
+                    }
+
+                    TabContent(
+                        selectedTabIndex = selectedTabIndex,
+                        settingsState = settingsState,
+                        viewModel = viewModel,
+                        getOverlayPosition = getOverlayPosition,
+                    )
                 }
 
-                TabContent(
-                    selectedTabIndex = selectedTabIndex,
-                    settingsState = settingsState,
-                    viewModel = viewModel,
-                    getOverlayPosition = getOverlayPosition,
-                )
+                if (updaterState !is UpdateState.NotAvailable) {
+                    UpdateToast()
+                }
             }
+        }
+    }
+}
 
-            if (updaterState !is UpdateState.NotAvailable) {
-                UpdateToast()
-            }
+@Composable
+private fun BoxScope.AdminConsent(
+    isDarkTheme: Boolean,
+    onDeny: () -> Unit,
+    onAllow: () -> Unit
+) {
+    Column(
+        modifier = Modifier.fillMaxSize().padding(48.dp).align(Alignment.Center),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(24.dp, Alignment.CenterVertically),
+    ) {
+        Box(
+            modifier = Modifier
+                .width(400.dp)
+                .background(LocalColorScheme.current.background.surfaceRaised, RoundedCornerShape(12.dp))
+                .padding(top = 24.dp)
+            ,
+            contentAlignment = Alignment.Center
+        ) {
+            Image(
+                painter = painterResource("icons/onboarding_${if (isDarkTheme) "dark" else "light"}.png"),
+                contentDescription = null
+            )
+        }
+
+        Text(
+            text = "Administrative Privileges",
+            style = LocalTypography.current.titleXXL,
+            color = LocalColorScheme.current.text.heading,
+        )
+
+        Text(
+            text = "Thank you for choosing CleanMeter!\n\n" +
+                    "To function properly, CleanMeter requires administrative permissions and access to your local network. This is necessary for our processes to communicate with each other using sockets.\n\n" +
+                    "If you’re okay with this, please grant the permissions below.",
+            textAlign = TextAlign.Center,
+            style = LocalTypography.current.labelLMedium.copy(
+                lineHeight = 20.sp,
+            ),
+            color = LocalColorScheme.current.text.paragraph1,
+        )
+
+        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            FilledButton(
+                label = "Close app",
+                containerColor = LocalColorScheme.current.background.surfaceRaised,
+                textStyle = LocalTypography.current.titleMMedium,
+                contentPadding = PaddingValues(horizontal = 32.dp, vertical = 16.dp),
+                onClick = onDeny
+            )
+            FilledButton(
+                label = "Allow",
+                containerColor = LocalColorScheme.current.background.brand,
+                textColor = LocalColorScheme.current.text.inverse,
+                textStyle = LocalTypography.current.titleMMedium,
+                contentPadding = PaddingValues(horizontal = 32.dp, vertical = 16.dp),
+                onClick = onAllow
+            )
         }
     }
 }

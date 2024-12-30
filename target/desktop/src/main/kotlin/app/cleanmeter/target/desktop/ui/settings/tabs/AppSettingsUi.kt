@@ -1,5 +1,6 @@
 package app.cleanmeter.target.desktop.ui.settings.tabs
 
+import ClearButton
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.TooltipArea
@@ -48,6 +49,9 @@ fun AppSettingsUi(
         ) {
             startWithWindowsCheckbox()
             startMinimizedCheckbox()
+            ClearButton(label = "Clear app preferences", textColor = LocalColorScheme.current.text.heading) {
+                PreferencesRepository.clear()
+            }
         }
     }
 

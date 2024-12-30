@@ -62,7 +62,7 @@ fun ApplicationScope.SettingsWindow(
                     if (it.width != 650.dp) {
                         size = it.copy(width = 650.dp)
                     }
-                    if (it.height < minimumHeight.dp || it.height > maximumWindowBounds.dp ) {
+                    if (it.height < minimumHeight.dp || it.height > maximumWindowBounds.dp) {
                         size = it.copy(height = minimumHeight.dp)
                     }
                     state.size = size
@@ -74,7 +74,8 @@ fun ApplicationScope.SettingsWindow(
             isDarkTheme = isDarkTheme,
             onCloseRequest = { isVisible = false },
             onMinimizeRequest = { state.isMinimized = true },
-            getOverlayPosition = getOverlayPosition
+            getOverlayPosition = getOverlayPosition,
+            onExitRequest = { exitApplication() }
         )
     }
 

@@ -3,33 +3,33 @@ package app.cleanmeter.target.desktop.ui.settings
 import androidx.compose.ui.unit.IntOffset
 import androidx.lifecycle.ViewModel
 import app.cleanmeter.core.common.hardwaremonitor.HardwareMonitorData
+import app.cleanmeter.core.common.reporting.ApplicationParams
 import app.cleanmeter.core.os.hardwaremonitor.HardwareMonitorReader
 import app.cleanmeter.core.os.hardwaremonitor.Packet
 import app.cleanmeter.core.os.hardwaremonitor.SocketClient
+import app.cleanmeter.core.os.win32.WindowsService
 import app.cleanmeter.target.desktop.KeyboardEvent
 import app.cleanmeter.target.desktop.KeyboardManager
 import app.cleanmeter.target.desktop.data.OverlaySettingsRepository
+import app.cleanmeter.target.desktop.data.PREFERENCE_PERMISSION_CONSENT
+import app.cleanmeter.target.desktop.data.PreferencesRepository
 import app.cleanmeter.target.desktop.model.OverlaySettings
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.distinctUntilChangedBy
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.File
-import java.io.Writer
 
 data class SettingsState(
     val overlaySettings: OverlaySettings? = null,
     val hardwareData: HardwareMonitorData? = null,
     val isRecording: Boolean = false,
+    val adminConsent: Boolean = false,
 )
 
 sealed class SettingsEvent {
@@ -46,6 +46,7 @@ sealed class SettingsEvent {
     data class DarkThemeToggle(val isEnabled: Boolean) : SettingsEvent()
     data class FpsApplicationSelect(val applicationName: String) : SettingsEvent()
     data class BoundarySet(val sensorType: SensorType, val boundaries: OverlaySettings.Sensor.GraphSensor.Boundaries) : SettingsEvent()
+    data object ConsentGiven : SettingsEvent()
 }
 
 class SettingsViewModel : ViewModel() {
@@ -61,6 +62,12 @@ class SettingsViewModel : ViewModel() {
         observeData()
         observeRecordingHotkey()
         observeRecordingState()
+
+        _state.update {
+            it.copy(
+                adminConsent = PreferencesRepository.getPreferenceBoolean(PREFERENCE_PERMISSION_CONSENT, false)
+            )
+        }
     }
 
     private fun observeOverlaySettings() {
@@ -103,12 +110,14 @@ class SettingsViewModel : ViewModel() {
                             dataHistory.add(state.hardwareData)
                             return@collectLatest
                         }
+
                         !state.isRecording && dataHistory.isNotEmpty() -> {
                             File("cleanmeter.recording.${System.currentTimeMillis()}.json").printWriter().use {
                                 it.append(Json.encodeToString(dataHistory))
                                 dataHistory.clear()
                             }
                         }
+
                         dataHistory.isNotEmpty() -> dataHistory.clear()
                         else -> Unit
                     }
@@ -131,7 +140,14 @@ class SettingsViewModel : ViewModel() {
             is SettingsEvent.DarkThemeToggle -> onDarkModeToggle(event.isEnabled, this)
             is SettingsEvent.FpsApplicationSelect -> onFpsApplicationSelect(event.applicationName, this)
             is SettingsEvent.BoundarySet -> onBoundarySet(event.sensorType, event.boundaries, this)
+            is SettingsEvent.ConsentGiven -> onConsentGiven()
         }
+    }
+
+    private fun onConsentGiven() {
+        PreferencesRepository.setPreferenceBoolean(PREFERENCE_PERMISSION_CONSENT, true)
+        _state.update { it.copy(adminConsent = true) }
+        WindowsService.tryElevateProcess(ApplicationParams.isAutostart)
     }
 
     private fun onBoundarySet(
