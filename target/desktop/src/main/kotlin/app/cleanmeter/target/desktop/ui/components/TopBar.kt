@@ -51,7 +51,7 @@ internal fun TopBar(
     ) {
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
             Image(
-                painter = painterResource("imgs/favicon.ico"),
+                painter = painterResource("imgs/logo.svg"),
                 contentDescription = "logo",
                 modifier = Modifier.size(25.dp),
             )

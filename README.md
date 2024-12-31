@@ -1,29 +1,33 @@
-# <img align="left" src="images/Logo.png" height=50> Clean Meter
+<a href="https://payloadcms.com"><img width="100%" src="https://github.com/user-attachments/assets/403720a9-8016-4fdc-b0a8-719bc25d63ee" alt="Payload headless CMS Admin panel built with React" /></a>
+<br />
+<br />
 
-> Did you like my work? Consider supporting me so I can keep putting hours in.
-> - [ko-fi](https://ko-fi.com/danil0v3s)
-> - [PayPal](https://www.paypal.com/donate/?hosted_button_id=W2GU6AHGQUND8)
+
+<p align="left">
+  <a href="https://github.com/Danil0v3s/CleanMeter/actions"><img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/Danil0v3s/CleanMeter/build.yml?style=flat-square"></a>
+  &nbsp;
+  <a href="https://discord.gg/phqwe89cvE"><img alt="Discord" src="https://img.shields.io/discord/1297574228698337405?label=Discord&color=7289da&style=flat-square" /></a>
+  &nbsp;
+  <a href="https://github.com/Danil0v3s/CleanMeter/graphs/contributors"><img alt="npm" src="https://img.shields.io/github/contributors-anon/Danil0v3s/CleanMeter?color=yellow&style=flat-square"/></a>
+  &nbsp;
+  <a href="https://github.com/Danil0v3s/CleanMeter/releases/latest"><img alt="GitHub Release" src="https://img.shields.io/github/v/release/Danil0v3s/CleanMeter"></a>
+</p>
+<hr/>
+<h4>
+<a target="_blank" href="https://ko-fi.com/danil0v3s" rel="dofollow"><strong>Donate via ko-fi</strong></a>&nbsp;·&nbsp;<a target="_blank" href="https://www.paypal.com/donate/?hosted_button_id=W2GU6AHGQUND8" rel="dofollow"><strong>Donate via PayPal</strong></a>&nbsp;·&nbsp;<a target="_blank" href="https://www.instagram.com/mars.designs" rel="dofollow"><strong>Follow our Designer</strong></a>
+</h4>
+<hr/>
 
 > [!IMPORTANT]  
-> We are preparing our first major release 1.0.0. It's already available in [beta1](https://github.com/Danil0v3s/CleanMeter/releases/tag/1.0.0.beta-1) and it makes our app completely standalone, without the need of HWiNFO or MSI Afterburner anymore. Try it out and let us know!
+> 🎉 <strong>We've released 1.0!</strong> Star this repo or keep an eye on it to follow along.
 
-> [!IMPORTANT]  
-> We released 0.0.4 which DROPPED the need of MSI Afterburner and rely entirely on HWInfo alone. We heard some of you dislike Afterburner so we opted to go the least friction route.
+CleanMeter is the first gamer oriented clean statistics tracker, no fuss no muss, dead simple setup and good looking visuals.
 
-## What is this?
+### Benefits over traditional performance trackers
+- This looks good
+- No fluorescent numbers with Arial 12
+- Doesn't mess with your power profile or fan setup
 
-A small desktop companion app to display sleek graphs overlays from HWInfo. Designs were made by [/u/Violetmars](https://www.reddit.com/user/Violetmars/)
-
-<img align="right" src="https://github.com/user-attachments/assets/5e797f42-bebc-4d8f-82c8-837fc4b58a07">
-<img align="center" src="https://github.com/user-attachments/assets/6c7bd91a-7e9a-4c38-a450-d6e2ce26bcd4">
-
-## Getting started
-1. If you have HWiNFO installed already, make sure that `Enable Shared Memory Support` is **enabled** at the settings.
-![image](images/qa_clean_meter.png)
-> [!IMPORTANT]  
-> If you chose to have HWiNFO installed, _**you**_ will have to manage the `Shared Memory Support` limitation of 12 hours. Every 12 hours of uptime you will need to re-enable the setting. It seems the timer resets if you shutdown your computer before 12h uptime.
-2. If you didn't have HWiNFO installed, there's no need to do any additional setup. (We manage a portable version of it ourselves)
-3. Download the latest release, run it
-
-## Current Limitations
+### Current Limitations
 - Doesn't work with exclusive fullscreen
+- Given our mission is to look _good_ and _clean_ at the same time, we might hold on to release new features because we need time to think how to accommodate our UI. We can't just enable every possible sensor, sorry.

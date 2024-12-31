@@ -15,14 +15,12 @@ import androidx.compose.ui.window.ApplicationScope
 import androidx.compose.ui.window.Tray
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.rememberWindowState
-import app.cleanmeter.target.desktop.data.PREFERENCE_START_MINIMIZED
-import app.cleanmeter.target.desktop.data.PreferencesRepository
+import app.cleanmeter.core.os.PREFERENCE_START_MINIMIZED
+import app.cleanmeter.core.os.PreferencesRepository
 import com.github.kwhat.jnativehook.GlobalScreen
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import java.awt.GraphicsEnvironment
-import java.awt.event.ComponentAdapter
-import java.awt.event.ComponentEvent
 import kotlin.math.min
 
 @Composable
@@ -34,11 +32,7 @@ fun ApplicationScope.SettingsWindow(
     val maximumWindowBounds = remember { GraphicsEnvironment.getLocalGraphicsEnvironment().maximumWindowBounds.height }
     val minimumHeight = remember { min(800, maximumWindowBounds) }
     var isVisible by remember {
-        mutableStateOf(
-            PreferencesRepository.getPreferenceBooleanNullable(
-                PREFERENCE_START_MINIMIZED
-            )?.not() ?: true
-        )
+        mutableStateOf(!PreferencesRepository.getPreferenceBoolean(PREFERENCE_START_MINIMIZED, false))
     }
     val icon = painterResource("imgs/logo.png")
     val state = rememberWindowState().apply {

@@ -26,8 +26,8 @@ import androidx.compose.ui.unit.dp
 import app.cleanmeter.core.designsystem.LocalColorScheme
 import app.cleanmeter.core.designsystem.LocalTypography
 import app.cleanmeter.core.os.win32.WinRegistry
-import app.cleanmeter.target.desktop.data.PREFERENCE_START_MINIMIZED
-import app.cleanmeter.target.desktop.data.PreferencesRepository
+import app.cleanmeter.core.os.PREFERENCE_START_MINIMIZED
+import app.cleanmeter.core.os.PreferencesRepository
 import app.cleanmeter.target.desktop.model.OverlaySettings
 import app.cleanmeter.target.desktop.ui.components.CheckboxWithLabel
 import app.cleanmeter.target.desktop.ui.components.StyleCard

@@ -5,8 +5,8 @@ import app.cleanmeter.core.common.reporting.ApplicationParams
 import app.cleanmeter.core.os.ProcessManager
 import app.cleanmeter.core.os.util.isDev
 import app.cleanmeter.core.os.win32.WindowsService
-import app.cleanmeter.target.desktop.data.PREFERENCE_PERMISSION_CONSENT
-import app.cleanmeter.target.desktop.data.PreferencesRepository
+import app.cleanmeter.core.os.PREFERENCE_PERMISSION_CONSENT
+import app.cleanmeter.core.os.PreferencesRepository
 
 fun main(vararg args: String) = singleInstance(args) {
     if (PreferencesRepository.getPreferenceBoolean(PREFERENCE_PERMISSION_CONSENT, false)) {

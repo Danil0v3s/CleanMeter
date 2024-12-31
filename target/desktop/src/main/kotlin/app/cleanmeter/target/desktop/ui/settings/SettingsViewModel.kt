@@ -3,7 +3,7 @@ package app.cleanmeter.target.desktop.ui.settings
 import androidx.compose.ui.unit.IntOffset
 import androidx.lifecycle.ViewModel
 import app.cleanmeter.core.common.hardwaremonitor.HardwareMonitorData
-import app.cleanmeter.core.common.reporting.ApplicationParams
+import app.cleanmeter.core.os.hardwaremonitor.HardwareMonitorProcessManager
 import app.cleanmeter.core.os.hardwaremonitor.HardwareMonitorReader
 import app.cleanmeter.core.os.hardwaremonitor.Packet
 import app.cleanmeter.core.os.hardwaremonitor.SocketClient
@@ -11,8 +11,8 @@ import app.cleanmeter.core.os.win32.WindowsService
 import app.cleanmeter.target.desktop.KeyboardEvent
 import app.cleanmeter.target.desktop.KeyboardManager
 import app.cleanmeter.target.desktop.data.OverlaySettingsRepository
-import app.cleanmeter.target.desktop.data.PREFERENCE_PERMISSION_CONSENT
-import app.cleanmeter.target.desktop.data.PreferencesRepository
+import app.cleanmeter.core.os.PREFERENCE_PERMISSION_CONSENT
+import app.cleanmeter.core.os.PreferencesRepository
 import app.cleanmeter.target.desktop.model.OverlaySettings
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -31,6 +31,7 @@ data class SettingsState(
     val hardwareData: HardwareMonitorData? = null,
     val isRecording: Boolean = false,
     val adminConsent: Boolean = false,
+    val isRuntimeAvailable: Boolean = false,
 )
 
 sealed class SettingsEvent {
@@ -65,11 +66,19 @@ class SettingsViewModel : ViewModel() {
         observeRecordingHotkey()
         observeRecordingState()
         sendInitialPollingRate()
+        checkForNetCoreRuntime()
 
         _state.update {
             it.copy(
                 adminConsent = PreferencesRepository.getPreferenceBoolean(PREFERENCE_PERMISSION_CONSENT, false)
             )
+        }
+    }
+
+    private fun checkForNetCoreRuntime() {
+        CoroutineScope(Dispatchers.IO).launch {
+            val isRuntimeAvailable = HardwareMonitorProcessManager.checkRuntime()
+            _state.update { it.copy(isRuntimeAvailable = isRuntimeAvailable) }
         }
     }
 
@@ -174,7 +183,7 @@ class SettingsViewModel : ViewModel() {
     private fun onConsentGiven() {
         PreferencesRepository.setPreferenceBoolean(PREFERENCE_PERMISSION_CONSENT, true)
         _state.update { it.copy(adminConsent = true) }
-        WindowsService.tryElevateProcess(ApplicationParams.isAutostart)
+        WindowsService.elevateProcess()
     }
 
     private fun onBoundarySet(

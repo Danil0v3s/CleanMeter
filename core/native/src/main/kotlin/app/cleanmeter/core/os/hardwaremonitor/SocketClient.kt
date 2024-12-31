@@ -1,5 +1,7 @@
 package app.cleanmeter.core.os.hardwaremonitor
 
+import app.cleanmeter.core.os.PREFERENCE_PERMISSION_CONSENT
+import app.cleanmeter.core.os.PreferencesRepository
 import app.cleanmeter.core.os.util.getByteBuffer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -55,7 +57,9 @@ object SocketClient {
     val packetFlow: Flow<Packet> = packetChannel.receiveAsFlow()
 
     init {
-        connect()
+        if (PreferencesRepository.getPreferenceBoolean(PREFERENCE_PERMISSION_CONSENT, false)) {
+            connect()
+        }
     }
 
     private fun connect() = CoroutineScope(Dispatchers.IO).launch {
