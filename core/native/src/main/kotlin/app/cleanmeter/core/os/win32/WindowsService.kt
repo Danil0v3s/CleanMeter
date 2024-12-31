@@ -78,10 +78,14 @@ class WindowsService {
         fun tryElevateProcess(isAutostart: Boolean) {
             if (isAutostart) return
             if (!isDev() && !WindowsService.isProcessElevated()) {
-                val currentDir = Path.of("").toAbsolutePath().toString()
-                Shell32Impl.INSTANCE.ShellExecuteW(null, "runas", "$currentDir\\cleanmeter.exe", "", "", 10)
-                exitProcess(0)
+                elevateProcess()
             }
+        }
+
+        fun elevateProcess() {
+            val currentDir = Path.of("").toAbsolutePath().toString()
+            Shell32Impl.INSTANCE.ShellExecuteW(null, "runas", "$currentDir\\cleanmeter.exe", "", "", 10)
+            exitProcess(0)
         }
     }
 }

@@ -5,6 +5,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.IOException
 import java.nio.file.Path
 import java.util.*
 
@@ -12,30 +13,43 @@ object HardwareMonitorProcessManager {
     private var process: Process? = null
 
     suspend fun checkRuntime(): Boolean {
-        val process = ProcessBuilder().apply {
-            command("cmd.exe", "/c", "dotnet", "--list-runtimes")
-        }.start()
+        return try {
+            val process = ProcessBuilder().apply {
+                command("cmd.exe", "/c", "dotnet", "--list-runtimes")
+            }.start()
 
-        val scannerIn = Scanner(process.inputStream)
-        val scannerErr = Scanner(process.errorStream)
+            val scannerIn = Scanner(process.inputStream)
+            val scannerErr = Scanner(process.errorStream)
 
-        val stdOutput = emptyList<String>().toMutableList()
-        val errOutput = emptyList<String>().toMutableList()
+            val stdOutput = emptyList<String>().toMutableList()
+            val errOutput = emptyList<String>().toMutableList()
 
-        CoroutineScope(Dispatchers.IO).launch {
-            while(scannerIn.hasNextLine()) {
-                stdOutput.add(scannerIn.nextLine())
+            CoroutineScope(Dispatchers.IO).launch {
+                try {
+                    while (scannerIn.hasNextLine()) {
+                        stdOutput.add(scannerIn.nextLine())
+                    }
+                } catch (e: Exception) {
+                    return@launch
+                }
+
             }
-        }
-        CoroutineScope(Dispatchers.IO).launch {
-            while(scannerErr.hasNextLine()) {
-                errOutput.add(scannerIn.nextLine())
+            CoroutineScope(Dispatchers.IO).launch {
+                try {
+                    while (scannerErr.hasNextLine()) {
+                        errOutput.add(scannerIn.nextLine())
+                    }
+                } catch (e: Exception) {
+                    return@launch
+                }
             }
-        }
 
-        return withContext(Dispatchers.IO) {
-            val exitCode = process.waitFor()
-            exitCode == 0 && errOutput.isEmpty()
+            return withContext(Dispatchers.IO) {
+                val exitCode = process.waitFor()
+                exitCode == 0 && errOutput.isEmpty()
+            }
+        } catch (ex: Exception) {
+            return false
         }
     }
 
@@ -55,12 +69,12 @@ object HardwareMonitorProcessManager {
         val scannerErr = Scanner(process!!.errorStream)
 
         CoroutineScope(Dispatchers.IO).launch {
-            while(scannerIn.hasNextLine()) {
+            while (scannerIn.hasNextLine()) {
                 System.out.println(scannerIn.nextLine())
             }
         }
         CoroutineScope(Dispatchers.IO).launch {
-            while(scannerErr.hasNextLine()) {
+            while (scannerErr.hasNextLine()) {
                 System.err.println(scannerErr.nextLine())
             }
         }
@@ -80,7 +94,8 @@ object HardwareMonitorProcessManager {
         val command = listOf(
             "cmd.exe",
             "/c",
-            "sc create svcleanmeter displayname= \"CleanMeter Service\" binPath= $file start= auto group= LocalServiceNoNetworkFirewall")
+            "sc create svcleanmeter displayname= \"CleanMeter Service\" binPath= $file start= auto group= LocalServiceNoNetworkFirewall"
+        )
         ProcessBuilder().apply {
             command(command)
         }.start()

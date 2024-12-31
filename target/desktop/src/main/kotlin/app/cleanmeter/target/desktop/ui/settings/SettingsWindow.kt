@@ -15,14 +15,12 @@ import androidx.compose.ui.window.ApplicationScope
 import androidx.compose.ui.window.Tray
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.rememberWindowState
-import app.cleanmeter.target.desktop.data.PREFERENCE_START_MINIMIZED
-import app.cleanmeter.target.desktop.data.PreferencesRepository
+import app.cleanmeter.core.os.PREFERENCE_START_MINIMIZED
+import app.cleanmeter.core.os.PreferencesRepository
 import com.github.kwhat.jnativehook.GlobalScreen
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import java.awt.GraphicsEnvironment
-import java.awt.event.ComponentAdapter
-import java.awt.event.ComponentEvent
 import kotlin.math.min
 
 @Composable

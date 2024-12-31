@@ -1,5 +1,7 @@
 package app.cleanmeter.target.desktop.data
 
+import app.cleanmeter.core.os.OVERLAY_SETTINGS_PREFERENCE_KEY
+import app.cleanmeter.core.os.PreferencesRepository
 import app.cleanmeter.target.desktop.model.OverlaySettings
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
