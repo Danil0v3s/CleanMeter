@@ -44,7 +44,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: cleanmeter
-        path: target\server\build\compose\binaries\main\app
+        path: target\desktop\build\compose\binaries\main\app
 
   dependency-submission:
 
