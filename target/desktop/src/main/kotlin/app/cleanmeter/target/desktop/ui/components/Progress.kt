@@ -38,7 +38,7 @@ fun Progress(
     val color = when {
         value in 0f..boundaries.low.div(100f) -> Green
         value in boundaries.low.div(100f)..boundaries.medium.div(100f) -> Yellow
-        value > boundaries.high.div(100f) -> Red
+        value > boundaries.medium.div(100f) -> Red
         else -> White
     }
 
@@ -87,43 +87,59 @@ fun Progress(
 @Preview
 @Composable
 private fun ProgressPreview() {
+    Column {
+        ProgressRow(OverlaySettings.ProgressType.Bar)
+        ProgressRow(OverlaySettings.ProgressType.Circular)
+    }
+}
+
+@Composable
+private fun ProgressRow(progressType :OverlaySettings.ProgressType) {
     Row(modifier = Modifier.background(Color.Black)) {
         Progress(
-            value = 0.5f,
-            label = "05",
-            progressType = OverlaySettings.ProgressType.Bar,
+            value = 0.12f,
+            label = "12",
+            progressType = progressType,
             unit = "C",
             boundaries = OverlaySettings.Sensor.GraphSensor.Boundaries()
         )
 
         Progress(
-            value = 0.6f,
-            label = "06",
-            progressType = OverlaySettings.ProgressType.Bar,
+            value = 0.53f,
+            label = "53",
+            progressType = progressType,
             unit = "C",
             boundaries = OverlaySettings.Sensor.GraphSensor.Boundaries()
         )
 
         Progress(
-            value = 0.7f,
-            label = "07",
-            progressType = OverlaySettings.ProgressType.Bar,
+            value = 0.67f,
+            label = "67",
+            progressType = progressType,
             unit = "C",
             boundaries = OverlaySettings.Sensor.GraphSensor.Boundaries()
         )
 
         Progress(
-            value = 0.8f,
-            label = "08",
-            progressType = OverlaySettings.ProgressType.Bar,
+            value = 0.72f,
+            label = "72",
+            progressType = progressType,
             unit = "C",
             boundaries = OverlaySettings.Sensor.GraphSensor.Boundaries()
         )
 
         Progress(
-            value = 0.9f,
-            label = "09",
-            progressType = OverlaySettings.ProgressType.Bar,
+            value = 0.86f,
+            label = "86",
+            progressType = progressType,
+            unit = "C",
+            boundaries = OverlaySettings.Sensor.GraphSensor.Boundaries()
+        )
+
+        Progress(
+            value = 0.99f,
+            label = "99",
+            progressType = progressType,
             unit = "C",
             boundaries = OverlaySettings.Sensor.GraphSensor.Boundaries()
         )
