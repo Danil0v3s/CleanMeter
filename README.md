@@ -1,6 +1,7 @@
-<a href="https://payloadcms.com"><img width="100%" src="https://l4wlsi8vxy8hre4v.public.blob.vercel-storage.com/github-banner-new-logo.jpg" alt="Payload headless CMS Admin panel built with React" /></a>
+<a href="https://payloadcms.com"><img width="100%" src="https://github.com/user-attachments/assets/403720a9-8016-4fdc-b0a8-719bc25d63ee" alt="Payload headless CMS Admin panel built with React" /></a>
 <br />
 <br />
+
 
 <p align="left">
   <a href="https://github.com/Danil0v3s/CleanMeter/actions"><img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/Danil0v3s/CleanMeter/build.yml?style=flat-square"></a>
