@@ -4,6 +4,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.lifecycle.ViewModel
 import app.cleanmeter.core.common.hardwaremonitor.HardwareMonitorData
 import app.cleanmeter.core.common.reporting.ApplicationParams
+import app.cleanmeter.core.os.hardwaremonitor.HardwareMonitorProcessManager
 import app.cleanmeter.core.os.hardwaremonitor.HardwareMonitorReader
 import app.cleanmeter.core.os.hardwaremonitor.Packet
 import app.cleanmeter.core.os.hardwaremonitor.SocketClient
@@ -31,6 +32,7 @@ data class SettingsState(
     val hardwareData: HardwareMonitorData? = null,
     val isRecording: Boolean = false,
     val adminConsent: Boolean = false,
+    val isRuntimeAvailable: Boolean = false,
 )
 
 sealed class SettingsEvent {
@@ -65,11 +67,19 @@ class SettingsViewModel : ViewModel() {
         observeRecordingHotkey()
         observeRecordingState()
         sendInitialPollingRate()
+        checkForNetCoreRuntime()
 
         _state.update {
             it.copy(
                 adminConsent = PreferencesRepository.getPreferenceBoolean(PREFERENCE_PERMISSION_CONSENT, false)
             )
+        }
+    }
+
+    private fun checkForNetCoreRuntime() {
+        CoroutineScope(Dispatchers.IO).launch {
+            val isRuntimeAvailable = HardwareMonitorProcessManager.checkRuntime()
+            _state.update { it.copy(isRuntimeAvailable = isRuntimeAvailable) }
         }
     }
 

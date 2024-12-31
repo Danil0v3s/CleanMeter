@@ -4,16 +4,39 @@ import app.cleanmeter.core.os.util.isDev
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.nio.file.Path
 import java.util.*
 
 object HardwareMonitorProcessManager {
     private var process: Process? = null
 
-    fun checkRuntime() {
-        ProcessBuilder().apply {
-            command("dotnet --list-runtimes")
+    suspend fun checkRuntime(): Boolean {
+        val process = ProcessBuilder().apply {
+            command("cmd.exe", "/c", "dotnet", "--list-runtimes")
         }.start()
+
+        val scannerIn = Scanner(process.inputStream)
+        val scannerErr = Scanner(process.errorStream)
+
+        val stdOutput = emptyList<String>().toMutableList()
+        val errOutput = emptyList<String>().toMutableList()
+
+        CoroutineScope(Dispatchers.IO).launch {
+            while(scannerIn.hasNextLine()) {
+                stdOutput.add(scannerIn.nextLine())
+            }
+        }
+        CoroutineScope(Dispatchers.IO).launch {
+            while(scannerErr.hasNextLine()) {
+                errOutput.add(scannerIn.nextLine())
+            }
+        }
+
+        return withContext(Dispatchers.IO) {
+            val exitCode = process.waitFor()
+            exitCode == 0 && errOutput.isEmpty()
+        }
     }
 
     fun start() {

@@ -166,14 +166,14 @@ private fun IconProgress(state: UpdateState) {
             is UpdateState.Available -> Icon(
                 painter = painterResource("icons/cloud_download.svg"),
                 contentDescription = null,
-                tint = LocalColorScheme.current.border.inverse,
+                tint = LocalColorScheme.current.icon.inverse,
                 modifier = Modifier.fillMaxSize().background(LocalColorScheme.current.background.brandSubtle, RoundedCornerShape(100)).padding(10.dp),
             )
 
             is UpdateState.Downloaded -> Icon(
                 painter = painterResource("icons/download_done.svg"),
                 contentDescription = null,
-                tint = LocalColorScheme.current.border.inverse,
+                tint = LocalColorScheme.current.icon.inverse,
                 modifier = Modifier.fillMaxSize().background(LocalColorScheme.current.background.brandSubtle, RoundedCornerShape(100)).padding(10.dp),
             )
 

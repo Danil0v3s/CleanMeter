@@ -34,11 +34,7 @@ fun ApplicationScope.SettingsWindow(
     val maximumWindowBounds = remember { GraphicsEnvironment.getLocalGraphicsEnvironment().maximumWindowBounds.height }
     val minimumHeight = remember { min(800, maximumWindowBounds) }
     var isVisible by remember {
-        mutableStateOf(
-            PreferencesRepository.getPreferenceBooleanNullable(
-                PREFERENCE_START_MINIMIZED
-            )?.not() ?: true
-        )
+        mutableStateOf(!PreferencesRepository.getPreferenceBoolean(PREFERENCE_START_MINIMIZED, false))
     }
     val icon = painterResource("imgs/logo.png")
     val state = rememberWindowState().apply {
