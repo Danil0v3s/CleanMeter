@@ -78,6 +78,8 @@ compose.desktop {
 
             packageName = "cleanmeter"
             packageVersion = projectVersion
+            
+            modules("jdk.accessibility")
 
             windows {
                 iconFile.set(project.file("src/main/resources/imgs/favicon.ico"))
