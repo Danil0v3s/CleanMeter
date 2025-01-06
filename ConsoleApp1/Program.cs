@@ -5,6 +5,15 @@ using System.Net.Sockets;
 
 await (new TestClass()).Main();
 
+enum Command : short
+{
+    Data,
+    RefreshPresentMonApps,
+    SelectPresentMonApp,
+    PresentMonApps,
+    SelectPollingRate
+}
+
 public class TestClass
 {
     byte[] buffer = new byte[500_000];
@@ -17,16 +26,14 @@ public class TestClass
 
         var socket = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
         await socket.ConnectAsync(localEndPoint);
-        
+        var buffer = new byte[500_000];
+
         while (true)
         {
             // Receive ack.
-            var buffer = new byte[500_000];
             var received = await socket.ReceiveAsync(buffer, SocketFlags.None);
-            Console.WriteLine($"Received {received} bytes");
-            // Sample output:
-            //     Socket client sent message: "Hi friends 👋!<|EOM|>"
-            //     Socket client received acknowledgment: "<|ACK|>"
+            var command = (Command) BitConverter.ToInt16(buffer, 0);
+            Console.WriteLine($"Received {command} {received} bytes");
         }
     }
 }
