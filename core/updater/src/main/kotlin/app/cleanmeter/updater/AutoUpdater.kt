@@ -146,7 +146,7 @@ object AutoUpdater {
     private suspend fun HttpClient.getPropertiesMap(): Map<String, String> {
         val response = get(propertiesUrl)
         val body = response.bodyAsText()
-        return body.split("\n").map { line -> line.split("=").let { it[0] to it[1] } }.toMap()
+        return body.split("\n").filter { it.isNotBlank() }.associate { line -> line.split("=").let { it[0] to it[1] } }
     }
 }
 
