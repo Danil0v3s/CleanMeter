@@ -10,19 +10,19 @@ public static class SharedMemoryConsts
     // Long lastPollTime = 8 bytes
     // Hardware Count = 4 bytes
     // Sensor Count = 4 bytes
-    
+
     // Hardware size = 260 bytes
     // |-- string name = 128 bytes
     // |-- string identifier = 128 bytes
     // |-- HardwareType type = 4 bytes
-    
+
     // Sensor size = 392 bytes
     // |-- string name = 128 bytes
     // |-- string identifier = 128 bytes
     // |-- string hardwareIdentifier = 128 bytes
     // |-- SensorType type = 4 bytes
     // |-- float value = 4 bytes
-    
+
     public const int IdentifierSize = 128;
     public const int NameSize = 128;
     public const int HardwareSize = 260;
@@ -35,7 +35,7 @@ public class SharedMemoryHardware
     public required string Name { get; set; }
     public required string Identifier { get; set; }
     public required HardwareType HardwareType { get; set; }
-    
+
     public bool ShouldSerializeHardware()
     {
         return false;

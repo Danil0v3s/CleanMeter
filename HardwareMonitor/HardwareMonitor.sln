@@ -2,6 +2,10 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HardwareMonitor", "HardwareMonitor\HardwareMonitor.csproj", "{FE819E03-339E-44E6-B7A3-1C6D997126D0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HardwareMonitorTester", "HardwareMonitorTester\HardwareMonitorTester.csproj", "{574A6483-C331-496D-9F25-1350914859C8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Updater", "Updater\Updater.csproj", "{A5991FC1-069F-43D7-8E8D-158D1EE8DE02}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +16,13 @@ Global
 		{FE819E03-339E-44E6-B7A3-1C6D997126D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FE819E03-339E-44E6-B7A3-1C6D997126D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FE819E03-339E-44E6-B7A3-1C6D997126D0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{574A6483-C331-496D-9F25-1350914859C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{574A6483-C331-496D-9F25-1350914859C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{574A6483-C331-496D-9F25-1350914859C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{574A6483-C331-496D-9F25-1350914859C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A5991FC1-069F-43D7-8E8D-158D1EE8DE02}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5991FC1-069F-43D7-8E8D-158D1EE8DE02}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5991FC1-069F-43D7-8E8D-158D1EE8DE02}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5991FC1-069F-43D7-8E8D-158D1EE8DE02}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

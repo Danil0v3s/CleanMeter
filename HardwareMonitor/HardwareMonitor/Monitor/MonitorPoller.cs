@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿#pragma warning disable CS8601 // Possible null
+
+using System.Text;
 using HardwareMonitor.PresentMon;
 using HardwareMonitor.SharedMemory;
 using HardwareMonitor.Sockets;
@@ -28,7 +30,7 @@ public class MonitorPoller(
 
     private SocketHost _socketHost = new(logger);
     private readonly PresentMonPoller _presentMonPoller = new(logger);
-    
+
     private short _pollingRate = 500;
     private const short MinimalPollingRate = 50;
 
@@ -39,10 +41,10 @@ public class MonitorPoller(
         _computer.Open();
         _computer.Accept(new UpdateVisitor());
         _presentMonPoller.Start(stoppingToken);
-        _presentMonPoller.onUpdateApps += SendPresentMonAppsToClients;
+        _presentMonPoller.OnUpdateApps += SendPresentMonAppsToClients;
         _socketHost.StartServer();
-        _socketHost.onClientData += OnClientData;
-        _socketHost.onClientConnected += OnClientConnected;
+        _socketHost.OnClientData += OnClientData;
+        _socketHost.OnClientConnected += OnClientConnected;
 
         var sharedMemoryData = QueryHardwareData();
 
@@ -121,7 +123,7 @@ public class MonitorPoller(
 
     private void OnClientData(byte[] data)
     {
-        var cmd = (MonitorPacketCommand) BitConverter.ToInt16(data, 0);
+        var cmd = (MonitorPacketCommand)BitConverter.ToInt16(data, 0);
         logger.LogInformation("Received command from client: {Command}", cmd);
         switch (cmd)
         {
@@ -134,7 +136,7 @@ public class MonitorPoller(
             case MonitorPacketCommand.SelectPollingRate:
                 SelectPollingRate(data);
                 break;
-            
+
             // server -> client cases 
             case MonitorPacketCommand.Data:
             case MonitorPacketCommand.PresentMonApps:
@@ -164,7 +166,7 @@ public class MonitorPoller(
     {
         using var memoryStream = new MemoryStream();
         using var writer = new BinaryWriter(memoryStream);
-        
+
         writer.Write((short)MonitorPacketCommand.PresentMonApps);
         //logger.LogInformation("Sending presentmon apps to clients {Count}", _presentMonPoller.CurrentApps.Count);
         writer.Write((short)_presentMonPoller.CurrentApps.Count);
@@ -172,7 +174,7 @@ public class MonitorPoller(
         {
             writer.Write(GetBytes(app, SharedMemoryConsts.NameSize));
         }
-        
+
         if (_socketHost.HasConnections())
         {
             _socketHost.SendToAll(memoryStream.ToArray());
@@ -227,7 +229,7 @@ public class MonitorPoller(
         _computer.Close();
         _presentMonPoller.Stop();
         _socketHost.Close();
-        _socketHost.onClientData -= OnClientData;
+        _socketHost.OnClientData -= OnClientData;
     }
 
     private static SharedMemoryHardware MapHardware(IHardware hardware) => new()

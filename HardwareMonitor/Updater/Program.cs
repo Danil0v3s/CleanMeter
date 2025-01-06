@@ -59,6 +59,7 @@ class Updater
         {
             ChangeService("start");
         }
+
         var processStartInfo = new ProcessStartInfo
         {
             CreateNoWindow = true,

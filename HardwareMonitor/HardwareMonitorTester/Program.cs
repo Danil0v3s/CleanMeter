@@ -2,17 +2,9 @@
 
 using System.Net;
 using System.Net.Sockets;
+using HardwareMonitor.Monitor;
 
 await (new TestClass()).Main();
-
-enum Command : short
-{
-    Data,
-    RefreshPresentMonApps,
-    SelectPresentMonApp,
-    PresentMonApps,
-    SelectPollingRate
-}
 
 public class TestClass
 {
@@ -32,7 +24,7 @@ public class TestClass
         {
             // Receive ack.
             var received = await socket.ReceiveAsync(buffer, SocketFlags.None);
-            var command = (Command) BitConverter.ToInt16(buffer, 0);
+            var command = (MonitorPacketCommand)BitConverter.ToInt16(buffer, 0);
             Console.WriteLine($"Received {command} {received} bytes");
         }
     }

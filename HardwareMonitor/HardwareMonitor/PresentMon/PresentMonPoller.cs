@@ -3,25 +3,28 @@ using System.Globalization;
 using LibreHardwareMonitor.Hardware;
 using Microsoft.Extensions.Logging;
 
+// ReSharper disable FieldCanBeMadeReadOnly.Local
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
+
 namespace HardwareMonitor.PresentMon;
 
 public class PresentMonPoller(ILogger logger)
 {
     private const string NO_SELECTED_APP = "NONE";
-    
+
     private IHardware _hardware = new PresentMonHardware();
     public PresentMonSensor Displayed { get; private set; }
     public PresentMonSensor Presented { get; private set; }
     public PresentMonSensor Frametime { get; private set; }
     public HashSet<string> CurrentApps { get; private set; }
 
-    public Action onUpdateApps;
+    public Action OnUpdateApps;
 
     private Process _process;
     private CultureInfo _cultureInfo = (CultureInfo)CultureInfo.CurrentCulture.Clone();
 
     private string _currentSelectedApp = NO_SELECTED_APP;
-    
+
     public async void Start(CancellationToken stoppingToken)
     {
         _cultureInfo.NumberFormat.NumberDecimalSeparator = ".";
@@ -30,7 +33,7 @@ public class PresentMonPoller(ILogger logger)
         Presented = new PresentMonSensor(_hardware, "presented", 1, "Presented Frames");
         Frametime = new PresentMonSensor(_hardware, "frametime", 2, "Frametime");
         CurrentApps = [];
-        
+
         using var reader = new StreamReader(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "presentmon",
             "ignored-processes.txt"));
         var text = (await reader.ReadToEndAsync())
@@ -46,10 +49,11 @@ public class PresentMonPoller(ILogger logger)
             RedirectStandardError = true,
             UseShellExecute = false,
             FileName = "presentmon\\presentmon.exe",
-            Arguments = $"--stop_existing_session --no_console_stats --output_stdout --session_name HardwareMonitor {filteredApps}",
+            Arguments =
+                $"--stop_existing_session --no_console_stats --output_stdout --session_name HardwareMonitor {filteredApps}",
         };
         logger.LogInformation("Starting PresentMon process with {Arguments}", processStartInfo.Arguments);
-        
+
         _process = new Process();
         _process.StartInfo = processStartInfo;
         _process.OutputDataReceived += (sender, args) => ParseData(args.Data);
@@ -59,8 +63,8 @@ public class PresentMonPoller(ILogger logger)
         _process.BeginOutputReadLine();
         _process.BeginErrorReadLine();
 
-        ClearCurrentAppsAsync(stoppingToken);
-        await _process.WaitForExitAsync();
+        _ = ClearCurrentAppsAsync(stoppingToken);
+        await _process.WaitForExitAsync(stoppingToken);
     }
 
     public void Stop()
@@ -80,7 +84,7 @@ public class PresentMonPoller(ILogger logger)
             {
                 return;
             }
-            
+
             if (float.TryParse(parts[9], NumberStyles.Any, _cultureInfo, out var frametime))
             {
                 Frametime.Value = frametime;
@@ -100,10 +104,12 @@ public class PresentMonPoller(ILogger logger)
 
     public void SetSelectedApp(string appName)
     {
-        if (appName == "Auto") {
+        if (appName == "Auto")
+        {
             _currentSelectedApp = NO_SELECTED_APP;
             return;
         }
+
         _currentSelectedApp = appName;
     }
 
@@ -116,10 +122,11 @@ public class PresentMonPoller(ILogger logger)
             RedirectStandardError = true,
             UseShellExecute = false,
             FileName = "presentmon\\presentmon.exe",
-            Arguments = $"--terminate_existing_session --no_console_stats --output_stdout --session_name HardwareMonitor",
+            Arguments =
+                $"--terminate_existing_session --no_console_stats --output_stdout --session_name HardwareMonitor",
         };
         logger.LogInformation("Starting PresentMon process with {Arguments}", processStartInfo.Arguments);
-        
+
         var process = new Process();
         process.StartInfo = processStartInfo;
         process.Start();
@@ -130,8 +137,8 @@ public class PresentMonPoller(ILogger logger)
     {
         if (cancellationToken.IsCancellationRequested) return;
         await Task.Delay(10_000, cancellationToken);
-        onUpdateApps?.Invoke();
+        OnUpdateApps?.Invoke();
         CurrentApps.Clear();
-        ClearCurrentAppsAsync(cancellationToken);
+        _ = ClearCurrentAppsAsync(cancellationToken);
     }
 }

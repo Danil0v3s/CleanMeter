@@ -1,4 +1,7 @@
-﻿using LibreHardwareMonitor.Hardware;
+﻿#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
+#pragma warning disable CS0067 // Never used
+#pragma warning disable CS8625 // cannot convert null literal to non-nullable reference type
+using LibreHardwareMonitor.Hardware;
 
 namespace HardwareMonitor.PresentMon;
 
@@ -6,7 +9,6 @@ public class PresentMonHardware : IHardware
 {
     public void Accept(IVisitor visitor)
     {
-        
     }
 
     public void Traverse(IVisitor visitor)

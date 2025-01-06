@@ -2,18 +2,21 @@
 using System.Net.Sockets;
 using Microsoft.Extensions.Logging;
 
+// ReSharper disable FieldCanBeMadeReadOnly.Local
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
+
 namespace HardwareMonitor.Sockets;
 
 public class SocketHost(ILogger logger)
 {
     private Socket _listener;
-    private List<Socket> _clients = new();
+    private List<Socket> _clients = [];
     private byte[] _receiveBuffer = new byte[2048];
 
-    public Action<byte[]> onClientData;
-    public Action onClientConnected;
+    public Action<byte[]> OnClientData;
+    public Action OnClientConnected;
 
-    public async void StartServer()
+    public void StartServer()
     {
         IPEndPoint localEndPoint = new IPEndPoint(IPAddress.Any, 31337);
         logger.LogInformation("Listening for connections on {LocalEndPoint}", localEndPoint);
@@ -29,28 +32,38 @@ public class SocketHost(ILogger logger)
     {
         var server = (Socket)asyncResult.AsyncState!;
         var client = server.EndAccept(asyncResult);
+        logger.LogInformation("Accepted connection from {RemoteEndPoint}", client.RemoteEndPoint);
         client.BeginReceive(_receiveBuffer, 0, _receiveBuffer.Length, SocketFlags.None, OnDataReceived, client);
 
         _clients.Add(client);
         server.BeginAccept(OnConnection, server);
-        onClientConnected?.Invoke();
+        OnClientConnected?.Invoke();
     }
 
     private void OnDataReceived(IAsyncResult asyncResult)
     {
         var client = (Socket)asyncResult.AsyncState!;
-        int received = client.EndReceive(asyncResult);
-
-        if (received > 0)
+        try
         {
-            onClientData?.Invoke(_receiveBuffer);
+            int received = client.EndReceive(asyncResult);
+            if (received > 0)
+            {
+                OnClientData?.Invoke(_receiveBuffer);
+            }
+
+            client.BeginReceive(_receiveBuffer, 0, _receiveBuffer.Length, SocketFlags.None, OnDataReceived, client);
         }
-        
-        client.BeginReceive(_receiveBuffer, 0, _receiveBuffer.Length, SocketFlags.None, OnDataReceived, client);
+        catch
+        {
+            logger.LogInformation("Connection from {RemoteEndPoint} closed remotely", client.RemoteEndPoint);
+            _clients.Remove(client);
+            client.Dispose();
+        }
     }
 
     public void Close()
     {
+        logger.LogInformation("Closing all connections");
         _clients.ForEach(it => it.Close());
         _listener.Close();
     }
@@ -72,6 +85,7 @@ public class SocketHost(ILogger logger)
                 continue;
             }
         }
+
         listWithSize.Clear();
     }
 }
