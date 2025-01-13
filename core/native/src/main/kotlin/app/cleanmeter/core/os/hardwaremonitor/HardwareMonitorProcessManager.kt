@@ -1,6 +1,8 @@
 package app.cleanmeter.core.os.hardwaremonitor
 
 import app.cleanmeter.core.os.util.isDev
+import io.github.z4kn4fein.semver.Version
+import io.github.z4kn4fein.semver.toVersion
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -46,7 +48,16 @@ object HardwareMonitorProcessManager {
 
             return withContext(Dispatchers.IO) {
                 val exitCode = process.waitFor()
-                exitCode == 0 && errOutput.isEmpty()
+                if (exitCode != 0) {
+                    return@withContext false
+                }
+
+                val hasAtLeastEight = stdOutput
+                    .map { it.split(" ").take(2).let { Pair(it[0], it[1].toVersion()) } } // transform into pairs of [name, version]
+                    .filter { it.first.contains(".NETCore", true) }
+                    .any { it.second >= Version(8,0,0) }
+
+                hasAtLeastEight
             }
         } catch (ex: Exception) {
             return false
