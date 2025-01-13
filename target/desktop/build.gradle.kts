@@ -11,14 +11,8 @@ val copyUpdaterFiles = tasks.register<Copy>("copyUpdaterFiles") {
     into(layout.buildDirectory.dir("compose/binaries/main/app/cleanmeter/app/resources"))
 }
 
-val compileUpdater = tasks.register<Exec>("compileUpdater") {
-    finalizedBy(copyUpdaterFiles)
-    workingDir("../../Updater/")
-    commandLine("dotnet", "build", "--configuration", "Release")
-}
-
 val compileMonitor = tasks.register<Exec>("compileMonitor") {
-    finalizedBy(compileUpdater)
+    finalizedBy(copyUpdaterFiles)
     workingDir("../../HardwareMonitor/")
     commandLine("dotnet", "build", "--configuration", "Release")
 }
@@ -79,7 +73,7 @@ compose.desktop {
             packageName = "cleanmeter"
             packageVersion = projectVersion
             
-            modules("jdk.accessibility")
+            includeAllModules = true
 
             windows {
                 iconFile.set(project.file("src/main/resources/imgs/favicon.ico"))

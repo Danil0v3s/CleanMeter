@@ -54,9 +54,7 @@ internal fun NetworkStats(
                                 onValueChanged = {
                                     onCustomSensorSelect(option.type, it.Identifier)
                                 },
-                                selectedIndex = readings
-                                    .indexOfFirst { it.Identifier == option.optionReadingId }
-                                    .coerceAtLeast(0),
+                                selectedIndex = readings.indexOfFirst { it.Identifier == option.optionReadingId },
                                 label = "Sensor:",
                                 sensorName = option.name,
                             )

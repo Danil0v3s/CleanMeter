@@ -9,14 +9,18 @@ import app.cleanmeter.target.desktop.ui.components.Pill
 import app.cleanmeter.target.desktop.ui.components.Progress
 import java.util.*
 
+private fun OverlaySettings.Sensors.isAllValid(): Boolean {
+    return gpuTemp.isValid() || gpuUsage.isValid() || vramUsage.isValid()
+}
+
 @Composable
 internal fun GpuSection(overlaySettings: OverlaySettings, data: HardwareMonitorData) {
-    if (overlaySettings.sensors.gpuTemp.isEnabled || overlaySettings.sensors.gpuUsage.isEnabled || overlaySettings.sensors.vramUsage.isEnabled) {
+    if (overlaySettings.sensors.isAllValid()) {
         Pill(
             title = "GPU",
             isHorizontal = overlaySettings.isHorizontal,
         ) {
-            if (overlaySettings.sensors.gpuTemp.isEnabled) {
+            if (overlaySettings.sensors.gpuTemp.isValid()) {
                 CustomReadingProgress(
                     data = data,
                     customReadingId = overlaySettings.sensors.gpuTemp.customReadingId,
@@ -27,7 +31,7 @@ internal fun GpuSection(overlaySettings: OverlaySettings, data: HardwareMonitorD
                 )
             }
 
-            if (overlaySettings.sensors.gpuUsage.isEnabled) {
+            if (overlaySettings.sensors.gpuUsage.isValid()) {
                 CustomReadingProgress(
                     data = data,
                     customReadingId = overlaySettings.sensors.gpuUsage.customReadingId,
@@ -38,7 +42,7 @@ internal fun GpuSection(overlaySettings: OverlaySettings, data: HardwareMonitorD
                 )
             }
 
-            if (overlaySettings.sensors.vramUsage.isEnabled) {
+            if (overlaySettings.sensors.vramUsage.isValid() && overlaySettings.sensors.totalVramUsed.isValid()) {
                 val vramUsage = data.getReading(overlaySettings.sensors.vramUsage.customReadingId, "memory")?.Value?.coerceAtLeast(1f) ?: 1f
                 val totalVramUsed = data.getReading(overlaySettings.sensors.totalVramUsed.customReadingId)?.Value?.coerceAtLeast(1f) ?: 1f
 

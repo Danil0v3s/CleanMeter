@@ -47,6 +47,10 @@ data class OverlaySettings(
         abstract val isEnabled: Boolean
         abstract val customReadingId: String
 
+        fun isValid(): Boolean {
+            return isEnabled && customReadingId.isNotBlank()
+        }
+
         @Serializable
         @Immutable
         abstract class GraphSensor : Sensor() {

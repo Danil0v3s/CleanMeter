@@ -9,12 +9,12 @@ import java.util.*
 
 @Composable
 internal fun CpuSection(overlaySettings: OverlaySettings, data: HardwareMonitorData) {
-    if (overlaySettings.sensors.cpuTemp.isEnabled || overlaySettings.sensors.cpuUsage.isEnabled) {
+    if (overlaySettings.sensors.cpuTemp.isValid() || overlaySettings.sensors.cpuUsage.isValid()) {
         Pill(
             title = "CPU",
             isHorizontal = overlaySettings.isHorizontal,
         ) {
-            if (overlaySettings.sensors.cpuTemp.isEnabled) {
+            if (overlaySettings.sensors.cpuTemp.isValid()) {
                 CustomReadingProgress(
                     data = data,
                     customReadingId = overlaySettings.sensors.cpuTemp.customReadingId,
@@ -25,7 +25,7 @@ internal fun CpuSection(overlaySettings: OverlaySettings, data: HardwareMonitorD
                 )
             }
 
-            if (overlaySettings.sensors.cpuUsage.isEnabled) {
+            if (overlaySettings.sensors.cpuUsage.isValid()) {
                 CustomReadingProgress(
                     data = data,
                     customReadingId = overlaySettings.sensors.cpuUsage.customReadingId,

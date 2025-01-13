@@ -58,6 +58,8 @@ import app.cleanmeter.core.designsystem.LocalColorScheme
 import app.cleanmeter.core.designsystem.LocalTypography
 import app.cleanmeter.target.desktop.ui.overlay.conditional
 
+private val InvalidSensor =  HardwareMonitorData.Sensor("Choose a sensor", "\$invalid", "", HardwareMonitorData.SensorType.Unknown, 0f)
+
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SensorReadingDropdownMenu(
@@ -69,7 +71,7 @@ fun SensorReadingDropdownMenu(
     dropdownLabel: (HardwareMonitorData.Sensor) -> String = { "${it.Name} (${it.Value} - ${it.SensorType})" },
 ) {
     var expanded by remember { mutableStateOf(false) }
-    var selectedOption by remember { mutableStateOf(options[selectedIndex]) }
+    var selectedOption by remember { mutableStateOf(if (selectedIndex >= 0) options[selectedIndex] else InvalidSensor) }
 
     ExposedDropdownMenuBox(
         expanded = expanded,
@@ -140,7 +142,7 @@ private fun DropdownContent(
             }
 
             Text(
-                text = "${selectedOption.Name} - ${selectedOption.SensorType}",
+                text = if (selectedOption.Identifier != "\$invalid") "${selectedOption.Name} - ${selectedOption.SensorType}" else selectedOption.Name,
                 color = LocalColorScheme.current.text.heading,
                 style = LocalTypography.current.labelLMedium,
                 modifier = Modifier.align(Alignment.CenterVertically)

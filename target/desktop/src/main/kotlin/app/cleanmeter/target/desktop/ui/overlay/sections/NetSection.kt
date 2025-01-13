@@ -43,13 +43,13 @@ import app.cleanmeter.target.desktop.ui.overlay.conditional
 
 @Composable
 internal fun NetSection(overlaySettings: OverlaySettings, data: HardwareMonitorData) {
-    if (overlaySettings.sensors.upRate.isEnabled || overlaySettings.sensors.downRate.isEnabled) {
+    if (overlaySettings.sensors.upRate.isValid() || overlaySettings.sensors.downRate.isValid()) {
         if (overlaySettings.isHorizontal) {
             Pill(
                 title = "NET",
                 isHorizontal = true,
             ) {
-                if (overlaySettings.sensors.downRate.isEnabled) {
+                if (overlaySettings.sensors.downRate.isValid()) {
                     val dlRate = data.getReading(overlaySettings.sensors.downRate.customReadingId)?.Value ?: 0f
                     Row(verticalAlignment = Alignment.Bottom) {
                         Icon(
@@ -61,7 +61,7 @@ internal fun NetSection(overlaySettings: OverlaySettings, data: HardwareMonitorD
                     }
                 }
 
-                if (overlaySettings.sensors.upRate.isEnabled) {
+                if (overlaySettings.sensors.upRate.isValid()) {
                     val upRate = data.getReading(overlaySettings.sensors.upRate.customReadingId)?.Value ?: 0f
                     Row(verticalAlignment = Alignment.Bottom) {
                         Icon(
@@ -101,7 +101,7 @@ internal fun NetSection(overlaySettings: OverlaySettings, data: HardwareMonitorD
                     )
 
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                        if (overlaySettings.sensors.downRate.isEnabled) {
+                        if (overlaySettings.sensors.downRate.isValid()) {
                             val dlRate = data.getReading(overlaySettings.sensors.downRate.customReadingId)?.Value ?: 0f
                             Row(verticalAlignment = Alignment.Bottom) {
                                 Icon(
@@ -113,7 +113,7 @@ internal fun NetSection(overlaySettings: OverlaySettings, data: HardwareMonitorD
                             }
                         }
 
-                        if (overlaySettings.sensors.upRate.isEnabled) {
+                        if (overlaySettings.sensors.upRate.isValid()) {
                             val upRate = data.getReading(overlaySettings.sensors.upRate.customReadingId)?.Value ?: 0f
                             Row(verticalAlignment = Alignment.Bottom) {
                                 Icon(
