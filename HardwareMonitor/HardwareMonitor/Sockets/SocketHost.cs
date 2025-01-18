@@ -18,7 +18,7 @@ public class SocketHost(ILogger logger)
 
     public void StartServer()
     {
-        IPEndPoint localEndPoint = new IPEndPoint(IPAddress.Any, 31337);
+        var localEndPoint = new IPEndPoint(IPAddress.Loopback, 31337);
         logger.LogInformation("Listening for connections on {LocalEndPoint}", localEndPoint);
 
         _listener = new Socket(localEndPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);

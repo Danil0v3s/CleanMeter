@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import java.io.InputStream
+import java.net.InetAddress
 import java.net.InetSocketAddress
 import java.net.Socket
 import java.net.SocketException
@@ -69,7 +70,7 @@ object SocketClient {
                 try {
                     println("Trying to connect")
                     socket = Socket()
-                    socket.connect(InetSocketAddress("0.0.0.0", 31337))
+                    socket.connect(InetSocketAddress(InetAddress.getLoopbackAddress(), 31337))
                     println("Connected ${socket.isConnected}")
                 } catch (ex: Exception) {
                     println("Couldn't connect ${ex.message}")

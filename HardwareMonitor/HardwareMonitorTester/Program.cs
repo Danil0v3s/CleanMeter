@@ -12,9 +12,8 @@ public class TestClass
 
     public async Task Main()
     {
-        IPHostEntry host = Dns.GetHostEntry("127.0.0.1");
-        IPAddress ipAddress = host.AddressList[0];
-        IPEndPoint localEndPoint = new IPEndPoint(ipAddress, 31337);
+        var ipAddress = IPAddress.Loopback;
+        var localEndPoint = new IPEndPoint(ipAddress, 31337);
 
         var socket = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
         await socket.ConnectAsync(localEndPoint);
