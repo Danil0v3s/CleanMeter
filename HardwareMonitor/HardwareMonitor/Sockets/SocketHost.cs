@@ -80,8 +80,9 @@ public class SocketHost(ILogger logger)
             {
                 client.SendAsync(listWithSize.ToArray(), SocketFlags.None);
             }
-            catch (SocketException)
+            catch (SocketException e)
             {
+                logger.LogError("Error while sending data to all clients {Exception}", e);
                 continue;
             }
         }

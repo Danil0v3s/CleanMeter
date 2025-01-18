@@ -82,6 +82,13 @@ public class MonitorPoller(
 
         while (!stoppingToken.IsCancellationRequested)
         {
+            if (!_socketHost.HasConnections())
+            {
+                logger.LogInformation("No clients, skipping...");
+                await Task.Delay(1000, stoppingToken);
+                continue;
+            }
+            
             foreach (var hardware in sharedMemoryData.Hardwares)
             {
                 hardware.Hardware.Update();
@@ -178,6 +185,10 @@ public class MonitorPoller(
         if (_socketHost.HasConnections())
         {
             _socketHost.SendToAll(memoryStream.ToArray());
+        }
+        else
+        {
+            logger.LogInformation("No clients to send");
         }
     }
 
