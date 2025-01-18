@@ -5,8 +5,14 @@ val copyMonitorFiles = tasks.register<Copy>("copyMonitorFiles") {
     into(layout.buildDirectory.dir("compose/binaries/main/app/cleanmeter/app/resources"))
 }
 
-val copyUpdaterFiles = tasks.register<Copy>("copyUpdaterFiles") {
+val copyTesterFiles = tasks.register<Copy>("copyTesterFiles") {
     finalizedBy(copyMonitorFiles)
+    from("../../HardwareMonitor/HardwareMonitorTester/bin/Release/net8.0")
+    into(layout.buildDirectory.dir("compose/binaries/main/app/cleanmeter/app/resources"))
+}
+
+val copyUpdaterFiles = tasks.register<Copy>("copyUpdaterFiles") {
+    finalizedBy(copyTesterFiles)
     from("../../Updater/bin/Release/net8.0")
     into(layout.buildDirectory.dir("compose/binaries/main/app/cleanmeter/app/resources"))
 }
