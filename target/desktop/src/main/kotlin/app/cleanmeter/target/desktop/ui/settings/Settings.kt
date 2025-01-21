@@ -250,7 +250,7 @@ private fun TabContent(
         )
 
         2 -> AppSettingsUi(overlaySettings = settingsState.overlaySettings!!, onEvent = viewModel::onEvent)
-        3 -> HelpSettingsUi()
+        3 -> HelpSettingsUi(overlaySettings = settingsState.overlaySettings!!, onEvent = viewModel::onEvent, logSink = settingsState.logSink)
         else -> Unit
     }
 }

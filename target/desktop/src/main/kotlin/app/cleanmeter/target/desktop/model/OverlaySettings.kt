@@ -17,6 +17,7 @@ data class OverlaySettings(
     val isPositionLocked: Boolean = true,
     val opacity: Float = 1f,
     val pollingRate: Long = 500,
+    val isLoggingEnabled: Boolean = false,
     val sensors: Sensors = Sensors(),
 ) {
     @Serializable

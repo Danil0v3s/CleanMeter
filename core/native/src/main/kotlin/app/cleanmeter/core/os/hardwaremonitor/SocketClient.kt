@@ -74,9 +74,7 @@ object SocketClient {
                     println("Connected ${socket.isConnected}")
                 } catch (ex: Exception) {
                     println("Couldn't connect ${ex.message}")
-                    if (ex !is SocketException) {
-                        ex.printStackTrace()
-                    }
+                    ex.printStackTrace()
                 } finally {
                     delay(pollingRate)
                     continue
@@ -88,6 +86,7 @@ object SocketClient {
                 try {
                     val command = getCommand(inputStream)
                     val size = getSize(inputStream)
+                    println("Received $command with $size bytes")
                     when (command) {
                         Command.Data -> packetChannel.trySend(Packet.Data(inputStream.readNBytes(size)))
                         Command.PresentMonApps -> packetChannel.trySend(Packet.PresentMonApps(inputStream.readNBytes(size)))
@@ -96,6 +95,7 @@ object SocketClient {
                         Command.SelectPollingRate -> Unit
                     }
                 } catch (e: SocketException) {
+                    println("Error while listening for packets")
                     socket.close()
                     socket = Socket()
                     e.printStackTrace()

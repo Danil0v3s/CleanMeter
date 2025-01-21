@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.toUpperCase
 import app.cleanmeter.target.desktop.ui.components.SectionTitle
 import app.cleanmeter.target.desktop.ui.components.Toggle
 
@@ -21,7 +22,7 @@ fun ToggleSection(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        SectionTitle(title = title)
+        SectionTitle(title = title.uppercase())
         Toggle(
             checked = isEnabled,
             onCheckedChange = onSwitchToggle

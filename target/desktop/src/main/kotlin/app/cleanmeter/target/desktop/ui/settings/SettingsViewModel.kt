@@ -16,6 +16,8 @@ import app.cleanmeter.core.os.PreferencesRepository
 import app.cleanmeter.target.desktop.model.OverlaySettings
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -24,7 +26,15 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.PrintStream
+import java.util.Scanner
+
+sealed interface Log {
+    @JvmInline value class Info(val value: String)
+    @JvmInline value class Error(val value: String)
+}
 
 data class SettingsState(
     val overlaySettings: OverlaySettings? = null,
@@ -32,6 +42,7 @@ data class SettingsState(
     val isRecording: Boolean = false,
     val adminConsent: Boolean = false,
     val isRuntimeAvailable: Boolean = false,
+    val logSink: String = ""
 )
 
 sealed class SettingsEvent {
@@ -50,9 +61,14 @@ sealed class SettingsEvent {
     data class BoundarySet(val sensorType: SensorType, val boundaries: OverlaySettings.Sensor.GraphSensor.Boundaries) : SettingsEvent()
     data class PollingRateSelect(val pollingRate: Long) : SettingsEvent()
     data object ConsentGiven : SettingsEvent()
+    data object ToggleLoggingEnabled : SettingsEvent()
 }
 
 class SettingsViewModel : ViewModel() {
+
+    private val _oldOut = System.out;
+    private val _oldErr = System.err;
+    private var _loggerJob: Job? = null;
 
     private val _state: MutableStateFlow<SettingsState> = MutableStateFlow(SettingsState())
     val state: Flow<SettingsState>
@@ -67,11 +83,40 @@ class SettingsViewModel : ViewModel() {
         observeRecordingState()
         sendInitialPollingRate()
         checkForNetCoreRuntime()
+        checkIfLoggingIsEnabled()
 
         _state.update {
             it.copy(
                 adminConsent = PreferencesRepository.getPreferenceBoolean(PREFERENCE_PERMISSION_CONSENT, false)
             )
+        }
+    }
+
+    private fun checkIfLoggingIsEnabled() {
+        CoroutineScope(Dispatchers.IO).launch {
+            val settings = OverlaySettingsRepository.data.first()
+
+            if (settings.isLoggingEnabled) {
+                enableLogSink()
+            }
+        }
+    }
+
+    private fun enableLogSink() {
+        _loggerJob?.cancel()
+        _loggerJob = CoroutineScope(Dispatchers.IO).launch {
+            val byteArrayOutputStream = ByteArrayOutputStream()
+            val printStream = PrintStream(byteArrayOutputStream)
+            System.setOut(printStream)
+            System.setErr(printStream)
+
+            while (true) {
+                val output = byteArrayOutputStream.toString()
+                if (output.isNotEmpty()) {
+                    _state.update { it.copy(logSink = output) }
+                }
+                delay(500)
+            }
         }
     }
 
@@ -166,7 +211,25 @@ class SettingsViewModel : ViewModel() {
             is SettingsEvent.BoundarySet -> onBoundarySet(event.sensorType, event.boundaries, this)
             is SettingsEvent.ConsentGiven -> onConsentGiven()
             is SettingsEvent.PollingRateSelect -> onPollingRateSelect(event.pollingRate, this)
+            is SettingsEvent.ToggleLoggingEnabled -> onToggleLoggingEnabled(this)
         }
+    }
+
+    private fun onToggleLoggingEnabled(settingsState: SettingsState) {
+        if (settingsState.overlaySettings == null) return
+        val newSettings = settingsState.overlaySettings.copy(
+            isLoggingEnabled = !settingsState.overlaySettings.isLoggingEnabled
+        )
+
+        if (newSettings.isLoggingEnabled) {
+            enableLogSink()
+        } else {
+            _loggerJob?.cancel()
+            System.setOut(_oldOut)
+            System.setErr(_oldErr)
+        }
+
+        OverlaySettingsRepository.setOverlaySettings(newSettings)
     }
 
     private fun onPollingRateSelect(pollingRate: Long, settingsState: SettingsState) {

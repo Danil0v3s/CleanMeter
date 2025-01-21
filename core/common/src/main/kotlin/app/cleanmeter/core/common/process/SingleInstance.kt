@@ -5,10 +5,7 @@ import app.cleanmeter.core.common.reporting.setDefaultUncaughtExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.io.FileOutputStream
-import java.io.PrintStream
 import java.net.ServerSocket
-import java.util.*
 import kotlin.system.exitProcess
 
 fun singleInstance(args: Array<out String>, block: () -> Unit) {
@@ -19,13 +16,6 @@ fun singleInstance(args: Array<out String>, block: () -> Unit) {
     ApplicationParams.parse(args)
 
     setDefaultUncaughtExceptionHandler()
-
-    if (ApplicationParams.isVerbose) {
-        val startTime = Date().time
-        val printStream = PrintStream(FileOutputStream("out.$startTime.txt", true))
-        System.setOut(printStream)
-        System.setErr(printStream)
-    }
 
     block()
 }

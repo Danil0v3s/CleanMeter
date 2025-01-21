@@ -2,19 +2,24 @@ package app.cleanmeter.target.desktop.ui.settings.tabs
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
@@ -38,11 +43,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.cleanmeter.core.designsystem.LocalColorScheme
 import app.cleanmeter.core.designsystem.LocalTypography
+import app.cleanmeter.target.desktop.model.OverlaySettings
 import app.cleanmeter.target.desktop.ui.components.HotKeySymbol
 import app.cleanmeter.target.desktop.ui.components.section.CollapsibleSection
+import app.cleanmeter.target.desktop.ui.components.section.ToggleSection
+import app.cleanmeter.target.desktop.ui.settings.SettingsEvent
 
 @Composable
-internal fun HelpSettingsUi() {
+internal fun HelpSettingsUi(
+    logSink: String,
+    overlaySettings: OverlaySettings,
+    onEvent: (SettingsEvent) -> Unit
+) {
     Column(
         modifier = Modifier.padding(bottom = 8.dp, top = 20.dp).verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -114,6 +126,24 @@ internal fun HelpSettingsUi() {
         CollapsibleSection(title = "HOTKEYS") {
             Hotkey(label = "Toggle the overlay", "F10")
             Hotkey(label = "Toggle data recording", "F11")
+        }
+
+        ToggleSection(
+            title = "Application Logs",
+            isEnabled = overlaySettings.isLoggingEnabled,
+            onSwitchToggle = { onEvent(SettingsEvent.ToggleLoggingEnabled) }
+        ) {
+            SelectionContainer {
+                Text(
+                    text = logSink,
+                    style = LocalTypography.current.labelM,
+                    color = LocalColorScheme.current.text.heading,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(LocalColorScheme.current.background.surfaceSunkenSubtle)
+                        .padding(8.dp)
+                )
+            }
         }
     }
 }
