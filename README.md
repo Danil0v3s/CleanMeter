@@ -1,4 +1,4 @@
-<a href="https://payloadcms.com"><img width="100%" src="https://github.com/user-attachments/assets/dd41db59-e6d0-4eb8-aff0-c79590401de3" alt="Payload headless CMS Admin panel built with React" /></a>
+<a href="https://cleanmeter.app"><img width="100%" src="https://github.com/user-attachments/assets/dd41db59-e6d0-4eb8-aff0-c79590401de3" alt="Payload headless CMS Admin panel built with React" /></a>
 <br />
 <br />
 
