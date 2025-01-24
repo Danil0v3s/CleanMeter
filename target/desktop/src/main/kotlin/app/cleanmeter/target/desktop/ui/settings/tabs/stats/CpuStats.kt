@@ -34,7 +34,7 @@ internal fun CpuStats(
         body = { options ->
             Column(modifier = Modifier, verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 options.forEach { option ->
-                    val readings = getCpuSensorReadings().filter { it.SensorType == option.dataType }
+                    val readings = getCpuSensorReadings().filter { it.SensorType == option.dataType }.takeIf { it.isNotEmpty() } ?: getCpuSensorReadings()
 
                     Column(horizontalAlignment = Alignment.Start, modifier = Modifier.fillMaxWidth()) {
                         CheckboxWithLabel(

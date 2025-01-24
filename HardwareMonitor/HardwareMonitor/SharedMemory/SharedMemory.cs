@@ -44,7 +44,7 @@ public class SharedMemoryHardware
 
 public class SharedMemorySensor
 {
-    public required ISensor Sensor;
+    public required ISensor HardwareSensor;
     public required string Name { get; set; }
     public required string Identifier { get; set; }
     public required string HardwareIdentifier { get; set; }

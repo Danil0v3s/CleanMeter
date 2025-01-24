@@ -86,7 +86,6 @@ object SocketClient {
                 try {
                     val command = getCommand(inputStream)
                     val size = getSize(inputStream)
-                    println("Received $command with $size bytes")
                     when (command) {
                         Command.Data -> packetChannel.trySend(Packet.Data(inputStream.readNBytes(size)))
                         Command.PresentMonApps -> packetChannel.trySend(Packet.PresentMonApps(inputStream.readNBytes(size)))

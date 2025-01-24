@@ -35,7 +35,7 @@ internal fun NetworkStats(
         body = { options ->
             Column(modifier = Modifier, verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 options.forEach { option ->
-                    val readings = getNetworkSensorReadings().sortedBy { it.HardwareIdentifier }.filter { it.SensorType == option.dataType }
+                    val readings = getNetworkSensorReadings().sortedBy { it.HardwareIdentifier }.filter { it.SensorType == option.dataType }.takeIf { it.isNotEmpty() } ?: getNetworkSensorReadings()
 
                     Column(horizontalAlignment = Alignment.Start, modifier = Modifier.fillMaxWidth()) {
                         CheckboxWithLabel(

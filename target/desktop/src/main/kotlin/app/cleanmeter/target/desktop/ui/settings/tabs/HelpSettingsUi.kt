@@ -1,5 +1,6 @@
 package app.cleanmeter.target.desktop.ui.settings.tabs
 
+import FilledButton
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.Orientation
@@ -48,6 +49,7 @@ import app.cleanmeter.target.desktop.ui.components.HotKeySymbol
 import app.cleanmeter.target.desktop.ui.components.section.CollapsibleSection
 import app.cleanmeter.target.desktop.ui.components.section.ToggleSection
 import app.cleanmeter.target.desktop.ui.settings.SettingsEvent
+import java.io.File
 
 @Composable
 internal fun HelpSettingsUi(
@@ -133,6 +135,10 @@ internal fun HelpSettingsUi(
             isEnabled = overlaySettings.isLoggingEnabled,
             onSwitchToggle = { onEvent(SettingsEvent.ToggleLoggingEnabled) }
         ) {
+            FilledButton(label = "Save logs to text") {
+                File("cleanmeter.${System.currentTimeMillis()}.log").printWriter()
+                    .use { it.print(logSink) }
+            }
             SelectionContainer {
                 Text(
                     text = logSink,

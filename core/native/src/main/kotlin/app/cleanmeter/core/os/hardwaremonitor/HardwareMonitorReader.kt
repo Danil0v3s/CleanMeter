@@ -37,9 +37,12 @@ object HardwareMonitorReader {
                 is Packet.Data -> {
                     // read first 8 bytes to get the amount of hardware and sensors
                     val (hardware, sensor) = readHardwareAndSensorCount(packet.data)
-                    if (hardware + sensor <= 0) return@mapNotNull null
+                    if (hardware + sensor <= 0) {
+                        println("No hardware or sensor available, skipping")
+                        return@mapNotNull null
+                    }
 
-                    val buffer = getByteBuffer(packet.data, hardware * HARDWARE_SIZE + sensor * SENSOR_SIZE, HEADER_SIZE)
+                    val buffer = getByteBuffer(packet.data, packet.data.size - HEADER_SIZE, HEADER_SIZE)
                     val hardwares = readHardware(buffer, hardware)
                     val sensors = readSensor(buffer, sensor)
                     _currentData = _currentData.copy(Hardwares = hardwares, Sensors = sensors, LastPollTime = System.currentTimeMillis())
@@ -67,9 +70,11 @@ object HardwareMonitorReader {
     private fun readHardware(buffer: ByteBuffer, count: Int): List<HardwareMonitorData.Hardware> {
         return buildList {
             for (i in 0 until count) {
+                val nameSize = buffer.short.toInt()
+                val identifierSize = buffer.short.toInt()
                 val hardware = HardwareMonitorData.Hardware(
-                    Name = buffer.readString(NAME_SIZE),
-                    Identifier = buffer.readString(IDENTIFIER_SIZE),
+                    Name = buffer.readString(nameSize),
+                    Identifier = buffer.readString(identifierSize),
                     HardwareType = HardwareMonitorData.HardwareType.fromValue(buffer.int),
                 )
                 add(hardware)
@@ -80,10 +85,13 @@ object HardwareMonitorReader {
     private fun readSensor(buffer: ByteBuffer, count: Int): List<HardwareMonitorData.Sensor> {
         return buildList {
             for (i in 0 until count) {
+                val nameSize = buffer.short.toInt()
+                val identifierSize = buffer.short.toInt()
+                val hardwareIdentifier = buffer.short.toInt()
                 val sensor = HardwareMonitorData.Sensor(
-                    Name = buffer.readString(NAME_SIZE),
-                    Identifier = buffer.readString(IDENTIFIER_SIZE),
-                    HardwareIdentifier = buffer.readString(IDENTIFIER_SIZE),
+                    Name = buffer.readString(nameSize),
+                    Identifier = buffer.readString(identifierSize),
+                    HardwareIdentifier = buffer.readString(hardwareIdentifier),
                     SensorType = HardwareMonitorData.SensorType.fromValue(buffer.int),
                     Value = buffer.float,
                 )

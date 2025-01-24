@@ -1,6 +1,8 @@
 ﻿#pragma warning disable CS8601 // Possible null
 
+using System.Globalization;
 using System.Text;
+using System.Text.RegularExpressions;
 using HardwareMonitor.PresentMon;
 using HardwareMonitor.SharedMemory;
 using HardwareMonitor.Sockets;
@@ -54,31 +56,7 @@ public class MonitorPoller(
         using var writer = new BinaryWriter(memoryStream);
         var accumulator = 0;
 
-        writer.Write((short)MonitorPacketCommand.Data);
-        writer.Write(sharedMemoryData.Hardwares.Count);
-        writer.Write(sharedMemoryData.Sensors.Count);
-
-        foreach (var hardware in sharedMemoryData.Hardwares)
-        {
-            writer.Write(GetBytes(hardware.Name, SharedMemoryConsts.NameSize));
-            writer.Write(GetBytes(hardware.Identifier, SharedMemoryConsts.IdentifierSize));
-            writer.Write((int)hardware.HardwareType);
-        }
-
-        for (var index = 0; index < sharedMemoryData.Sensors.Count; index++)
-        {
-            var sensor = sharedMemoryData.Sensors[index];
-            sensor.Value = float.IsNaN(sensor.Sensor.Value ?? 0f) ? 0f : (sensor.Sensor.Value ?? 0f);
-
-            writer.Write(GetBytes(sensor.Name, SharedMemoryConsts.NameSize));
-            writer.Write(GetBytes(sensor.Identifier, SharedMemoryConsts.IdentifierSize));
-            writer.Write(GetBytes(sensor.HardwareIdentifier, SharedMemoryConsts.IdentifierSize));
-            writer.Write((int)sensor.SensorType);
-            writer.Write((float)sensor.Value);
-
-            // store the starting offset of the float we just wrote
-            sensorValueOffset[index] = (int)writer.BaseStream.Position - 4;
-        }
+        WriteDataToStream(writer, sharedMemoryData);
 
         while (!stoppingToken.IsCancellationRequested)
         {
@@ -88,21 +66,13 @@ public class MonitorPoller(
                 await Task.Delay(1000, stoppingToken);
                 continue;
             }
-            
+
             foreach (var hardware in sharedMemoryData.Hardwares)
             {
                 hardware.Hardware.Update();
             }
 
-            for (var index = 0; index < sharedMemoryData.Sensors.Count; index++)
-            {
-                var sensor = sharedMemoryData.Sensors[index];
-                sensor.Value = float.IsNaN(sensor.Sensor.Value ?? 0f) ? 0f : (sensor.Sensor.Value ?? 0f);
-
-                // seek to the sensor value offset
-                writer.Seek(sensorValueOffset[index], SeekOrigin.Begin);
-                writer.Write((float)sensor.Value);
-            }
+            WriteDataToStream(writer, sharedMemoryData);
 
             if (_socketHost.HasConnections())
             {
@@ -121,6 +91,39 @@ public class MonitorPoller(
 
         Stop();
         hostApplicationLifetime.StopApplication();
+    }
+
+    private static void WriteDataToStream(BinaryWriter writer, SharedMemoryData sharedMemoryData)
+    {
+        writer.Seek(0, SeekOrigin.Begin);
+        writer.Write((short)MonitorPacketCommand.Data);
+        writer.Write(sharedMemoryData.Hardwares.Count);
+        writer.Write(sharedMemoryData.Sensors.Count);
+
+        foreach (var hardware in sharedMemoryData.Hardwares)
+        {
+            writer.Write((short)hardware.Name.Length);
+            writer.Write((short)hardware.Identifier.Length);
+            writer.Write(Encoding.UTF8.GetBytes(hardware.Name));
+            writer.Write(Encoding.UTF8.GetBytes(hardware.Identifier));
+            writer.Write((int)hardware.HardwareType);
+        }
+
+        foreach (var sensor in sharedMemoryData.Sensors)
+        {
+            var value = sensor.HardwareSensor.Value ?? 0f;
+            var floatValue = (IsNaN(value) ? 0f : value).ToString(CultureInfo.InvariantCulture);
+            sensor.Value = float.Parse(floatValue, CultureInfo.InvariantCulture);
+
+            writer.Write((short)sensor.Name.Length);
+            writer.Write((short)sensor.Identifier.Length);
+            writer.Write((short)sensor.HardwareIdentifier.Length);
+            writer.Write(Encoding.UTF8.GetBytes(sensor.Name));
+            writer.Write(Encoding.UTF8.GetBytes(sensor.Identifier));
+            writer.Write(Encoding.UTF8.GetBytes(sensor.HardwareIdentifier));
+            writer.Write((int)sensor.SensorType);
+            writer.Write((float)sensor.Value);
+        }
     }
 
     private void OnClientConnected()
@@ -175,7 +178,6 @@ public class MonitorPoller(
         using var writer = new BinaryWriter(memoryStream);
 
         writer.Write((short)MonitorPacketCommand.PresentMonApps);
-        //logger.LogInformation("Sending presentmon apps to clients {Count}", _presentMonPoller.CurrentApps.Count);
         writer.Write((short)_presentMonPoller.CurrentApps.Count);
         foreach (var app in _presentMonPoller.CurrentApps)
         {
@@ -245,7 +247,7 @@ public class MonitorPoller(
 
     private static SharedMemoryHardware MapHardware(IHardware hardware) => new()
     {
-        Name = hardware.Name,
+        Name = RemoveSpecialCharacters(hardware.Name),
         Identifier = hardware.Identifier.ToString(),
         HardwareType = hardware.HardwareType,
         Hardware = hardware
@@ -253,16 +255,27 @@ public class MonitorPoller(
 
     private static SharedMemorySensor MapSensor(ISensor sensor) => new()
     {
-        Name = sensor.Name,
+        Name = RemoveSpecialCharacters(sensor.Name),
         Identifier = sensor.Identifier.ToString(),
         SensorType = sensor.SensorType,
         Value = float.IsNaN(sensor.Value ?? 0f) ? 0f : (sensor.Value ?? 0f),
         HardwareIdentifier = sensor.Hardware.Identifier.ToString(),
-        Sensor = sensor
+        HardwareSensor = sensor
     };
 
     private static byte[] GetBytes(string str, int length)
     {
         return Encoding.UTF8.GetBytes(str.Length > length ? str[..length] : str.PadRight(length, '\0'));
+    }
+    
+    public static string RemoveSpecialCharacters(string str)
+    {
+        return Regex.Replace(str, "[^a-zA-Z0-9_ .]+", "_", RegexOptions.Compiled);
+    }
+
+    public static unsafe bool IsNaN(float f)
+    {
+        int binary = *(int*)(&f);
+        return ((binary & 0x7F800000) == 0x7F800000) && ((binary & 0x007FFFFF) != 0);
     }
 }

@@ -39,7 +39,7 @@ internal fun GpuStats(
         body = { options ->
             Column(modifier = Modifier, verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 options.forEach { option ->
-                    val readings = getGpuSensorReadings().filter { it.SensorType == option.dataType }
+                    val readings = getGpuSensorReadings().filter { it.SensorType == option.dataType }.takeIf { it.isNotEmpty() } ?: getGpuSensorReadings()
 
                     Column(horizontalAlignment = Alignment.Start, modifier = Modifier.fillMaxWidth()) {
                         CheckboxWithLabel(
