@@ -21,7 +21,7 @@ fun singleInstance(args: Array<out String>, block: () -> Unit) {
 }
 
 private fun isAppAlreadyRunning() = try {
-    ServerSocket(1337).apply {
+    ServerSocket(42069).apply {
         Runtime.getRuntime().addShutdownHook(Thread {
             close()
         })
