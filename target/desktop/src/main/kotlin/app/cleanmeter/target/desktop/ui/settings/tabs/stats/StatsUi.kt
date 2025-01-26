@@ -139,6 +139,14 @@ private fun checkboxSectionOptions(overlaySettings: OverlaySettings) = listOf(
         dataType = HardwareMonitorData.SensorType.Load,
     ),
     CheckboxSectionOption(
+        isSelected = overlaySettings.sensors.cpuConsumption.isEnabled,
+        name = "CPU consumption",
+        type = SensorType.CpuConsumption,
+        optionReadingId = overlaySettings.sensors.cpuConsumption.customReadingId,
+        useCustomSensor = true,
+        dataType = HardwareMonitorData.SensorType.Power,
+    ),
+    CheckboxSectionOption(
         isSelected = overlaySettings.sensors.gpuTemp.isEnabled,
         name = "GPU temperature",
         type = SensorType.GpuTemp,
@@ -170,6 +178,14 @@ private fun checkboxSectionOptions(overlaySettings: OverlaySettings) = listOf(
         useCustomSensor = true,
         useCheckbox = false,
         dataType = HardwareMonitorData.SensorType.SmallData,
+    ),
+    CheckboxSectionOption(
+        isSelected = overlaySettings.sensors.gpuConsumption.isEnabled,
+        name = "GPU consumption",
+        type = SensorType.GpuConsumption,
+        optionReadingId = overlaySettings.sensors.gpuConsumption.customReadingId,
+        useCustomSensor = true,
+        dataType = HardwareMonitorData.SensorType.Power,
     ),
     CheckboxSectionOption(
         isSelected = overlaySettings.sensors.ramUsage.isEnabled,

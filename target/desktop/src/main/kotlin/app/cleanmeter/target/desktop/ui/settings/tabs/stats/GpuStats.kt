@@ -34,6 +34,7 @@ internal fun GpuStats(
             SensorType.GpuTemp,
             SensorType.VramUsage,
             SensorType.TotalVramUsed,
+            SensorType.GpuConsumption,
         ),
         onSwitchToggle = { onSectionSwitchToggle(SectionType.Gpu, it) },
         body = { options ->

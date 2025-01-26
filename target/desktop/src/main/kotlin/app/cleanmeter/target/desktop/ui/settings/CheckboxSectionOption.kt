@@ -13,7 +13,7 @@ data class CheckboxSectionOption(
 )
 
 enum class SensorType {
-    Framerate, Frametime, CpuTemp, CpuUsage, GpuTemp, GpuUsage, VramUsage, TotalVramUsed, RamUsage, UpRate, DownRate, NetGraph
+    Framerate, Frametime, CpuTemp, CpuUsage, CpuConsumption, GpuTemp, GpuUsage, VramUsage, TotalVramUsed, GpuConsumption, RamUsage, UpRate, DownRate, NetGraph
 }
 
 enum class SectionType {

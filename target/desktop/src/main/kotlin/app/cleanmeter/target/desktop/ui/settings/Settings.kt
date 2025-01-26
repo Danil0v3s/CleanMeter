@@ -227,6 +227,8 @@ private fun TabContent(
                     SensorType.UpRate -> settingsState.overlaySettings.sensors.upRate
                     SensorType.DownRate -> settingsState.overlaySettings.sensors.downRate
                     SensorType.NetGraph -> settingsState.overlaySettings.sensors.upRate // no sensor for netgraph
+                    SensorType.CpuConsumption -> settingsState.overlaySettings.sensors.cpuConsumption
+                    SensorType.GpuConsumption -> settingsState.overlaySettings.sensors.gpuConsumption
                 }
             }
         )
