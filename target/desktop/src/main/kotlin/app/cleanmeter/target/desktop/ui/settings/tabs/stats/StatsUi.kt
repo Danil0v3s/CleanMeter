@@ -32,7 +32,6 @@ fun StatsUi(
     onOptionsToggle: (CheckboxSectionOption) -> Unit,
     onSectionSwitchToggle: (SectionType, Boolean) -> Unit,
     onCustomSensorSelect: (SensorType, String) -> Unit,
-    onDisplaySelect: (Int) -> Unit,
     onFpsApplicationSelect: (String) -> Unit,
     getCpuSensorReadings: () -> List<HardwareMonitorData.Sensor>,
     getGpuSensorReadings: () -> List<HardwareMonitorData.Sensor>,
@@ -45,7 +44,6 @@ fun StatsUi(
     modifier = Modifier.padding(bottom = 8.dp, top = 20.dp).verticalScroll(rememberScrollState()),
     verticalArrangement = Arrangement.spacedBy(16.dp)
 ) {
-    val screenDevices = remember { GraphicsEnvironment.getLocalGraphicsEnvironment().screenDevices }
     val availableOptions = remember(overlaySettings) { checkboxSectionOptions(overlaySettings) }
 
     KeyboardShortcutInfoLabel()
@@ -91,13 +89,6 @@ fun StatsUi(
         onCustomSensorSelect = onCustomSensorSelect,
         getNetworkSensorReadings = getNetworkSensorReadings,
         getHardwareSensors = getHardwareSensors,
-    )
-
-    DropdownSection(
-        title = "MONITOR",
-        options = screenDevices.map { it.defaultConfiguration.device.iDstring },
-        selectedIndex = overlaySettings.selectedDisplayIndex,
-        onValueChanged = { onDisplaySelect(it) }
     )
 
     Text(

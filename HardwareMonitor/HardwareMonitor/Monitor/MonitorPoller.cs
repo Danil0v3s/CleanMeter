@@ -34,7 +34,7 @@ public class MonitorPoller(
     private readonly PresentMonPoller _presentMonPoller = new(logger);
 
     private short _pollingRate = 500;
-    private const short MinimalPollingRate = 50;
+    private const short MinimalPollingRate = 33;
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
