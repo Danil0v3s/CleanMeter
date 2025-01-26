@@ -32,8 +32,10 @@ import java.io.PrintStream
 import java.util.Scanner
 
 sealed interface Log {
-    @JvmInline value class Info(val value: String)
-    @JvmInline value class Error(val value: String)
+    @JvmInline
+    value class Info(val value: String)
+    @JvmInline
+    value class Error(val value: String)
 }
 
 data class SettingsState(
@@ -317,6 +319,8 @@ class SettingsViewModel : ViewModel() {
             SensorType.UpRate -> settingsState.overlaySettings
             SensorType.DownRate -> settingsState.overlaySettings
             SensorType.NetGraph -> settingsState.overlaySettings
+            SensorType.CpuConsumption -> settingsState.overlaySettings
+            SensorType.GpuConsumption -> settingsState.overlaySettings
         }
 
         OverlaySettingsRepository.setOverlaySettings(newSettings)
@@ -472,6 +476,22 @@ class SettingsViewModel : ViewModel() {
                 SensorType.DownRate -> overlaySettings?.copy(
                     sensors = overlaySettings.sensors.copy(
                         downRate = overlaySettings.sensors.downRate.copy(
+                            customReadingId = sensorId,
+                        )
+                    )
+                )
+
+                SensorType.CpuConsumption -> overlaySettings?.copy(
+                    sensors = overlaySettings.sensors.copy(
+                        cpuConsumption = overlaySettings.sensors.cpuConsumption.copy(
+                            customReadingId = sensorId,
+                        )
+                    )
+                )
+
+                SensorType.GpuConsumption -> overlaySettings?.copy(
+                    sensors = overlaySettings.sensors.copy(
+                        gpuConsumption = overlaySettings.sensors.gpuConsumption.copy(
                             customReadingId = sensorId,
                         )
                     )
@@ -637,6 +657,22 @@ class SettingsViewModel : ViewModel() {
                 SensorType.TotalVramUsed -> overlaySettings // cant disable total vram used
 
                 SensorType.NetGraph -> overlaySettings?.copy(netGraph = option.isSelected)
+
+                SensorType.CpuConsumption -> overlaySettings?.copy(
+                    sensors = overlaySettings.sensors.copy(
+                        cpuConsumption = overlaySettings.sensors.cpuConsumption.copy(
+                            isEnabled = option.isSelected
+                        )
+                    )
+                )
+
+                SensorType.GpuConsumption -> overlaySettings?.copy(
+                    sensors = overlaySettings.sensors.copy(
+                        gpuConsumption = overlaySettings.sensors.gpuConsumption.copy(
+                            isEnabled = option.isSelected
+                        )
+                    )
+                )
             }
 
             OverlaySettingsRepository.setOverlaySettings(newSettings)

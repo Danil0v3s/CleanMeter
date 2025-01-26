@@ -33,9 +33,11 @@ data class OverlaySettings(
         val frametime: Sensor.Frametime = Sensor.Frametime(),
         val cpuTemp: Sensor.CpuTemp = Sensor.CpuTemp(),
         val cpuUsage: Sensor.CpuUsage = Sensor.CpuUsage(),
+        val cpuConsumption: Sensor.CpuConsumption = Sensor.CpuConsumption(),
         val gpuTemp: Sensor.GpuTemp = Sensor.GpuTemp(),
         val gpuUsage: Sensor.GpuUsage = Sensor.GpuUsage(),
         val vramUsage: Sensor.VramUsage = Sensor.VramUsage(),
+        val gpuConsumption: Sensor.GpuConsumption = Sensor.GpuConsumption(),
         val totalVramUsed: Sensor.TotalVramUsed = Sensor.TotalVramUsed(),
         val ramUsage: Sensor.RamUsage = Sensor.RamUsage(),
         val upRate: Sensor.UpRate = Sensor.UpRate(),
@@ -98,6 +100,13 @@ data class OverlaySettings(
 
         @Serializable
         @Immutable
+        data class CpuConsumption(
+            override val isEnabled: Boolean = true,
+            override val customReadingId: String = "",
+        ) : Sensor()
+
+        @Serializable
+        @Immutable
         data class GpuTemp(
             override val isEnabled: Boolean = true,
             override val customReadingId: String = "",
@@ -123,6 +132,13 @@ data class OverlaySettings(
         @Serializable
         @Immutable
         data class TotalVramUsed(
+            override val isEnabled: Boolean = true,
+            override val customReadingId: String = "",
+        ) : Sensor()
+
+        @Serializable
+        @Immutable
+        data class GpuConsumption(
             override val isEnabled: Boolean = true,
             override val customReadingId: String = "",
         ) : Sensor()

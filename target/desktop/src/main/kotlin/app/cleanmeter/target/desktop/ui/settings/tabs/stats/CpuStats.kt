@@ -29,7 +29,7 @@ internal fun CpuStats(
 ) {
     CustomBodyCheckboxSection(
         title = "CPU",
-        options = availableOptions.filterOptions(SensorType.CpuUsage, SensorType.CpuTemp),
+        options = availableOptions.filterOptions(SensorType.CpuUsage, SensorType.CpuTemp, SensorType.CpuConsumption),
         onSwitchToggle = { onSectionSwitchToggle(SectionType.Cpu, it) },
         body = { options ->
             Column(modifier = Modifier, verticalArrangement = Arrangement.spacedBy(12.dp)) {

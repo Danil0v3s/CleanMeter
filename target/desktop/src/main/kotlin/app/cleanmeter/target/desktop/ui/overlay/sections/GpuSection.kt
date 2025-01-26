@@ -1,12 +1,20 @@
 package app.cleanmeter.target.desktop.ui.overlay.sections
 
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import app.cleanmeter.core.common.hardwaremonitor.HardwareMonitorData
 import app.cleanmeter.core.common.hardwaremonitor.getReading
 import app.cleanmeter.target.desktop.model.OverlaySettings
 import app.cleanmeter.target.desktop.ui.components.CustomReadingProgress
 import app.cleanmeter.target.desktop.ui.components.Pill
 import app.cleanmeter.target.desktop.ui.components.Progress
+import app.cleanmeter.target.desktop.ui.components.ProgressLabel
+import app.cleanmeter.target.desktop.ui.components.ProgressUnit
 import java.util.*
 
 private fun OverlaySettings.Sensors.isAllValid(): Boolean {
@@ -53,6 +61,15 @@ internal fun GpuSection(overlaySettings: OverlaySettings, data: HardwareMonitorD
                     progressType = overlaySettings.progressType,
                     boundaries = overlaySettings.sensors.vramUsage.boundaries,
                 )
+            }
+
+            if (overlaySettings.sensors.gpuConsumption.isValid()) {
+                val reading = data.getReading(overlaySettings.sensors.gpuConsumption.customReadingId)
+                val value = (reading?.Value ?: 1f).coerceAtLeast(1f).toInt()
+                Row(verticalAlignment = Alignment.Bottom, modifier = Modifier.widthIn(min = 35.dp).padding(bottom = 2.dp)) {
+                    ProgressLabel("$value")
+                    ProgressUnit("W")
+                }
             }
         }
     }

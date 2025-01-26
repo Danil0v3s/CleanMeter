@@ -24,7 +24,9 @@ fun Overlay(
             overlaySettings.sensors.cpuUsage,
             overlaySettings.sensors.gpuUsage,
             overlaySettings.sensors.vramUsage,
-            overlaySettings.sensors.ramUsage
+            overlaySettings.sensors.ramUsage,
+            overlaySettings.sensors.cpuConsumption,
+            overlaySettings.sensors.gpuConsumption
         ).all { !it.isEnabled }
     ) {
         return@AppTheme
