@@ -50,8 +50,6 @@ public class MonitorPoller(
 
         var sharedMemoryData = QueryHardwareData();
 
-        var sensorValueOffset = new Dictionary<int, int>();
-
         using var memoryStream = new MemoryStream();
         using var writer = new BinaryWriter(memoryStream);
         var accumulator = 0;
@@ -69,7 +67,15 @@ public class MonitorPoller(
 
             foreach (var hardware in sharedMemoryData.Hardwares)
             {
-                hardware.Hardware.Update();
+                try
+                {
+                    hardware.Update();
+                }
+                catch
+                {
+                    hardware.StopUpdates();
+                    logger.LogError("Stopping updates of {HardwareName} - {HardwareIdentifier}", hardware.Name, hardware.Identifier);
+                }
             }
 
             WriteDataToStream(writer, sharedMemoryData);
@@ -267,7 +273,7 @@ public class MonitorPoller(
     {
         return Encoding.UTF8.GetBytes(str.Length > length ? str[..length] : str.PadRight(length, '\0'));
     }
-    
+
     public static string RemoveSpecialCharacters(string str)
     {
         return Regex.Replace(str, "[^a-zA-Z0-9_ .]+", "_", RegexOptions.Compiled);
