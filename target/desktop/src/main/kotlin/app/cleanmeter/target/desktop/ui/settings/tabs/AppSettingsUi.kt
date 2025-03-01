@@ -104,7 +104,7 @@ fun AppSettingsUi(
     }
 
     Section(title = "RECORDING") {
-        val options = listOf("50", "100", "250", "300", "350", "400", "500")
+        val options = listOf("33", "50", "100", "250", "300", "350", "400", "500")
         DropdownMenu(
             label = "Polling Rate:",
             disclaimer = "The interval in milliseconds the app will update data. Be mindful, this can impact performance!",

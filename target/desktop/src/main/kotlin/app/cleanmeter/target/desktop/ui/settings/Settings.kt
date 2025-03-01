@@ -199,9 +199,6 @@ private fun TabContent(
             onCustomSensorSelect = { sensorType, sensorId ->
                 viewModel.onEvent(SettingsEvent.CustomSensorSelect(sensorType, sensorId))
             },
-            onDisplaySelect = {
-                viewModel.onEvent(SettingsEvent.DisplaySelect(it))
-            },
             onFpsApplicationSelect = {
                 viewModel.onEvent(SettingsEvent.FpsApplicationSelect(it))
             },
@@ -249,6 +246,9 @@ private fun TabContent(
             onOpacityChange = { viewModel.onEvent(SettingsEvent.OverlayOpacityChange(it)) },
             onGraphTypeChange = { viewModel.onEvent(SettingsEvent.OverlayGraphChange(it)) },
             onOverlayCustomPositionEnable = { viewModel.onEvent(SettingsEvent.OverlayCustomPositionEnable(it)) },
+            onDisplaySelect = {
+                viewModel.onEvent(SettingsEvent.DisplaySelect(it))
+            },
         )
 
         2 -> AppSettingsUi(overlaySettings = settingsState.overlaySettings!!, onEvent = viewModel::onEvent)
