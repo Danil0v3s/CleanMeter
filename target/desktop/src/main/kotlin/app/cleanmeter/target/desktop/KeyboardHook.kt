@@ -28,13 +28,14 @@ internal object KeyboardManager {
                     val isCtrl = nativeEvent.modifiers.and(NativeKeyEvent.CTRL_MASK) > 0
                     val isAlt = nativeEvent.modifiers.and(NativeKeyEvent.VC_ALT) > 0
 
-                    if (!isCtrl && !isAlt) return
+                    if (!isCtrl || !isAlt) return
 
                     val event = when (nativeEvent.keyCode) {
                         NativeKeyEvent.VC_F10 -> KeyboardEvent.ToggleOverlay
                         NativeKeyEvent.VC_F11 -> KeyboardEvent.ToggleRecording
                         else -> null
                     }
+                    event?.let { _channel.trySend(it) }
                     event?.let { _channel.trySend(it) }
                 }
             })
