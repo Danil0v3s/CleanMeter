@@ -1,5 +1,8 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Run Standalone" type="JetRunConfigurationType">
+    <envs>
+      <env name="env" value="dev" />
+    </envs>
     <option name="MAIN_CLASS_NAME" value="app.cleanmeter.target.desktop.DesktopMainKt" />
     <module name="CleanMeter.target.desktop.main" />
     <shortenClasspath name="NONE" />
