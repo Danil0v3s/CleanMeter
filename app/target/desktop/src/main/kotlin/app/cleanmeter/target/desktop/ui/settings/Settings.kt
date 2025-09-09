@@ -102,11 +102,8 @@ fun WindowScope.Settings(
                     )
                 }
 
-                if (updaterState !is UpdateState.NotAvailable && settingsState.isRuntimeAvailable) {
+                if (updaterState !is UpdateState.NotAvailable) {
                     UpdateToast()
-                }
-                if (!settingsState.isRuntimeAvailable) {
-                    RuntimeToast()
                 }
             }
         }

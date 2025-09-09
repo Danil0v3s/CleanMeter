@@ -1,0 +1,7 @@
+"<unknown>"
+steamwebhelper.exe
+WindowsTerminal.exe
+msedge.exe
+chrome.exe
+Discord.exe
+dwm.exe

@@ -14,60 +14,10 @@ import java.util.*
 actual object HardwareMonitorProcessManager {
     private var process: Process? = null
 
-    actual suspend fun checkRuntime(): Boolean {
-        return try {
-            val process = ProcessBuilder().apply {
-                command("cmd.exe", "/c", "dotnet", "--list-runtimes")
-            }.start()
-
-            val scannerIn = Scanner(process.inputStream)
-            val scannerErr = Scanner(process.errorStream)
-
-            val stdOutput = emptyList<String>().toMutableList()
-            val errOutput = emptyList<String>().toMutableList()
-
-            CoroutineScope(Dispatchers.IO).launch {
-                try {
-                    while (scannerIn.hasNextLine()) {
-                        stdOutput.add(scannerIn.nextLine())
-                    }
-                } catch (e: Exception) {
-                    return@launch
-                }
-
-            }
-            CoroutineScope(Dispatchers.IO).launch {
-                try {
-                    while (scannerErr.hasNextLine()) {
-                        errOutput.add(scannerIn.nextLine())
-                    }
-                } catch (e: Exception) {
-                    return@launch
-                }
-            }
-
-            return withContext(Dispatchers.IO) {
-                val exitCode = process.waitFor()
-                if (exitCode != 0) {
-                    return@withContext false
-                }
-
-                val hasAtLeastEight = stdOutput
-                    .map { it.split(" ").take(2).let { Pair(it[0], it[1].toVersion()) } } // transform into pairs of [name, version]
-                    .filter { it.first.contains(".NETCore", true) }
-                    .any { it.second >= Version(8,0,0) }
-
-                hasAtLeastEight
-            }
-        } catch (ex: Exception) {
-            return false
-        }
-    }
-
     actual fun start() {
         val currentDir = Path.of("").toAbsolutePath().toString()
         val file = if (isDev()) {
-            "$currentDir\\HardwareMonitor\\HardwareMonitor\\bin\\Release\\net8.0\\win-x64\\native\\HardwareMonitor.exe"
+            "$currentDir\\bin\\HardwareMonitor.exe"
         } else {
             "$currentDir\\app\\resources\\HardwareMonitor.exe"
         }

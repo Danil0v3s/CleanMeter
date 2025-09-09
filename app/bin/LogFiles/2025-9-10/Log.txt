@@ -1,0 +1,366 @@
+[2025-09-10 00:07:18.385] [Information] Starting monitor
+[2025-09-10 00:07:20.879] [Information] Starting named pipe server with name: "HardwareMonitor_31337"
+[2025-09-10 00:07:20.879] [Information] Starting PresentMon process with "--terminate_existing_session --no_console_stats --output_stdout --session_name HardwareMonitor"
+[2025-09-10 00:07:20.879] [Information] Waiting for client connection on pipe: "HardwareMonitor_31337"
+[2025-09-10 00:07:20.880] [Information] Application started. Press Ctrl+C to shut down.
+[2025-09-10 00:07:20.880] [Information] Hosting environment: "Production"
+[2025-09-10 00:07:20.880] [Information] Content root path: "D:\Projetos\Personal\CleanMeter\app"
+[2025-09-10 00:07:20.906] [Information] Starting PresentMon process with "--stop_existing_session --no_console_stats --output_stdout --session_name HardwareMonitor --exclude \"<unknown>\" --exclude steamwebhelper.exe --exclude WindowsTerminal.exe --exclude msedge.exe --exclude chrome.exe --exclude Discord.exe --exclude dwm.exe"
+[2025-09-10 00:07:20.928] [Error] warning: PresentMon requires elevated privilege in order to query processes that are
+[2025-09-10 00:07:20.928] [Error]          short-running or started on another account.  Without it, those processes will
+[2025-09-10 00:07:20.928] [Error]          be listed as '<unknown>' and they can't be targeted by --process_name nor trigger
+[2025-09-10 00:07:20.928] [Error]          --terminate_on_proc_exit.
+[2025-09-10 00:07:23.461] [Information] Client connected to pipe: "HardwareMonitor_31337"
+[2025-09-10 00:07:23.461] [Information] Waiting for client connection on pipe: "HardwareMonitor_31337"
+[2025-09-10 00:07:25.798] [Information] Client connected to pipe: "HardwareMonitor_31337"
+[2025-09-10 00:07:25.798] [Information] Waiting for client connection on pipe: "HardwareMonitor_31337"
+[2025-09-10 00:07:25.798] [Information] Received command from client: SelectPollingRate
+[2025-09-10 00:07:25.798] [Information] Selected polling rate of 500
+[2025-09-10 00:07:31.970] [Information] Removing client connection
+[2025-09-10 00:07:31.970] [Error] Error sending data to pipe client
+System.IO.IOException: Pipe is broken.
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw() + 0x20
+   at System.Threading.Tasks.Sources.ManualResetValueTaskSourceCore`1.ThrowForFailedGetResult() + 0x13
+   at System.Threading.Tasks.Sources.ManualResetValueTaskSourceCore`1.GetResult(Int16) + 0x2b
+   at System.IO.Pipes.PipeStream.PipeValueTaskSource.GetResult(Int16) + 0x21
+   at System.IO.Pipes.PipeStream.PipeValueTaskSource.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16) + 0xd
+   at System.Threading.Tasks.ValueTask.ValueTaskSourceAsTask.<>c.<.cctor>b__4_0(Object state) + 0x7c
+--- End of stack trace from previous location ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw() + 0x20
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task) + 0xb2
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task, ConfigureAwaitOptions) + 0x4b
+   at HardwareMonitor.Sockets.PipeHost.<>c__DisplayClass13_0.<<SendToAllAsync>b__0>d.MoveNext() + 0x110
+[2025-09-10 00:07:31.971] [Error] Error sending data to pipe client
+System.IO.IOException: Pipe is broken.
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw() + 0x20
+   at System.Threading.Tasks.Sources.ManualResetValueTaskSourceCore`1.ThrowForFailedGetResult() + 0x13
+   at System.Threading.Tasks.Sources.ManualResetValueTaskSourceCore`1.GetResult(Int16) + 0x2b
+   at System.IO.Pipes.PipeStream.PipeValueTaskSource.GetResult(Int16) + 0x21
+   at System.IO.Pipes.PipeStream.PipeValueTaskSource.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16) + 0xd
+   at System.Threading.Tasks.ValueTask.ValueTaskSourceAsTask.<>c.<.cctor>b__4_0(Object state) + 0x7c
+--- End of stack trace from previous location ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw() + 0x20
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task) + 0xb2
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task, ConfigureAwaitOptions) + 0x4b
+   at HardwareMonitor.Sockets.PipeHost.<>c__DisplayClass13_0.<<SendToAllAsync>b__0>d.MoveNext() + 0x110
+[2025-09-10 00:07:31.971] [Error] Error sending data to pipe client
+System.IO.IOException: Pipe is broken.
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw() + 0x20
+   at System.Threading.Tasks.Sources.ManualResetValueTaskSourceCore`1.ThrowForFailedGetResult() + 0x13
+   at System.Threading.Tasks.Sources.ManualResetValueTaskSourceCore`1.GetResult(Int16) + 0x2b
+   at System.IO.Pipes.PipeStream.PipeValueTaskSource.GetResult(Int16) + 0x21
+   at System.IO.Pipes.PipeStream.PipeValueTaskSource.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16) + 0xd
+   at System.Threading.Tasks.ValueTask.ValueTaskSourceAsTask.<>c.<.cctor>b__4_0(Object state) + 0x7c
+--- End of stack trace from previous location ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw() + 0x20
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task) + 0xb2
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task, ConfigureAwaitOptions) + 0x4b
+   at HardwareMonitor.Sockets.PipeHost.<>c__DisplayClass13_0.<<SendToAllAsync>b__0>d.MoveNext() + 0x110
+[2025-09-10 00:07:31.973] [Error] Error sending data to pipe client
+System.IO.IOException: Pipe is broken.
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw() + 0x20
+   at System.Threading.Tasks.Sources.ManualResetValueTaskSourceCore`1.ThrowForFailedGetResult() + 0x13
+   at System.Threading.Tasks.Sources.ManualResetValueTaskSourceCore`1.GetResult(Int16) + 0x2b
+   at System.IO.Pipes.PipeStream.PipeValueTaskSource.GetResult(Int16) + 0x21
+   at System.IO.Pipes.PipeStream.PipeValueTaskSource.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16) + 0xd
+   at System.Threading.Tasks.ValueTask.ValueTaskSourceAsTask.<>c.<.cctor>b__4_0(Object state) + 0x7c
+--- End of stack trace from previous location ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw() + 0x20
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task) + 0xb2
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task, ConfigureAwaitOptions) + 0x4b
+   at HardwareMonitor.Sockets.PipeHost.<>c__DisplayClass13_0.<<SendToAllAsync>b__0>d.MoveNext() + 0x110
+[2025-09-10 00:07:31.971] [Error] Error sending data to pipe client
+System.IO.IOException: Pipe is broken.
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw() + 0x20
+   at System.Threading.Tasks.Sources.ManualResetValueTaskSourceCore`1.ThrowForFailedGetResult() + 0x13
+   at System.Threading.Tasks.Sources.ManualResetValueTaskSourceCore`1.GetResult(Int16) + 0x2b
+   at System.IO.Pipes.PipeStream.PipeValueTaskSource.GetResult(Int16) + 0x21
+   at System.IO.Pipes.PipeStream.PipeValueTaskSource.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16) + 0xd
+   at System.Threading.Tasks.ValueTask.ValueTaskSourceAsTask.<>c.<.cctor>b__4_0(Object state) + 0x7c
+--- End of stack trace from previous location ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw() + 0x20
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task) + 0xb2
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task, ConfigureAwaitOptions) + 0x4b
+   at HardwareMonitor.Sockets.PipeHost.<>c__DisplayClass13_0.<<SendToAllAsync>b__0>d.MoveNext() + 0x110
+[2025-09-10 00:07:31.971] [Error] Error sending data to pipe client
+System.IO.IOException: Pipe is broken.
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw() + 0x20
+   at System.Threading.Tasks.Sources.ManualResetValueTaskSourceCore`1.ThrowForFailedGetResult() + 0x13
+   at System.Threading.Tasks.Sources.ManualResetValueTaskSourceCore`1.GetResult(Int16) + 0x2b
+   at System.IO.Pipes.PipeStream.PipeValueTaskSource.GetResult(Int16) + 0x21
+   at System.IO.Pipes.PipeStream.PipeValueTaskSource.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16) + 0xd
+   at System.Threading.Tasks.ValueTask.ValueTaskSourceAsTask.<>c.<.cctor>b__4_0(Object state) + 0x7c
+--- End of stack trace from previous location ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw() + 0x20
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task) + 0xb2
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task, ConfigureAwaitOptions) + 0x4b
+   at HardwareMonitor.Sockets.PipeHost.<>c__DisplayClass13_0.<<SendToAllAsync>b__0>d.MoveNext() + 0x110
+[2025-09-10 00:07:31.973] [Information] Removing client connection
+[2025-09-10 00:07:31.971] [Error] Error sending data to pipe client
+System.IO.IOException: Pipe is broken.
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw() + 0x20
+   at System.Threading.Tasks.Sources.ManualResetValueTaskSourceCore`1.ThrowForFailedGetResult() + 0x13
+   at System.Threading.Tasks.Sources.ManualResetValueTaskSourceCore`1.GetResult(Int16) + 0x2b
+   at System.IO.Pipes.PipeStream.PipeValueTaskSource.GetResult(Int16) + 0x21
+   at System.IO.Pipes.PipeStream.PipeValueTaskSource.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16) + 0xd
+   at System.Threading.Tasks.ValueTask.ValueTaskSourceAsTask.<>c.<.cctor>b__4_0(Object state) + 0x7c
+--- End of stack trace from previous location ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw() + 0x20
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task) + 0xb2
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task, ConfigureAwaitOptions) + 0x4b
+   at HardwareMonitor.Sockets.PipeHost.<>c__DisplayClass13_0.<<SendToAllAsync>b__0>d.MoveNext() + 0x110
+[2025-09-10 00:07:31.973] [Error] Error sending data to pipe client
+System.IO.IOException: Pipe is broken.
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw() + 0x20
+   at System.Threading.Tasks.Sources.ManualResetValueTaskSourceCore`1.ThrowForFailedGetResult() + 0x13
+   at System.Threading.Tasks.Sources.ManualResetValueTaskSourceCore`1.GetResult(Int16) + 0x2b
+   at System.IO.Pipes.PipeStream.PipeValueTaskSource.GetResult(Int16) + 0x21
+   at System.IO.Pipes.PipeStream.PipeValueTaskSource.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16) + 0xd
+   at System.Threading.Tasks.ValueTask.ValueTaskSourceAsTask.<>c.<.cctor>b__4_0(Object state) + 0x7c
+--- End of stack trace from previous location ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw() + 0x20
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task) + 0xb2
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task, ConfigureAwaitOptions) + 0x4b
+   at HardwareMonitor.Sockets.PipeHost.<>c__DisplayClass13_0.<<SendToAllAsync>b__0>d.MoveNext() + 0x110
+[2025-09-10 00:07:31.973] [Error] Error sending data to pipe client
+System.IO.IOException: Pipe is broken.
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw() + 0x20
+   at System.Threading.Tasks.Sources.ManualResetValueTaskSourceCore`1.ThrowForFailedGetResult() + 0x13
+   at System.Threading.Tasks.Sources.ManualResetValueTaskSourceCore`1.GetResult(Int16) + 0x2b
+   at System.IO.Pipes.PipeStream.PipeValueTaskSource.GetResult(Int16) + 0x21
+   at System.IO.Pipes.PipeStream.PipeValueTaskSource.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16) + 0xd
+   at System.Threading.Tasks.ValueTask.ValueTaskSourceAsTask.<>c.<.cctor>b__4_0(Object state) + 0x7c
+--- End of stack trace from previous location ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw() + 0x20
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task) + 0xb2
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task, ConfigureAwaitOptions) + 0x4b
+   at HardwareMonitor.Sockets.PipeHost.<>c__DisplayClass13_0.<<SendToAllAsync>b__0>d.MoveNext() + 0x110
+[2025-09-10 00:07:31.974] [Error] Error sending data to pipe client
+System.IO.IOException: Pipe is broken.
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw() + 0x20
+   at System.Threading.Tasks.Sources.ManualResetValueTaskSourceCore`1.ThrowForFailedGetResult() + 0x13
+   at System.Threading.Tasks.Sources.ManualResetValueTaskSourceCore`1.GetResult(Int16) + 0x2b
+   at System.IO.Pipes.PipeStream.PipeValueTaskSource.GetResult(Int16) + 0x21
+   at System.IO.Pipes.PipeStream.PipeValueTaskSource.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16) + 0xd
+   at System.Threading.Tasks.ValueTask.ValueTaskSourceAsTask.<>c.<.cctor>b__4_0(Object state) + 0x7c
+--- End of stack trace from previous location ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw() + 0x20
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task) + 0xb2
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task, ConfigureAwaitOptions) + 0x4b
+   at HardwareMonitor.Sockets.PipeHost.<>c__DisplayClass13_0.<<SendToAllAsync>b__0>d.MoveNext() + 0x110
+[2025-09-10 00:07:31.974] [Error] Error sending data to pipe client
+System.ObjectDisposedException: Cannot access a closed pipe.
+   at System.IO.Pipes.PipeStream.CheckWriteOperations() + 0xe1
+   at System.IO.Pipes.PipeStream.FlushAsync(CancellationToken) + 0x13
+--- End of stack trace from previous location ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw() + 0x20
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task) + 0xb2
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task, ConfigureAwaitOptions) + 0x4b
+   at HardwareMonitor.Sockets.PipeHost.<>c__DisplayClass13_0.<<SendToAllAsync>b__0>d.MoveNext() + 0x1d1
+[2025-09-10 00:07:31.974] [Error] Error sending data to pipe client
+System.IO.IOException: Pipe is broken.
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw() + 0x20
+   at System.Threading.Tasks.Sources.ManualResetValueTaskSourceCore`1.ThrowForFailedGetResult() + 0x13
+   at System.Threading.Tasks.Sources.ManualResetValueTaskSourceCore`1.GetResult(Int16) + 0x2b
+   at System.IO.Pipes.PipeStream.PipeValueTaskSource.GetResult(Int16) + 0x21
+   at System.IO.Pipes.PipeStream.PipeValueTaskSource.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16) + 0xd
+   at System.Threading.Tasks.ValueTask.ValueTaskSourceAsTask.<>c.<.cctor>b__4_0(Object state) + 0x7c
+--- End of stack trace from previous location ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw() + 0x20
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task) + 0xb2
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task, ConfigureAwaitOptions) + 0x4b
+   at HardwareMonitor.Sockets.PipeHost.<>c__DisplayClass13_0.<<SendToAllAsync>b__0>d.MoveNext() + 0x110
+[2025-09-10 00:08:20.806] [Information] Client connected to pipe: "HardwareMonitor_31337"
+[2025-09-10 00:08:20.806] [Information] Waiting for client connection on pipe: "HardwareMonitor_31337"
+[2025-09-10 00:08:22.789] [Information] Client connected to pipe: "HardwareMonitor_31337"
+[2025-09-10 00:08:22.789] [Information] Waiting for client connection on pipe: "HardwareMonitor_31337"
+[2025-09-10 00:08:22.789] [Information] Received command from client: SelectPollingRate
+[2025-09-10 00:08:22.789] [Information] Selected polling rate of 500
+[2025-09-10 00:08:22.899] [Error] [null]
+[2025-09-10 00:08:30.000] [Information] Removing client connection
+[2025-09-10 00:08:30.000] [Information] Removing client connection
+[2025-09-10 00:08:30.000] [Error] Error sending data to pipe client
+System.IO.IOException: Pipe is broken.
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw() + 0x20
+   at System.Threading.Tasks.Sources.ManualResetValueTaskSourceCore`1.ThrowForFailedGetResult() + 0x13
+   at System.Threading.Tasks.Sources.ManualResetValueTaskSourceCore`1.GetResult(Int16) + 0x2b
+   at System.IO.Pipes.PipeStream.PipeValueTaskSource.GetResult(Int16) + 0x21
+   at System.IO.Pipes.PipeStream.PipeValueTaskSource.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16) + 0xd
+   at System.Threading.Tasks.ValueTask.ValueTaskSourceAsTask.<>c.<.cctor>b__4_0(Object state) + 0x7c
+--- End of stack trace from previous location ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw() + 0x20
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task) + 0xb2
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task, ConfigureAwaitOptions) + 0x4b
+   at HardwareMonitor.Sockets.PipeHost.<>c__DisplayClass13_0.<<SendToAllAsync>b__0>d.MoveNext() + 0x110
+[2025-09-10 00:08:30.000] [Error] Error sending data to pipe client
+System.IO.IOException: Pipe is broken.
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw() + 0x20
+   at System.Threading.Tasks.Sources.ManualResetValueTaskSourceCore`1.ThrowForFailedGetResult() + 0x13
+   at System.Threading.Tasks.Sources.ManualResetValueTaskSourceCore`1.GetResult(Int16) + 0x2b
+   at System.IO.Pipes.PipeStream.PipeValueTaskSource.GetResult(Int16) + 0x21
+   at System.IO.Pipes.PipeStream.PipeValueTaskSource.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16) + 0xd
+   at System.Threading.Tasks.ValueTask.ValueTaskSourceAsTask.<>c.<.cctor>b__4_0(Object state) + 0x7c
+--- End of stack trace from previous location ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw() + 0x20
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task) + 0xb2
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task, ConfigureAwaitOptions) + 0x4b
+   at HardwareMonitor.Sockets.PipeHost.<>c__DisplayClass13_0.<<SendToAllAsync>b__0>d.MoveNext() + 0x110
+[2025-09-10 00:08:30.000] [Error] Error sending data to pipe client
+System.IO.IOException: Pipe is broken.
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw() + 0x20
+   at System.Threading.Tasks.Sources.ManualResetValueTaskSourceCore`1.ThrowForFailedGetResult() + 0x13
+   at System.Threading.Tasks.Sources.ManualResetValueTaskSourceCore`1.GetResult(Int16) + 0x2b
+   at System.IO.Pipes.PipeStream.PipeValueTaskSource.GetResult(Int16) + 0x21
+   at System.IO.Pipes.PipeStream.PipeValueTaskSource.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16) + 0xd
+   at System.Threading.Tasks.ValueTask.ValueTaskSourceAsTask.<>c.<.cctor>b__4_0(Object state) + 0x7c
+--- End of stack trace from previous location ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw() + 0x20
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task) + 0xb2
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task, ConfigureAwaitOptions) + 0x4b
+   at HardwareMonitor.Sockets.PipeHost.<>c__DisplayClass13_0.<<SendToAllAsync>b__0>d.MoveNext() + 0x110
+[2025-09-10 00:08:30.000] [Error] Error sending data to pipe client
+System.IO.IOException: Pipe is broken.
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw() + 0x20
+   at System.Threading.Tasks.Sources.ManualResetValueTaskSourceCore`1.ThrowForFailedGetResult() + 0x13
+   at System.Threading.Tasks.Sources.ManualResetValueTaskSourceCore`1.GetResult(Int16) + 0x2b
+   at System.IO.Pipes.PipeStream.PipeValueTaskSource.GetResult(Int16) + 0x21
+   at System.IO.Pipes.PipeStream.PipeValueTaskSource.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16) + 0xd
+   at System.Threading.Tasks.ValueTask.ValueTaskSourceAsTask.<>c.<.cctor>b__4_0(Object state) + 0x7c
+--- End of stack trace from previous location ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw() + 0x20
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task) + 0xb2
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task, ConfigureAwaitOptions) + 0x4b
+   at HardwareMonitor.Sockets.PipeHost.<>c__DisplayClass13_0.<<SendToAllAsync>b__0>d.MoveNext() + 0x110
+[2025-09-10 00:08:30.000] [Error] Error sending data to pipe client
+System.IO.IOException: Pipe is broken.
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw() + 0x20
+   at System.Threading.Tasks.Sources.ManualResetValueTaskSourceCore`1.ThrowForFailedGetResult() + 0x13
+   at System.Threading.Tasks.Sources.ManualResetValueTaskSourceCore`1.GetResult(Int16) + 0x2b
+   at System.IO.Pipes.PipeStream.PipeValueTaskSource.GetResult(Int16) + 0x21
+   at System.IO.Pipes.PipeStream.PipeValueTaskSource.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16) + 0xd
+   at System.Threading.Tasks.ValueTask.ValueTaskSourceAsTask.<>c.<.cctor>b__4_0(Object state) + 0x7c
+--- End of stack trace from previous location ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw() + 0x20
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task) + 0xb2
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task, ConfigureAwaitOptions) + 0x4b
+   at HardwareMonitor.Sockets.PipeHost.<>c__DisplayClass13_0.<<SendToAllAsync>b__0>d.MoveNext() + 0x110
+[2025-09-10 00:08:30.000] [Error] Error sending data to pipe client
+System.IO.IOException: Pipe is broken.
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw() + 0x20
+   at System.Threading.Tasks.Sources.ManualResetValueTaskSourceCore`1.ThrowForFailedGetResult() + 0x13
+   at System.Threading.Tasks.Sources.ManualResetValueTaskSourceCore`1.GetResult(Int16) + 0x2b
+   at System.IO.Pipes.PipeStream.PipeValueTaskSource.GetResult(Int16) + 0x21
+   at System.IO.Pipes.PipeStream.PipeValueTaskSource.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16) + 0xd
+   at System.Threading.Tasks.ValueTask.ValueTaskSourceAsTask.<>c.<.cctor>b__4_0(Object state) + 0x7c
+--- End of stack trace from previous location ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw() + 0x20
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task) + 0xb2
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task, ConfigureAwaitOptions) + 0x4b
+   at HardwareMonitor.Sockets.PipeHost.<>c__DisplayClass13_0.<<SendToAllAsync>b__0>d.MoveNext() + 0x110
+[2025-09-10 00:08:30.000] [Error] Error sending data to pipe client
+System.IO.IOException: Pipe is broken.
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw() + 0x20
+   at System.Threading.Tasks.Sources.ManualResetValueTaskSourceCore`1.ThrowForFailedGetResult() + 0x13
+   at System.Threading.Tasks.Sources.ManualResetValueTaskSourceCore`1.GetResult(Int16) + 0x2b
+   at System.IO.Pipes.PipeStream.PipeValueTaskSource.GetResult(Int16) + 0x21
+   at System.IO.Pipes.PipeStream.PipeValueTaskSource.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16) + 0xd
+   at System.Threading.Tasks.ValueTask.ValueTaskSourceAsTask.<>c.<.cctor>b__4_0(Object state) + 0x7c
+--- End of stack trace from previous location ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw() + 0x20
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task) + 0xb2
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task, ConfigureAwaitOptions) + 0x4b
+   at HardwareMonitor.Sockets.PipeHost.<>c__DisplayClass13_0.<<SendToAllAsync>b__0>d.MoveNext() + 0x110
+[2025-09-10 00:08:30.000] [Error] Error sending data to pipe client
+System.IO.IOException: Pipe is broken.
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw() + 0x20
+   at System.Threading.Tasks.Sources.ManualResetValueTaskSourceCore`1.ThrowForFailedGetResult() + 0x13
+   at System.Threading.Tasks.Sources.ManualResetValueTaskSourceCore`1.GetResult(Int16) + 0x2b
+   at System.IO.Pipes.PipeStream.PipeValueTaskSource.GetResult(Int16) + 0x21
+   at System.IO.Pipes.PipeStream.PipeValueTaskSource.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16) + 0xd
+   at System.Threading.Tasks.ValueTask.ValueTaskSourceAsTask.<>c.<.cctor>b__4_0(Object state) + 0x7c
+--- End of stack trace from previous location ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw() + 0x20
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task) + 0xb2
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task, ConfigureAwaitOptions) + 0x4b
+   at HardwareMonitor.Sockets.PipeHost.<>c__DisplayClass13_0.<<SendToAllAsync>b__0>d.MoveNext() + 0x110
+[2025-09-10 00:08:30.001] [Error] Error sending data to pipe client
+System.IO.IOException: Pipe is broken.
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw() + 0x20
+   at System.Threading.Tasks.Sources.ManualResetValueTaskSourceCore`1.ThrowForFailedGetResult() + 0x13
+   at System.Threading.Tasks.Sources.ManualResetValueTaskSourceCore`1.GetResult(Int16) + 0x2b
+   at System.IO.Pipes.PipeStream.PipeValueTaskSource.GetResult(Int16) + 0x21
+   at System.IO.Pipes.PipeStream.PipeValueTaskSource.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16) + 0xd
+   at System.Threading.Tasks.ValueTask.ValueTaskSourceAsTask.<>c.<.cctor>b__4_0(Object state) + 0x7c
+--- End of stack trace from previous location ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw() + 0x20
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task) + 0xb2
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task, ConfigureAwaitOptions) + 0x4b
+   at HardwareMonitor.Sockets.PipeHost.<>c__DisplayClass13_0.<<SendToAllAsync>b__0>d.MoveNext() + 0x110
+[2025-09-10 00:08:30.001] [Error] Error sending data to pipe client
+System.IO.IOException: Pipe is broken.
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw() + 0x20
+   at System.Threading.Tasks.Sources.ManualResetValueTaskSourceCore`1.ThrowForFailedGetResult() + 0x13
+   at System.Threading.Tasks.Sources.ManualResetValueTaskSourceCore`1.GetResult(Int16) + 0x2b
+   at System.IO.Pipes.PipeStream.PipeValueTaskSource.GetResult(Int16) + 0x21
+   at System.IO.Pipes.PipeStream.PipeValueTaskSource.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16) + 0xd
+   at System.Threading.Tasks.ValueTask.ValueTaskSourceAsTask.<>c.<.cctor>b__4_0(Object state) + 0x7c
+--- End of stack trace from previous location ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw() + 0x20
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task) + 0xb2
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task, ConfigureAwaitOptions) + 0x4b
+   at HardwareMonitor.Sockets.PipeHost.<>c__DisplayClass13_0.<<SendToAllAsync>b__0>d.MoveNext() + 0x110
+[2025-09-10 00:08:30.001] [Error] Error sending data to pipe client
+System.IO.IOException: Pipe is broken.
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw() + 0x20
+   at System.Threading.Tasks.Sources.ManualResetValueTaskSourceCore`1.ThrowForFailedGetResult() + 0x13
+   at System.Threading.Tasks.Sources.ManualResetValueTaskSourceCore`1.GetResult(Int16) + 0x2b
+   at System.IO.Pipes.PipeStream.PipeValueTaskSource.GetResult(Int16) + 0x21
+   at System.IO.Pipes.PipeStream.PipeValueTaskSource.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16) + 0xd
+   at System.Threading.Tasks.ValueTask.ValueTaskSourceAsTask.<>c.<.cctor>b__4_0(Object state) + 0x7c
+--- End of stack trace from previous location ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw() + 0x20
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task) + 0xb2
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task, ConfigureAwaitOptions) + 0x4b
+   at HardwareMonitor.Sockets.PipeHost.<>c__DisplayClass13_0.<<SendToAllAsync>b__0>d.MoveNext() + 0x110
+[2025-09-10 00:08:30.001] [Error] Error sending data to pipe client
+System.IO.IOException: Pipe is broken.
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw() + 0x20
+   at System.Threading.Tasks.Sources.ManualResetValueTaskSourceCore`1.ThrowForFailedGetResult() + 0x13
+   at System.Threading.Tasks.Sources.ManualResetValueTaskSourceCore`1.GetResult(Int16) + 0x2b
+   at System.IO.Pipes.PipeStream.PipeValueTaskSource.GetResult(Int16) + 0x21
+   at System.IO.Pipes.PipeStream.PipeValueTaskSource.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16) + 0xd
+   at System.Threading.Tasks.ValueTask.ValueTaskSourceAsTask.<>c.<.cctor>b__4_0(Object state) + 0x7c
+--- End of stack trace from previous location ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw() + 0x20
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task) + 0xb2
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task, ConfigureAwaitOptions) + 0x4b
+   at HardwareMonitor.Sockets.PipeHost.<>c__DisplayClass13_0.<<SendToAllAsync>b__0>d.MoveNext() + 0x110
+[2025-09-10 00:08:30.001] [Error] Error sending data to pipe client
+System.IO.IOException: Pipe is broken.
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw() + 0x20
+   at System.Threading.Tasks.Sources.ManualResetValueTaskSourceCore`1.ThrowForFailedGetResult() + 0x13
+   at System.Threading.Tasks.Sources.ManualResetValueTaskSourceCore`1.GetResult(Int16) + 0x2b
+   at System.IO.Pipes.PipeStream.PipeValueTaskSource.GetResult(Int16) + 0x21
+   at System.IO.Pipes.PipeStream.PipeValueTaskSource.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16) + 0xd
+   at System.Threading.Tasks.ValueTask.ValueTaskSourceAsTask.<>c.<.cctor>b__4_0(Object state) + 0x7c
+--- End of stack trace from previous location ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw() + 0x20
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task) + 0xb2
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task, ConfigureAwaitOptions) + 0x4b
+   at HardwareMonitor.Sockets.PipeHost.<>c__DisplayClass13_0.<<SendToAllAsync>b__0>d.MoveNext() + 0x110
+[2025-09-10 00:08:32.389] [Information] Client connected to pipe: "HardwareMonitor_31337"
+[2025-09-10 00:08:32.389] [Information] Waiting for client connection on pipe: "HardwareMonitor_31337"
+[2025-09-10 00:09:01.263] [Information] Removing client connection
+[2025-09-10 00:09:01.263] [Error] Error sending data to pipe client
+System.IO.IOException: Pipe is broken.
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw() + 0x20
+   at System.Threading.Tasks.Sources.ManualResetValueTaskSourceCore`1.ThrowForFailedGetResult() + 0x13
+   at System.Threading.Tasks.Sources.ManualResetValueTaskSourceCore`1.GetResult(Int16) + 0x2b
+   at System.IO.Pipes.PipeStream.PipeValueTaskSource.GetResult(Int16) + 0x21
+   at System.IO.Pipes.PipeStream.PipeValueTaskSource.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16) + 0xd
+   at System.Threading.Tasks.ValueTask.ValueTaskSourceAsTask.<>c.<.cctor>b__4_0(Object state) + 0x7c
+--- End of stack trace from previous location ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw() + 0x20
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task) + 0xb2
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task, ConfigureAwaitOptions) + 0x4b
+   at HardwareMonitor.Sockets.PipeHost.<>c__DisplayClass13_0.<<SendToAllAsync>b__0>d.MoveNext() + 0x110
