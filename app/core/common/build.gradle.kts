@@ -3,6 +3,10 @@ plugins {
     kotlin("plugin.serialization")
 }
 
+kotlin {
+    jvmToolchain(17)
+}
+
 repositories {
     mavenCentral()
 }

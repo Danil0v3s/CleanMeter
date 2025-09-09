@@ -7,17 +7,18 @@ import java.nio.ByteOrder
 import java.nio.charset.Charset
 import java.util.*
 
-internal fun getByteBuffer(input: InputStream, length: Int): ByteBuffer {
+actual fun getByteBuffer(input: InputStream, length: Int): ByteBuffer {
     if (length <= 0) return ByteBuffer.allocate(0).order(ByteOrder.LITTLE_ENDIAN)
     return ByteBuffer.wrap(input.readNBytes(length)).order(ByteOrder.LITTLE_ENDIAN)
 }
 
-internal fun getByteBuffer(input: ByteArray, length: Int, offset: Int): ByteBuffer {
+actual fun getByteBuffer(input: ByteArray, length: Int, offset: Int): ByteBuffer {
     if (length <= 0) return ByteBuffer.allocate(0)
     return ByteBuffer.wrap(input).slice(offset, length).order(ByteOrder.LITTLE_ENDIAN)
 }
 
-internal fun getByteBuffer(pointer: Pointer, size: Int, offset: Int = 0): ByteBuffer {
+actual fun getByteBuffer(pointer: Any, size: Int, offset: Int): ByteBuffer {
+    require(pointer is com.sun.jna.Pointer) { "Expected JNA Pointer but got ${pointer::class}" }
     val buffer = ByteBuffer.allocateDirect(size)
     buffer.put(pointer.getByteArray(0, size))
     buffer.order(ByteOrder.LITTLE_ENDIAN)
@@ -27,7 +28,7 @@ internal fun getByteBuffer(pointer: Pointer, size: Int, offset: Int = 0): ByteBu
     return buffer
 }
 
-internal val systemCharset: Charset by lazy {
+actual val systemCharset: Charset by lazy {
     val osName = System.getProperty("os.name").lowercase(Locale.getDefault())
     when {
         "win" in osName -> Charset.forName(System.getProperty("sun.jnu.encoding"))
@@ -36,14 +37,14 @@ internal val systemCharset: Charset by lazy {
     }
 }
 
-internal fun ByteBuffer.readString(maxLength: Int, charset: Charset = systemCharset): String {
+actual fun ByteBuffer.readString(maxLength: Int, charset: Charset): String {
     val array = ByteArray(maxLength)
     get(array, 0, maxLength)
 
     return String(trim(array), charset)
 }
 
-internal fun trim(bytes: ByteArray): ByteArray {
+actual fun trim(bytes: ByteArray): ByteArray {
     var i = bytes.size - 1
     while (i >= 0 && bytes[i].toInt() == 0) {
         --i

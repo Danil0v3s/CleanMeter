@@ -25,7 +25,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import app.cleanmeter.core.designsystem.LocalColorScheme
 import app.cleanmeter.core.designsystem.LocalTypography
-import app.cleanmeter.core.os.win32.WinRegistry
+import app.cleanmeter.core.os.StartupManager
 import app.cleanmeter.core.os.PREFERENCE_START_MINIMIZED
 import app.cleanmeter.core.os.PreferencesRepository
 import app.cleanmeter.target.desktop.model.OverlaySettings
@@ -121,11 +121,11 @@ fun AppSettingsUi(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun startWithWindowsCheckbox() {
-    var state by remember { mutableStateOf(WinRegistry.isAppRegisteredToStartWithWindows()) }
+    var state by remember { mutableStateOf(StartupManager.isAppRegisteredToStartWithSystem()) }
 
     LaunchedEffect(Unit) {
         if (state) {
-            WinRegistry.removeAppFromStartWithWindows()
+            StartupManager.removeAppFromStartWithSystem()
         }
     }
 
@@ -145,9 +145,9 @@ private fun startWithWindowsCheckbox() {
             onCheckedChange = { value ->
                 state = value
                 if (value) {
-                    WinRegistry.registerAppToStartWithWindows()
+                    StartupManager.registerAppToStartWithSystem()
                 } else {
-                    WinRegistry.removeAppFromStartWithWindows()
+                    StartupManager.removeAppFromStartWithSystem()
                 }
             }
         )

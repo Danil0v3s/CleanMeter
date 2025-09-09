@@ -11,10 +11,10 @@ import java.io.IOException
 import java.nio.file.Path
 import java.util.*
 
-object HardwareMonitorProcessManager {
+actual object HardwareMonitorProcessManager {
     private var process: Process? = null
 
-    suspend fun checkRuntime(): Boolean {
+    actual suspend fun checkRuntime(): Boolean {
         return try {
             val process = ProcessBuilder().apply {
                 command("cmd.exe", "/c", "dotnet", "--list-runtimes")
@@ -64,7 +64,7 @@ object HardwareMonitorProcessManager {
         }
     }
 
-    fun start() {
+    actual fun start() {
         val currentDir = Path.of("").toAbsolutePath().toString()
         val file = if (isDev()) {
             "$currentDir\\HardwareMonitor\\HardwareMonitor\\bin\\Release\\net8.0\\win-x64\\native\\HardwareMonitor.exe"
@@ -91,7 +91,7 @@ object HardwareMonitorProcessManager {
         }
     }
 
-    fun stop() {
+    actual fun stop() {
         process?.apply {
             descendants().forEach(ProcessHandle::destroy)
             destroy()
@@ -99,7 +99,7 @@ object HardwareMonitorProcessManager {
         process = null
     }
 
-    fun createService() {
+    actual fun createService() {
         val currentDir = Path.of("").toAbsolutePath().toString()
         val file = "$currentDir\\app\\resources\\HardwareMonitor.exe"
         val command = listOf(
@@ -112,7 +112,7 @@ object HardwareMonitorProcessManager {
         }.start()
     }
 
-    fun stopService() {
+    actual fun stopService() {
         ProcessBuilder().apply {
             command(
                 "cmd.exe",
@@ -122,7 +122,7 @@ object HardwareMonitorProcessManager {
         }.start()
     }
 
-    fun deleteService() {
+    actual fun deleteService() {
         ProcessBuilder().apply {
             command(
                 "cmd.exe",

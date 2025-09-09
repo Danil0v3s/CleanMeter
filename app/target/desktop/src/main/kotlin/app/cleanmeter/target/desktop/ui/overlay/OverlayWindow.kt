@@ -19,7 +19,7 @@ import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberWindowState
 import androidx.lifecycle.viewmodel.compose.viewModel
-import app.cleanmeter.core.os.win32.WindowsService
+import app.cleanmeter.core.os.PlatformService
 import app.cleanmeter.target.desktop.ApplicationViewModelStoreOwner
 import app.cleanmeter.target.desktop.KeyboardEvent
 import app.cleanmeter.target.desktop.KeyboardManager
@@ -128,7 +128,7 @@ fun ApplicationScope.OverlayWindow(
             window.toFront()
         }
 
-        WindowsService.changeWindowTransparency(window, overlayState.overlaySettings!!.isPositionLocked)
+        PlatformService.changeWindowTransparency(window, overlayState.overlaySettings!!.isPositionLocked)
 
         WindowDraggableArea {
             Overlay(

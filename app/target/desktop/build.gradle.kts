@@ -24,6 +24,10 @@ plugins {
     alias(libs.plugins.compose.compiler)
 }
 
+kotlin {
+    jvmToolchain(17)
+}
+
 dependencies {
     implementation(libs.jnativehook)
     implementation(libs.kotlinx.serialization)

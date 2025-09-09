@@ -9,7 +9,7 @@ import app.cleanmeter.core.os.hardwaremonitor.HardwareMonitorProcessManager
 import app.cleanmeter.core.os.hardwaremonitor.HardwareMonitorReader
 import app.cleanmeter.core.os.hardwaremonitor.Packet
 import app.cleanmeter.core.os.hardwaremonitor.PipeClient
-import app.cleanmeter.core.os.win32.WindowsService
+import app.cleanmeter.core.os.PlatformService
 import app.cleanmeter.target.desktop.KeyboardEvent
 import app.cleanmeter.target.desktop.KeyboardManager
 import app.cleanmeter.target.desktop.data.OverlaySettingsRepository
@@ -247,7 +247,7 @@ class SettingsViewModel : ViewModel() {
     private fun onConsentGiven() {
         PreferencesRepository.setPreferenceBoolean(PREFERENCE_PERMISSION_CONSENT, true)
         _state.update { it.copy(adminConsent = true) }
-        WindowsService.elevateProcess()
+        PlatformService.elevateProcess()
     }
 
     private fun onBoundarySet(
