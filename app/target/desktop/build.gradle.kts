@@ -50,14 +50,14 @@ sourceSets {
 compose.desktop {
     application {
 
-        afterEvaluate {
-            tasks.named("createDistributable") {
-                finalizedBy(compileMonitor)
-            }
-            tasks.named("runDistributable") {
-                finalizedBy(compileMonitor)
-            }
-        }
+//        afterEvaluate {
+//            tasks.named("createDistributable") {
+//                finalizedBy(compileMonitor)
+//            }
+//            tasks.named("runDistributable") {
+//                finalizedBy(compileMonitor)
+//            }
+//        }
 
         mainClass = "app.cleanmeter.target.desktop.DesktopMainKt"
 
