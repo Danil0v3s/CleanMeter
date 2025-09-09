@@ -151,7 +151,7 @@ class SettingsViewModel : ViewModel() {
     private fun observeRecordingHotkey() {
         CoroutineScope(Dispatchers.Default).launch {
             KeyboardManager
-                .filter(KeyboardEvent.ToggleRecording)
+                .filter<KeyboardEvent.ToggleRecording>()
                 .collectLatest {
                     println("Toggle recording ${_state.value.isRecording}")
                     _state.update { it.copy(isRecording = !it.isRecording) }

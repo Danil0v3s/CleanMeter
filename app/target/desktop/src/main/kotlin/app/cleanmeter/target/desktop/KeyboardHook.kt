@@ -4,9 +4,13 @@ import com.github.kwhat.jnativehook.GlobalScreen
 import com.github.kwhat.jnativehook.keyboard.NativeKeyEvent
 import com.github.kwhat.jnativehook.keyboard.NativeKeyListener
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.Channel.Factory.CONFLATED
 import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.shareIn
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.SharingStarted
 
 sealed class KeyboardEvent {
     data object ToggleOverlay : KeyboardEvent()
@@ -15,10 +19,15 @@ sealed class KeyboardEvent {
 
 internal object KeyboardManager {
 
-    private val _channel = Channel<KeyboardEvent>(CONFLATED)
+    private val _channel = Channel<KeyboardEvent>(Channel.UNLIMITED)
     val events = _channel.receiveAsFlow()
+        .shareIn(
+            scope = CoroutineScope(Dispatchers.Default),
+            started = SharingStarted.Eagerly,
+            replay = 0
+        )
 
-    fun filter(event: KeyboardEvent) = events.filterIsInstance(event::class)
+    inline fun <reified T : KeyboardEvent> filter() = events.filterIsInstance<T>()
 
     internal fun registerKeyboardHook() {
         try {
@@ -28,14 +37,16 @@ internal object KeyboardManager {
                     val isCtrl = nativeEvent.modifiers.and(NativeKeyEvent.CTRL_MASK) > 0
                     val isAlt = nativeEvent.modifiers.and(NativeKeyEvent.VC_ALT) > 0
 
-                    if (!isCtrl && !isAlt) return
+                    if (!(isCtrl && isAlt)) return
 
                     val event = when (nativeEvent.keyCode) {
                         NativeKeyEvent.VC_F10 -> KeyboardEvent.ToggleOverlay
                         NativeKeyEvent.VC_F11 -> KeyboardEvent.ToggleRecording
                         else -> null
                     }
-                    event?.let { _channel.trySend(it) }
+                    event?.let {
+                        _channel.trySend(it)
+                    }
                 }
             })
         } catch (e: Throwable) {

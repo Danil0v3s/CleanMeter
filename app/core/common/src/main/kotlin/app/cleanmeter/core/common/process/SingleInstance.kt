@@ -2,10 +2,6 @@ package app.cleanmeter.core.common.process
 
 import app.cleanmeter.core.common.reporting.ApplicationParams
 import app.cleanmeter.core.common.reporting.setDefaultUncaughtExceptionHandler
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import java.net.ServerSocket
 import kotlin.system.exitProcess
 
 fun singleInstance(args: Array<out String>, block: () -> Unit) {
@@ -20,21 +16,27 @@ fun singleInstance(args: Array<out String>, block: () -> Unit) {
     block()
 }
 
-private fun isAppAlreadyRunning() = try {
-    ServerSocket(42069).apply {
-        Runtime.getRuntime().addShutdownHook(Thread {
-            close()
-        })
+private fun isAppAlreadyRunning(): Boolean {
+    val os = System.getProperty("os.name").lowercase()
+    val processName = "Clean Meter" // or jar name
 
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                accept()
-            } catch (_: Exception) {
-                // consume the exception of accept since we do not really care if the socket was shutdown
+    return try {
+        val process = when {
+            os.contains("win") -> {
+                ProcessBuilder("tasklist", "/FI", "IMAGENAME eq $processName.exe").start()
             }
+            os.contains("mac") || os.contains("nix") || os.contains("nux") -> {
+                ProcessBuilder("pgrep", "-f", processName).start()
+            }
+            else -> return false
         }
+
+        val output = process.inputStream.bufferedReader().readText()
+        process.waitFor()
+
+        // Parse output to check if process exists (beyond current instance)
+        output.lines().filterNot { it.isEmpty() }.size > 1
+    } catch (e: Exception) {
+        false
     }
-    false
-} catch (ex: Exception) {
-    true
 }

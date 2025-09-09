@@ -10,7 +10,6 @@ import app.cleanmeter.core.os.PreferencesRepository
 
 fun main(vararg args: String) = singleInstance(args) {
     if (PreferencesRepository.getPreferenceBoolean(PREFERENCE_PERMISSION_CONSENT, false)) {
-        PlatformService.tryElevateProcess(ApplicationParams.isAutostart)
 
         if (isDev()) {
             Runtime.getRuntime().addShutdownHook(Thread {

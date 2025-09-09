@@ -49,7 +49,8 @@ fun ApplicationScope.OverlayWindow(
 
     var isVisible by remember { mutableStateOf(true) }
     LaunchedEffect(Unit) {
-        KeyboardManager.filter(KeyboardEvent.ToggleOverlay).collectLatest {
+        KeyboardManager.filter<KeyboardEvent.ToggleOverlay>().collectLatest {
+            println("toggle overlay")
             isVisible = !isVisible
         }
     }
