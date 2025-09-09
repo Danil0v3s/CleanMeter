@@ -2,7 +2,7 @@
 kotlin = "2.0.20"
 ktor = "2.3.12"
 jackson = "2.11.2"
-compose = "1.7.1"
+compose = "1.8.2"
 
 [plugins]
 jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose" }
