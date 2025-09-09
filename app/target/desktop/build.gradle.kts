@@ -1,19 +1,19 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
 val copyPresentMon = tasks.register<Copy>("copyPresentMon") {
-    from("../../HardwareMonitor/HardwareMonitor/bin/Release/net8.0/win-x64/presentmon")
+    from("../../../HardwareMonitor/HardwareMonitor/bin/Release/net8.0/win-x64/presentmon")
     into(layout.buildDirectory.dir("compose/binaries/main/app/cleanmeter/app/resources"))
 }
 
 val copyMonitorFiles = tasks.register<Copy>("copyMonitorFiles") {
 //    finalizedBy(copyPresentMon)
-    from("../../HardwareMonitor/HardwareMonitor/bin/Release/net8.0/win-x64/native")
+    from("../../../HardwareMonitor/HardwareMonitor/bin/Release/net8.0/win-x64/native")
     into(layout.buildDirectory.dir("compose/binaries/main/app/cleanmeter/app/resources"))
 }
 
 val compileMonitor = tasks.register<Exec>("compileMonitor") {
     finalizedBy(copyMonitorFiles)
-    workingDir("../../HardwareMonitor/")
+    workingDir("../../../HardwareMonitor/")
     commandLine("dotnet", "publish", "-c", "Release", "-r", "win-x64", "-p:PublishAot=true")
 }
 
@@ -50,14 +50,14 @@ sourceSets {
 compose.desktop {
     application {
 
-//        afterEvaluate {
-//            tasks.named("createDistributable") {
-//                finalizedBy(compileMonitor)
-//            }
-//            tasks.named("runDistributable") {
-//                finalizedBy(compileMonitor)
-//            }
-//        }
+        afterEvaluate {
+            tasks.named("createDistributable") {
+                finalizedBy(compileMonitor)
+            }
+            tasks.named("runDistributable") {
+                finalizedBy(compileMonitor)
+            }
+        }
 
         mainClass = "app.cleanmeter.target.desktop.DesktopMainKt"
 
