@@ -18,7 +18,7 @@ actual object HardwareMonitorProcessManager {
     val appDir: String
         get() {
             val currentDir = Path.of("").toAbsolutePath().toString()
-            return if (!isDev()) {
+            return if (isDev()) {
                 "$currentDir\\bin\\win-x64"
             } else {
                 "$currentDir\\resources\\win-x64"
