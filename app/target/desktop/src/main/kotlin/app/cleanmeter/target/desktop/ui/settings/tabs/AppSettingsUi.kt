@@ -3,31 +3,18 @@ package app.cleanmeter.target.desktop.ui.settings.tabs
 import ClearButton
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.TooltipArea
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import app.cleanmeter.core.designsystem.LocalColorScheme
-import app.cleanmeter.core.designsystem.LocalTypography
-import app.cleanmeter.core.os.StartupManager
 import app.cleanmeter.core.os.PREFERENCE_START_MINIMIZED
 import app.cleanmeter.core.os.PreferencesRepository
+import app.cleanmeter.core.os.StartupManager
 import app.cleanmeter.target.desktop.model.OverlaySettings
 import app.cleanmeter.target.desktop.ui.components.CheckboxWithLabel
 import app.cleanmeter.target.desktop.ui.components.StyleCard
@@ -129,29 +116,18 @@ private fun startWithWindowsCheckbox() {
         }
     }
 
-    TooltipArea(
-        delayMillis = 0,
-        tooltip = {
-            Text(
-                text = "Temporarily disabled.",
-                style = LocalTypography.current.labelM,
-                color = LocalColorScheme.current.text.heading,
-            )
-        }) {
-        CheckboxWithLabel(
-            label = "Start with Windows",
-            checked = state,
-            enabled = false,
-            onCheckedChange = { value ->
-                state = value
-                if (value) {
-                    StartupManager.registerAppToStartWithSystem()
-                } else {
-                    StartupManager.removeAppFromStartWithSystem()
-                }
+    CheckboxWithLabel(
+        label = "Start with Windows",
+        checked = state,
+        onCheckedChange = { value ->
+            state = value
+            if (value) {
+                StartupManager.registerAppToStartWithSystem()
+            } else {
+                StartupManager.removeAppFromStartWithSystem()
             }
-        )
-    }
+        }
+    )
 }
 
 @Composable

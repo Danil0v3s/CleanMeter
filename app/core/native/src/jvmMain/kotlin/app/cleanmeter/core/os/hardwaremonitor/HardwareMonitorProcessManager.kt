@@ -1,5 +1,6 @@
 package app.cleanmeter.core.os.hardwaremonitor
 
+import app.cleanmeter.core.common.reporting.logException
 import app.cleanmeter.core.os.Platform
 import app.cleanmeter.core.os.getCurrentPlatform
 import app.cleanmeter.core.os.util.isDev
@@ -19,18 +20,19 @@ actual object HardwareMonitorProcessManager {
         get() {
             val currentDir = Path.of("").toAbsolutePath().toString()
             return if (isDev()) {
-                "$currentDir\\bin\\win-x64"
+                "$currentDir\\bin"
             } else {
-                "$currentDir\\resources\\win-x64"
+                "$currentDir\\app\\resources"
             }
         }
 
     actual fun start() {
         if (!isDev()) return
+
         when (getCurrentPlatform()) {
             Platform.WINDOWS -> {
                 val process = ProcessBuilder().apply {
-                    command("cmd.exe", "/c", "$appDir\\HardwareMonitor.exe")
+                    command("cmd.exe", "/c", "$appDir\\win-x64\\HardwareMonitor.exe")
                 }.start()
 
                 val scannerIn = Scanner(process.inputStream)
@@ -64,6 +66,7 @@ actual object HardwareMonitorProcessManager {
 
     actual fun stop() {
         if (!isDev()) return
+
         when (getCurrentPlatform()) {
             Platform.WINDOWS -> {
                 process?.apply {
@@ -90,7 +93,7 @@ actual object HardwareMonitorProcessManager {
 
         when (getCurrentPlatform()) {
             Platform.WINDOWS -> {
-                val scCommand = "$appDir\\service-create.bat"
+                val scCommand = "$appDir\\win-x64\\service-create.bat"
 
                 val process = ProcessBuilder( "cmd", "/c", scCommand)
                     .redirectErrorStream(true)
@@ -115,7 +118,7 @@ actual object HardwareMonitorProcessManager {
     actual fun stopService() {
         when (getCurrentPlatform()) {
             Platform.WINDOWS -> {
-                val scCommand = "$appDir\\service-stop.bat"
+                val scCommand = "$appDir\\win-x64\\service-stop.bat"
 
                 val process = ProcessBuilder( "cmd", "/c", scCommand)
                     .redirectErrorStream(true)
@@ -140,7 +143,7 @@ actual object HardwareMonitorProcessManager {
     actual fun deleteService() {
         when (getCurrentPlatform()) {
             Platform.WINDOWS -> {
-                val scCommand = "$appDir\\service-delete.bat"
+                val scCommand = "$appDir\\win-x64\\service-delete.bat"
 
                 val process = ProcessBuilder( "cmd", "/c", scCommand)
                     .redirectErrorStream(true)

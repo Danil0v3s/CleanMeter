@@ -159,3 +159,5 @@ bin/
 
 !app/bin/
 app/bin/**/LogFiles/
+HardwareMonitor.sys
+HardwareMonitor.pdb

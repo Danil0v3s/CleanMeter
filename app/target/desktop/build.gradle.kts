@@ -78,5 +78,5 @@ val copyMonitorFiles = tasks.register<Copy>("copyMonitorFiles") {
 val compileMonitor = tasks.register<Exec>("compileMonitor") {
     finalizedBy(copyMonitorFiles)
     workingDir("../../../HardwareMonitor/")
-    commandLine("dotnet", "publish", "-c", "Release", "-r", "win-x64", "-p:PublishAot=true")
+    commandLine("dotnet", "publish", "-c", "Release", "-r", "win-x64", "-p:PublishAot=false")
 }

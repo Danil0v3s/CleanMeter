@@ -1,6 +1,6 @@
 package app.cleanmeter.core.os.win32
 
-import app.cleanmeter.core.os.hardwaremonitor.HardwareMonitorProcessManager
+import app.cleanmeter.core.os.util.isDev
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.nio.file.Path
@@ -8,6 +8,16 @@ import java.nio.file.Path
 object WinRegistry {
     const val STARTUP_ITEMS_LOCATION = "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run"
     const val REGISTRY_APP_NAME = "cleanmeter"
+
+    val appDir: String
+        get() {
+            val currentDir = Path.of("").toAbsolutePath().toString()
+            return if (isDev()) {
+                "$currentDir\\bin"
+            } else {
+                "$currentDir\\app\\resources"
+            }
+        }
 
     fun read(location: String, key: String): List<String> {
         val proc = ProcessBuilder("reg", "query", location, "/v", key)
@@ -18,8 +28,8 @@ object WinRegistry {
         return input.lineSequence().toList()
     }
 
-    fun write(location: String, key: String, value: String, type: String = "REG_SZ") {
-        val proc = ProcessBuilder("reg", "add", location, "/v", key, "/t", type, "/d", value)
+    fun write(key: String, value: String) {
+        val proc = ProcessBuilder("cmd", "/c", "$appDir\\win-x64\\registry-write.bat", key, value)
             .redirectErrorStream(true)
             .start()
 
@@ -28,8 +38,8 @@ object WinRegistry {
         println(input.lineSequence().toList())
     }
 
-    fun delete(location: String, key: String) {
-        val proc = ProcessBuilder("reg", "delete", location, "/v", key, "/f")
+    fun delete(key: String) {
+        val proc = ProcessBuilder("cmd", "/c", "$appDir\\win-x64\\registry-delete.bat", key)
             .redirectErrorStream(true)
             .start()
 
@@ -45,17 +55,10 @@ object WinRegistry {
     }
 
     fun registerAppToStartWithWindows() {
-//        if (WindowsService.isProcessElevated()) {
-//            write(STARTUP_ITEMS_LOCATION, REGISTRY_APP_NAME, "\\\"${Path.of("").toAbsolutePath()}\\$REGISTRY_APP_NAME.exe\\\" --autostart")
-//            HardwareMonitorProcessManager.createService()
-//        }
+        write(REGISTRY_APP_NAME, "${Path.of("").toAbsolutePath()}\\$REGISTRY_APP_NAME.exe")
     }
 
     fun removeAppFromStartWithWindows() {
-//        if (WindowsService.isProcessElevated()) {
-//            delete(STARTUP_ITEMS_LOCATION, REGISTRY_APP_NAME)
-//            HardwareMonitorProcessManager.stopService()
-//            HardwareMonitorProcessManager.deleteService()
-//        }
+        delete(REGISTRY_APP_NAME)
     }
 }
