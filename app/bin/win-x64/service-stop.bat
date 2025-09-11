@@ -62,3 +62,4 @@ if %STOP_RESULT% neq 0 (
 )
 
 echo Operation completed.
+
