@@ -157,9 +157,5 @@ bin/
 /dataSources/
 /dataSources.local.xml
 
-!app/bin/
-app/bin/**/LogFiles/
-app/bin/HardwareMonitor.sys
-app/bin/HardwareMonitor.pdb
-app/bin/HardwareMonitor.exe
-app/bin/presentmon.exe
+!app/bin/*.bat
+
