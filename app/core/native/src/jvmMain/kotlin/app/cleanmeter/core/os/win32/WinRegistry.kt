@@ -45,17 +45,17 @@ object WinRegistry {
     }
 
     fun registerAppToStartWithWindows() {
-        if (WindowsService.isProcessElevated()) {
-            write(STARTUP_ITEMS_LOCATION, REGISTRY_APP_NAME, "\\\"${Path.of("").toAbsolutePath()}\\$REGISTRY_APP_NAME.exe\\\" --autostart")
-            HardwareMonitorProcessManager.createService()
-        }
+//        if (WindowsService.isProcessElevated()) {
+//            write(STARTUP_ITEMS_LOCATION, REGISTRY_APP_NAME, "\\\"${Path.of("").toAbsolutePath()}\\$REGISTRY_APP_NAME.exe\\\" --autostart")
+//            HardwareMonitorProcessManager.createService()
+//        }
     }
 
     fun removeAppFromStartWithWindows() {
-        if (WindowsService.isProcessElevated()) {
-            delete(STARTUP_ITEMS_LOCATION, REGISTRY_APP_NAME)
-            HardwareMonitorProcessManager.stopService()
-            HardwareMonitorProcessManager.deleteService()
-        }
+//        if (WindowsService.isProcessElevated()) {
+//            delete(STARTUP_ITEMS_LOCATION, REGISTRY_APP_NAME)
+//            HardwareMonitorProcessManager.stopService()
+//            HardwareMonitorProcessManager.deleteService()
+//        }
     }
 }

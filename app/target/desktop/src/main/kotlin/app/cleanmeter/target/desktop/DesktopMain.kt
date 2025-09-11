@@ -2,25 +2,30 @@ package app.cleanmeter.target.desktop
 
 import app.cleanmeter.core.common.process.singleInstance
 import app.cleanmeter.core.common.reporting.ApplicationParams
-import app.cleanmeter.core.os.ProcessManager
 import app.cleanmeter.core.os.util.isDev
 import app.cleanmeter.core.os.PlatformService
 import app.cleanmeter.core.os.PREFERENCE_PERMISSION_CONSENT
 import app.cleanmeter.core.os.PreferencesRepository
+import app.cleanmeter.core.os.hardwaremonitor.HardwareMonitorProcessManager
 
 fun main(vararg args: String) = singleInstance(args) {
     if (PreferencesRepository.getPreferenceBoolean(PREFERENCE_PERMISSION_CONSENT, false)) {
-
         if (isDev()) {
             Runtime.getRuntime().addShutdownHook(Thread {
-                ProcessManager.stop()
+                HardwareMonitorProcessManager.stop()
             })
         } else {
-            KeyboardManager.registerKeyboardHook()
+//            KeyboardManager.registerKeyboardHook()
         }
 
-        if (!ApplicationParams.isAutostart) {
-            ProcessManager.start()
+        if (!HardwareMonitorProcessManager.isServiceCreated()) {
+            with(HardwareMonitorProcessManager) {
+                if (isDev()) {
+                    start()
+                } else {
+                    createService()
+                }
+            }
         }
     }
 

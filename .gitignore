@@ -158,4 +158,4 @@ bin/
 /dataSources.local.xml
 
 !app/bin/
-app/bin/LogFiles/
+app/bin/**/LogFiles/

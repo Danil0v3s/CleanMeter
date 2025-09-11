@@ -15,7 +15,7 @@ namespace HardwareMonitor.Monitor;
 public class MonitorPoller(
     IHostApplicationLifetime hostApplicationLifetime,
     ILogger<MonitorPoller> logger
-) : BackgroundService
+) : BackgroundService, IDisposable
 {
     private readonly Computer _computer = new()
     {
@@ -38,25 +38,29 @@ public class MonitorPoller(
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        logger.LogInformation("Starting monitor");
+        logger.LogInformation("Starting hardware monitor service");
 
-        _computer.Open();
-        _computer.Accept(new UpdateVisitor());
-        _presentMonPoller.Start(stoppingToken);
-        _presentMonPoller.OnUpdateApps += SendPresentMonAppsToClients;
-        _socketHost.StartServer();
-        _socketHost.OnClientData += OnClientData;
-        _socketHost.OnClientConnected += OnClientConnected;
+        try
+        {
+            _computer.Open();
+            _computer.Accept(new UpdateVisitor());
+            _presentMonPoller.Start(stoppingToken);
+            _presentMonPoller.OnUpdateApps += SendPresentMonAppsToClients;
+            _socketHost.StartServer();
+            _socketHost.OnClientData += OnClientData;
+            _socketHost.OnClientConnected += OnClientConnected;
 
-        var sharedMemoryData = QueryHardwareData();
+            var sharedMemoryData = QueryHardwareData();
 
-        using var memoryStream = new MemoryStream();
-        using var writer = new BinaryWriter(memoryStream);
-        var accumulator = 0;
+            using var memoryStream = new MemoryStream();
+            using var writer = new BinaryWriter(memoryStream);
+            var accumulator = 0;
 
-        WriteDataToStream(writer, sharedMemoryData);
+            WriteDataToStream(writer, sharedMemoryData);
 
-        while (!stoppingToken.IsCancellationRequested)
+            logger.LogInformation("Hardware monitor service started successfully");
+
+            while (!stoppingToken.IsCancellationRequested)
         {
             if (!_socketHost.HasConnections())
             {
@@ -96,10 +100,35 @@ public class MonitorPoller(
 
             accumulator += 500;
             await Task.Delay(_pollingRate, stoppingToken);
+            }
         }
+        catch (OperationCanceledException)
+        {
+            logger.LogInformation("Hardware monitor service shutdown requested");
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Unexpected error in hardware monitor service");
+            throw;
+        }
+        finally
+        {
+            logger.LogInformation("Shutting down hardware monitor service");
+        }
+    }
 
-        Stop();
-        hostApplicationLifetime.StopApplication();
+    public override async Task StopAsync(CancellationToken cancellationToken)
+    {
+        logger.LogInformation("Stop requested for hardware monitor service");
+        
+        try
+        {
+            await base.StopAsync(cancellationToken);
+        }
+        finally
+        {
+            Stop();
+        }
     }
 
     private static void WriteDataToStream(BinaryWriter writer, SharedMemoryData sharedMemoryData)
@@ -244,10 +273,37 @@ public class MonitorPoller(
 
     private void Stop()
     {
-        _computer.Close();
-        _presentMonPoller.Stop();
-        _socketHost.Close();
-        _socketHost.OnClientData -= OnClientData;
+        logger.LogInformation("Stopping monitor services");
+        
+        try
+        {
+            _presentMonPoller.Stop();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error stopping PresentMon poller");
+        }
+
+        try
+        {
+            _socketHost.Close();
+            _socketHost.OnClientData -= OnClientData;
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error closing socket host");
+        }
+
+        try
+        {
+            _computer.Close();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error closing hardware computer");
+        }
+        
+        logger.LogInformation("Monitor services stopped");
     }
 
     private static SharedMemoryHardware MapHardware(IHardware hardware) => new()
@@ -282,5 +338,12 @@ public class MonitorPoller(
     {
         int binary = *(int*)(&f);
         return ((binary & 0x7F800000) == 0x7F800000) && ((binary & 0x007FFFFF) != 0);
+    }
+
+    public void Dispose()
+    {
+        Stop();
+        _computer?.Close();
+        GC.SuppressFinalize(this);
     }
 }

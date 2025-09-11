@@ -9,7 +9,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.window.application
 import androidx.lifecycle.viewmodel.compose.viewModel
 import app.cleanmeter.core.common.reporting.ApplicationParams
-import app.cleanmeter.core.os.ProcessManager
+import app.cleanmeter.core.os.hardwaremonitor.HardwareMonitorProcessManager
 import app.cleanmeter.target.desktop.ui.overlay.OverlayWindow
 import app.cleanmeter.target.desktop.ui.settings.SettingsWindow
 
@@ -40,7 +40,7 @@ fun composeApp() = application {
         getOverlayPosition = { overlayPosition },
         onApplicationExit = {
             if (!ApplicationParams.isAutostart) {
-                ProcessManager.stop()
+                HardwareMonitorProcessManager.stop()
             }
         }
     )

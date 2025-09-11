@@ -8,8 +8,5 @@ import java.awt.Component
 expect class PlatformService() {
     companion object {
         fun changeWindowTransparency(w: Component, isTransparent: Boolean)
-        fun isProcessElevated(): Boolean
-        fun tryElevateProcess(isAutostart: Boolean)
-        fun elevateProcess()
     }
 }

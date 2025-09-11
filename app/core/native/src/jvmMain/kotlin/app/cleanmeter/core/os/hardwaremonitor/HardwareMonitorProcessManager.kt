@@ -1,28 +1,36 @@
 package app.cleanmeter.core.os.hardwaremonitor
 
 import app.cleanmeter.core.os.Platform
+import app.cleanmeter.core.os.getCurrentPlatform
 import app.cleanmeter.core.os.util.isDev
+import app.cleanmeter.core.os.win32.WinRegistry
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.io.BufferedReader
+import java.io.InputStreamReader
 import java.nio.file.Path
 import java.util.*
 
 actual object HardwareMonitorProcessManager {
     private var process: Process? = null
 
+    val appDir: String
+        get() {
+            val currentDir = Path.of("").toAbsolutePath().toString()
+            return if (!isDev()) {
+                "$currentDir\\bin\\win-x64"
+            } else {
+                "$currentDir\\resources\\win-x64"
+            }
+        }
+
     actual fun start() {
+        if (!isDev()) return
         when (getCurrentPlatform()) {
             Platform.WINDOWS -> {
-                val currentDir = Path.of("").toAbsolutePath().toString()
-                val file = if (isDev()) {
-                    "$currentDir\\bin\\HardwareMonitor.exe"
-                } else {
-                    "$currentDir\\app\\resources\\HardwareMonitor.exe"
-                }
-
                 val process = ProcessBuilder().apply {
-                    command("cmd.exe", "/c", file)
+                    command("cmd.exe", "/c", "$appDir\\HardwareMonitor.exe")
                 }.start()
 
                 val scannerIn = Scanner(process.inputStream)
@@ -41,10 +49,12 @@ actual object HardwareMonitorProcessManager {
 
                 this.process = process
             }
+
             Platform.MACOS -> {
                 // TODO: Implement macOS hardware monitor
                 println("macOS hardware monitor not yet implemented")
             }
+
             Platform.LINUX -> {
                 // TODO: Implement Linux hardware monitor
                 println("Linux hardware monitor not yet implemented")
@@ -53,6 +63,7 @@ actual object HardwareMonitorProcessManager {
     }
 
     actual fun stop() {
+        if (!isDev()) return
         when (getCurrentPlatform()) {
             Platform.WINDOWS -> {
                 process?.apply {
@@ -61,10 +72,12 @@ actual object HardwareMonitorProcessManager {
                 }
                 process = null
             }
+
             Platform.MACOS -> {
                 // TODO: Implement macOS process stopping
                 println("macOS process stopping not yet implemented")
             }
+
             Platform.LINUX -> {
                 // TODO: Implement Linux process stopping
                 println("Linux process stopping not yet implemented")
@@ -73,23 +86,25 @@ actual object HardwareMonitorProcessManager {
     }
 
     actual fun createService() {
+        if (isDev()) return
+
         when (getCurrentPlatform()) {
             Platform.WINDOWS -> {
-                val currentDir = Path.of("").toAbsolutePath().toString()
-                val file = "$currentDir\\app\\resources\\HardwareMonitor.exe"
-                val command = listOf(
-                    "cmd.exe",
-                    "/c",
-                    "sc create svcleanmeter displayname=\"CleanMeter Service\" binPath= $file start=auto group=LocalServiceNoNetworkFirewall"
-                )
-                ProcessBuilder().apply {
-                    command(command)
-                }.start()
+                val scCommand = "$appDir\\service-create.bat"
+
+                val process = ProcessBuilder( "cmd", "/c", scCommand)
+                    .redirectErrorStream(true)
+                    .inheritIO()
+                    .start()
+
+                process.waitFor()
             }
+
             Platform.MACOS -> {
                 // TODO: Implement macOS service creation
                 println("macOS service creation not yet implemented")
             }
+
             Platform.LINUX -> {
                 // TODO: Implement Linux service creation
                 println("Linux service creation not yet implemented")
@@ -100,18 +115,21 @@ actual object HardwareMonitorProcessManager {
     actual fun stopService() {
         when (getCurrentPlatform()) {
             Platform.WINDOWS -> {
-                ProcessBuilder().apply {
-                    command(
-                        "cmd.exe",
-                        "/c",
-                        "sc stop svcleanmeter"
-                    )
-                }.start()
+                val scCommand = "$appDir\\service-stop.bat"
+
+                val process = ProcessBuilder( "cmd", "/c", scCommand)
+                    .redirectErrorStream(true)
+                    .inheritIO()
+                    .start()
+
+                process.waitFor()
             }
+
             Platform.MACOS -> {
                 // TODO: Implement macOS service stopping
                 println("macOS service stopping not yet implemented")
             }
+
             Platform.LINUX -> {
                 // TODO: Implement Linux service stopping
                 println("Linux service stopping not yet implemented")
@@ -122,31 +140,48 @@ actual object HardwareMonitorProcessManager {
     actual fun deleteService() {
         when (getCurrentPlatform()) {
             Platform.WINDOWS -> {
-                ProcessBuilder().apply {
-                    command(
-                        "cmd.exe",
-                        "/c",
-                        "sc delete svcleanmeter"
-                    )
-                }.start()
+                val scCommand = "$appDir\\service-delete.bat"
+
+                val process = ProcessBuilder( "cmd", "/c", scCommand)
+                    .redirectErrorStream(true)
+                    .inheritIO()
+                    .start()
+
+                process.waitFor()
             }
+
             Platform.MACOS -> {
                 // TODO: Implement macOS service deletion
                 println("macOS service deletion not yet implemented")
             }
+
             Platform.LINUX -> {
                 // TODO: Implement Linux service deletion
                 println("Linux service deletion not yet implemented")
             }
         }
     }
-}
 
-private fun getCurrentPlatform(): Platform {
-    val osName = System.getProperty("os.name").lowercase(Locale.getDefault())
-    return when {
-        "win" in osName -> Platform.WINDOWS
-        "mac" in osName -> Platform.MACOS
-        else -> Platform.LINUX
+    actual fun isServiceCreated(): Boolean {
+        return when (getCurrentPlatform()) {
+            Platform.WINDOWS -> {
+                val proc = ProcessBuilder("sc", "query", "\"CleanMeterHardwareMonitor\"")
+                    .redirectErrorStream(true)
+                    .start()
+                val input = BufferedReader(InputStreamReader(proc.inputStream)).lineSequence().toList()
+
+                return proc.exitValue() == 0
+            }
+
+            Platform.MACOS -> {
+                println("macOS service deletion not yet implemented")
+                false
+            }
+
+            Platform.LINUX -> {
+                println("Linux service deletion not yet implemented")
+                false
+            }
+        }
     }
 }

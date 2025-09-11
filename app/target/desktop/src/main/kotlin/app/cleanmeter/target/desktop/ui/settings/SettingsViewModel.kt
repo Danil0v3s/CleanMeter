@@ -238,7 +238,7 @@ class SettingsViewModel : ViewModel() {
     private fun onConsentGiven() {
         PreferencesRepository.setPreferenceBoolean(PREFERENCE_PERMISSION_CONSENT, true)
         _state.update { it.copy(adminConsent = true) }
-        PlatformService.elevateProcess()
+        HardwareMonitorProcessManager.createService()
     }
 
     private fun onBoundarySet(

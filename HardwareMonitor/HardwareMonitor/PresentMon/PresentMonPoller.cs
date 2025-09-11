@@ -68,7 +68,31 @@ public class PresentMonPoller(ILogger logger)
 
     public void Stop()
     {
-        _process.Kill(true);
+        try
+        {
+            if (_process != null && !_process.HasExited)
+            {
+                logger.LogInformation("Stopping PresentMon process");
+                
+                // Try graceful shutdown first
+                _process.CancelOutputRead();
+                _process.CancelErrorRead();
+                
+                // Give it a moment to exit gracefully
+                if (!_process.WaitForExit(1000))
+                {
+                    // Force kill if it doesn't exit gracefully
+                    _process.Kill(true);
+                }
+                
+                _process.Dispose();
+                logger.LogInformation("PresentMon process stopped");
+            }
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error stopping PresentMon process");
+        }
     }
 
     private void ParseData(string? argsData)

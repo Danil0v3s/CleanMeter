@@ -130,7 +130,8 @@ public class PipeHost(ILogger logger)
 
         try
         {
-            _serverTask?.Wait(5000);
+            // Reduce timeout for faster shutdown during Windows shutdown
+            _serverTask?.Wait(1000);
         }
         catch { }
 
