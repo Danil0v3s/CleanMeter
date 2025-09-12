@@ -38,13 +38,13 @@ jobs:
       uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
 
     - name: Build with Gradle Wrapper
-      run: ./app/gradlew :target:desktop:createDistributable
+      run: cd app && ./gradlew :target:desktop:createDistributable
 
     - name: Archive production artifacts
       uses: actions/upload-artifact@v4
       with:
         name: cleanmeter
-        path: target\desktop\build\compose\binaries\main\app
+        path: app\target\desktop\build\compose\binaries\main\app
 
   dependency-submission:
 
