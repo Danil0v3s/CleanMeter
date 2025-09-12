@@ -1,5 +1,6 @@
 package app.cleanmeter.target.desktop.ui.overlay
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -84,8 +85,8 @@ fun Content(data: HardwareMonitorData, overlaySettings: OverlaySettings) {
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             FpsSection(overlaySettings, data)
-            GpuSection(overlaySettings, data)
             CpuSection(overlaySettings, data)
+            GpuSection(overlaySettings, data)
             RamSection(overlaySettings, data)
             NetSection(overlaySettings, data)
         }
@@ -97,8 +98,8 @@ fun Content(data: HardwareMonitorData, overlaySettings: OverlaySettings) {
             Layout(
                 content = {
                     FpsSection(overlaySettings, data)
-                    GpuSection(overlaySettings, data)
                     CpuSection(overlaySettings, data)
+                    GpuSection(overlaySettings, data)
                     RamSection(overlaySettings, data)
                     NetSection(overlaySettings, data)
                 },

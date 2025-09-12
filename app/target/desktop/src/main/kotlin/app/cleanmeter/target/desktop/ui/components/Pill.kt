@@ -1,5 +1,6 @@
 package app.cleanmeter.target.desktop.ui.components
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -32,6 +33,7 @@ fun Pill(
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
+            .animateContentSize()
             .conditional(
                 predicate = isHorizontal,
                 ifTrue = {
