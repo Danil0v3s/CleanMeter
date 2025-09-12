@@ -24,6 +24,7 @@ public class PresentMonPoller(ILogger logger)
     private CultureInfo _cultureInfo = (CultureInfo)CultureInfo.CurrentCulture.Clone();
 
     private string _currentSelectedApp = NO_SELECTED_APP;
+    private string _currentForegroundApp;
 
     public async void Start(CancellationToken stoppingToken)
     {
@@ -108,6 +109,11 @@ public class PresentMonPoller(ILogger logger)
                 return;
             }
 
+            if (_currentSelectedApp == NO_SELECTED_APP && _currentForegroundApp != parts[0])
+            {
+                return;
+            }
+
             if (float.TryParse(parts[9], NumberStyles.Any, _cultureInfo, out var frametime))
             {
                 Frametime.Value = frametime;
@@ -134,6 +140,11 @@ public class PresentMonPoller(ILogger logger)
         }
 
         _currentSelectedApp = appName;
+    }
+
+    public void SetForegroundApplication(string appName)
+    {
+        _currentForegroundApp = appName;
     }
 
     private async Task TerminateCurrentPresentMon()

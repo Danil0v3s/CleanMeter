@@ -61,45 +61,47 @@ public class MonitorPoller(
             logger.LogInformation("Hardware monitor service started successfully");
 
             while (!stoppingToken.IsCancellationRequested)
-        {
-            if (!_socketHost.HasConnections())
             {
-                //logger.LogInformation("No clients connected, waiting for connections...");
-                await Task.Delay(1000, stoppingToken);
-                continue;
-            }
-
-            foreach (var hardware in sharedMemoryData.Hardwares)
-            {
-                try
+                if (!_socketHost.HasConnections())
                 {
-                    hardware.Update();
+                    //logger.LogInformation("No clients connected, waiting for connections...");
+                    await Task.Delay(1000, stoppingToken);
+                    continue;
                 }
-                catch
+
+                foreach (var hardware in sharedMemoryData.Hardwares)
                 {
-                    hardware.StopUpdates();
-                    logger.LogError("Stopping updates of {HardwareName} - {HardwareIdentifier}", hardware.Name, hardware.Identifier);
+                    try
+                    {
+                        hardware.Update();
+                    }
+                    catch
+                    {
+                        hardware.StopUpdates();
+                        logger.LogError("Stopping updates of {HardwareName} - {HardwareIdentifier}", hardware.Name,
+                            hardware.Identifier);
+                    }
                 }
-            }
 
-            WriteDataToStream(writer, sharedMemoryData);
+                WriteDataToStream(writer, sharedMemoryData);
 
-            if (_socketHost.HasConnections())
-            {
-                _socketHost.SendToAll(memoryStream.ToArray());
-            } else
-            {
-                //logger.LogInformation("No clients connected, not sending data");
-            }
+                if (_socketHost.HasConnections())
+                {
+                    _socketHost.SendToAll(memoryStream.ToArray());
+                }
+                else
+                {
+                    //logger.LogInformation("No clients connected, not sending data");
+                }
 
-            if (accumulator >= 1000)
-            {
-                GC.Collect();
-                accumulator = 0;
-            }
+                if (accumulator >= 1000)
+                {
+                    GC.Collect();
+                    accumulator = 0;
+                }
 
-            accumulator += 500;
-            await Task.Delay(_pollingRate, stoppingToken);
+                accumulator += 500;
+                await Task.Delay(_pollingRate, stoppingToken);
             }
         }
         catch (OperationCanceledException)
@@ -120,7 +122,7 @@ public class MonitorPoller(
     public override async Task StopAsync(CancellationToken cancellationToken)
     {
         logger.LogInformation("Stop requested for hardware monitor service");
-        
+
         try
         {
             await base.StopAsync(cancellationToken);
@@ -184,6 +186,9 @@ public class MonitorPoller(
             case MonitorPacketCommand.SelectPollingRate:
                 SelectPollingRate(data);
                 break;
+            case MonitorPacketCommand.SetForegroundApplication:
+                SetForegroundApplication(data);
+                break;
 
             // server -> client cases 
             case MonitorPacketCommand.Data:
@@ -208,6 +213,14 @@ public class MonitorPoller(
         var size = BitConverter.ToInt16(data, 2);
         var appName = Encoding.UTF8.GetString(data, 4, size);
         _presentMonPoller.SetSelectedApp(appName);
+    }
+
+    private void SetForegroundApplication(byte[] data)
+    {
+        // start at 2 because the first 2 were the command
+        var size = BitConverter.ToInt16(data, 2);
+        var appName = Encoding.UTF8.GetString(data, 4, size);
+        _presentMonPoller.SetForegroundApplication(appName);
     }
 
     private void SendPresentMonAppsToClients()
@@ -274,7 +287,7 @@ public class MonitorPoller(
     private void Stop()
     {
         logger.LogInformation("Stopping monitor services");
-        
+
         try
         {
             _presentMonPoller.Stop();
@@ -302,7 +315,7 @@ public class MonitorPoller(
         {
             logger.LogError(ex, "Error closing hardware computer");
         }
-        
+
         logger.LogInformation("Monitor services stopped");
     }
 

@@ -20,6 +20,7 @@ enum class Command(val value: Short) {
     SelectPresentMonApp(2),
     PresentMonApps(3),
     SelectPollingRate(4),
+    SetForegroundApplication(5),
     ;
 
     companion object {
@@ -59,6 +60,7 @@ object HardwareMonitorReader {
 
                 is Packet.SelectPresentMonApp -> null
                 is Packet.SelectPollingRate -> null
+                is Packet.SetForegroundApplication -> null
             }
         }
 

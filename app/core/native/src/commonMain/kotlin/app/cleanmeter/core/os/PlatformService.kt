@@ -5,8 +5,7 @@ import java.awt.Component
 /**
  * Platform-specific service interface for OS-level operations
  */
-expect class PlatformService() {
-    companion object {
-        fun changeWindowTransparency(w: Component, isTransparent: Boolean)
-    }
+expect object PlatformService {
+    fun changeWindowTransparency(w: Component, isTransparent: Boolean)
+    fun getForegroundProcessName(): String?
 }
