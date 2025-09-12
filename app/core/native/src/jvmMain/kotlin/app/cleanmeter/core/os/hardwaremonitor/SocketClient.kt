@@ -180,8 +180,8 @@ object PipeClient {
                         // Don't open output stream until we need to send
                         println("Connected to named pipe for reading")
                     } catch (ex: Exception) {
-    //                    println("Couldn't connect to pipe: ${ex.message}")
-    //                    ex.printStackTrace()
+                        println("Couldn't connect to pipe: ${ex.message}")
+                        ex.printStackTrace()
                         close()
                         delay(pollingRate)
                         continue
@@ -230,6 +230,7 @@ object PipeClient {
         CoroutineScope(Dispatchers.IO).launch {
             var currentFocusedProcess: String? = null
             while (true) {
+                if (pipeFile == null) continue
                 when (getCurrentPlatform()) {
                     Platform.WINDOWS -> {
                         val foregroundProcessName = getForegroundProcessName()?.split(
