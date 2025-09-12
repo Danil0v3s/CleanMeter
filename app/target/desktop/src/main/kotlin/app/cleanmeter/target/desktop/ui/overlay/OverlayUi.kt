@@ -81,7 +81,7 @@ fun OverlayUi(
 fun Content(data: HardwareMonitorData, overlaySettings: OverlaySettings) {
     if (overlaySettings.isHorizontal) {
         Row(
-            modifier = Modifier.fillMaxHeight(),
+            modifier = Modifier.animateContentSize().fillMaxHeight(),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             FpsSection(overlaySettings, data)
@@ -92,7 +92,7 @@ fun Content(data: HardwareMonitorData, overlaySettings: OverlaySettings) {
         }
     } else {
         Column(
-            modifier = Modifier,
+            modifier = Modifier.animateContentSize(),
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             Layout(

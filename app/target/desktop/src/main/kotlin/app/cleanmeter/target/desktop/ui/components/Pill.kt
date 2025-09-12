@@ -26,7 +26,7 @@ import app.cleanmeter.target.desktop.ui.overlay.conditional
 fun Pill(
     title: String,
     isHorizontal: Boolean,
-    minWidth: Dp = 80.dp,
+    minWidth: Dp = 20.dp,
     content: @Composable RowScope.() -> Unit
 ) {
     Row(
