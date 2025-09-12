@@ -135,8 +135,7 @@ object SocketClient {
 object PipeClient {
 
     private val pipeName = "\\\\.\\pipe\\HardwareMonitor_31337"
-    private var pipeInputStream: FileInputStream? = null
-    private var pipeOutputStream: FileOutputStream? = null
+    private var pipeFile: RandomAccessFile? = null
     private var pollingRate = 500L
 
     private val packetChannel = Channel<Packet>(Channel.CONFLATED)
@@ -156,7 +155,7 @@ object PipeClient {
                     close()
 
                     // Open pipe as stream - this should work correctly
-                    pipeInputStream = FileInputStream(pipeName)
+                    pipeFile = RandomAccessFile(pipeName, "rw")
                     // Don't open output stream until we need to send
                     println("Connected to named pipe for reading")
                 } catch (ex: Exception) {
@@ -168,30 +167,29 @@ object PipeClient {
                 }
             }
 
-            pipeInputStream?.let { inputStream ->
+            pipeFile?.let { raf ->
                 try {
                     while (isConnected()) {
 
-                        // Read command (2 bytes)
-                        val commandBytes = readExactly(inputStream, COMMAND_SIZE)
-                        val command = Command.fromValue(ByteBuffer.wrap(commandBytes).order(java.nio.ByteOrder.LITTLE_ENDIAN).short)
+                        val commandBytes = ByteArray(COMMAND_SIZE)
+                        raf.readFully(commandBytes)
+                        val command = Command.fromValue(
+                            ByteBuffer.wrap(commandBytes)
+                                .order(java.nio.ByteOrder.LITTLE_ENDIAN)
+                                .short
+                        )
 
-                        // Read size (4 bytes)
-                        val sizeBytes = readExactly(inputStream, LENGTH_SIZE)
+                        val sizeBytes = ByteArray(LENGTH_SIZE)
+                        raf.readFully(sizeBytes)
                         val size = ByteBuffer.wrap(sizeBytes).order(java.nio.ByteOrder.LITTLE_ENDIAN).int
 
-                        if (size < 0) { // Sanity check
-                            break
-                        }
+                        val payload = ByteArray(size)
+                        raf.readFully(payload)
 
-                        // Read payload
-                        val payload = readExactly(inputStream, size)
                         when (command) {
                             Command.Data -> packetChannel.trySend(Packet.Data(payload))
                             Command.PresentMonApps -> packetChannel.trySend(Packet.PresentMonApps(payload))
-                            Command.RefreshPresentMonApps -> Unit
-                            Command.SelectPresentMonApp -> Unit
-                            Command.SelectPollingRate -> Unit
+                            else -> {}
                         }
                     }
                 } catch (e: Exception) {
@@ -204,7 +202,7 @@ object PipeClient {
     }
 
     private fun isConnected(): Boolean {
-        return pipeInputStream != null
+        return pipeFile != null
     }
 
     // Helper function to read exactly n bytes from InputStream
@@ -230,37 +228,25 @@ object PipeClient {
 
     fun sendPacket(packet: Packet) {
         // Open output stream only when needed
-        if (pipeOutputStream == null && pipeInputStream != null) {
-            try {
-                pipeOutputStream = FileOutputStream(pipeName, true) // append mode
-            } catch (e: Exception) {
-                println("Error opening output stream: ${e.message}")
-                return
-            }
-        }
-
-        pipeOutputStream?.let { stream ->
+        pipeFile?.let { raf ->
             try {
                 val data = packet.toByteArray()
-                stream.write(data)
-                stream.flush()
+                raf.write(data)
+                raf.fd.sync()
             } catch (e: Exception) {
                 println("Error sending packet: ${e.message}")
-                pipeOutputStream?.close()
-                pipeOutputStream = null
+                close()
             }
         }
     }
 
     fun close() {
         try {
-            pipeInputStream?.close()
-            pipeOutputStream?.close()
+            pipeFile?.close()
         } catch (e: Exception) {
             println("Error closing pipe: ${e.message}")
         } finally {
-            pipeInputStream = null
-            pipeOutputStream = null
+            pipeFile = null
         }
     }
 }
