@@ -4,8 +4,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import app.cleanmeter.core.os.hardwaremonitor.PipeClient
 import app.cleanmeter.target.desktop.ui.components.CheckboxWithLabel
 import app.cleanmeter.target.desktop.ui.components.dropdown.DropdownMenu
 import app.cleanmeter.target.desktop.ui.components.section.CustomBodyCheckboxSection
@@ -20,7 +23,9 @@ internal fun FpsStats(
     onOptionsToggle: (CheckboxSectionOption) -> Unit,
     onFpsApplicationSelect: (String) -> Unit,
     getPresentMonApps: () -> List<String>,
+    currentPresentMonApp: String,
 ) {
+    val currentForegroundApplication by PipeClient.currentForegroundApplication.collectAsState(null)
     CustomBodyCheckboxSection(
         title = "FPS",
         options = availableOptions.filterOptions(SensorType.Framerate, SensorType.Frametime),
@@ -39,9 +44,9 @@ internal fun FpsStats(
                 if (presentMonApps.isNotEmpty()) {
                     DropdownMenu(
                         label = "Monitored app:",
-                        disclaimer = "Apps are auto updated every 10 seconds.",
+                        disclaimer = "Apps are auto updated every 10 seconds. ${if (currentPresentMonApp.isEmpty()) "Auto: $currentForegroundApplication" else ""}",
                         options = presentMonApps,
-                        selectedIndex = 0,
+                        selectedIndex = presentMonApps.indexOf(currentPresentMonApp).coerceAtLeast(0),
                         onValueChanged = { onFpsApplicationSelect(presentMonApps[it]) },
                         modifier = Modifier.padding(top = 8.dp)
                     )

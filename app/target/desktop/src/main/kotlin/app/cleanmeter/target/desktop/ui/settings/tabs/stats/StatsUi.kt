@@ -17,11 +17,9 @@ import app.cleanmeter.core.designsystem.LocalColorScheme
 import app.cleanmeter.core.designsystem.LocalTypography
 import app.cleanmeter.target.desktop.model.OverlaySettings
 import app.cleanmeter.target.desktop.ui.components.KeyboardShortcutInfoLabel
-import app.cleanmeter.target.desktop.ui.components.section.DropdownSection
 import app.cleanmeter.target.desktop.ui.settings.CheckboxSectionOption
 import app.cleanmeter.target.desktop.ui.settings.SectionType
 import app.cleanmeter.target.desktop.ui.settings.SensorType
-import java.awt.GraphicsEnvironment
 
 internal fun List<CheckboxSectionOption>.filterOptions(vararg optionType: SensorType) =
     this.filter { source -> optionType.any { it == source.type } }
@@ -54,6 +52,7 @@ fun StatsUi(
         onOptionsToggle = onOptionsToggle,
         onFpsApplicationSelect = onFpsApplicationSelect,
         getPresentMonApps = getPresentMonApps,
+        currentPresentMonApp = overlaySettings.currentPresentMonApp
     )
 
     GpuStats(

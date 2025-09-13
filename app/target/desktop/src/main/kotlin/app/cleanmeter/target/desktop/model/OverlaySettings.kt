@@ -19,6 +19,7 @@ data class OverlaySettings(
     val pollingRate: Long = 500,
     val isLoggingEnabled: Boolean = false,
     val sensors: Sensors = Sensors(),
+    val currentPresentMonApp: String = "",
 ) {
     @Serializable
     @Immutable

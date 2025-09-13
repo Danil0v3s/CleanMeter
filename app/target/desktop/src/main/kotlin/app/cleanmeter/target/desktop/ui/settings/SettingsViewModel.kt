@@ -317,7 +317,11 @@ class SettingsViewModel : ViewModel() {
     }
 
     private fun onFpsApplicationSelect(applicationName: String, settingsState: SettingsState) {
-        PipeClient.sendPacket(Packet.SelectPresentMonApp(applicationName))
+        with(settingsState) {
+            val newSettings = overlaySettings?.copy(currentPresentMonApp = applicationName)
+            PipeClient.sendPacket(Packet.SelectPresentMonApp(applicationName))
+            OverlaySettingsRepository.setOverlaySettings(newSettings)
+        }
     }
 
     private fun onDarkModeToggle(enabled: Boolean, settingsState: SettingsState) {

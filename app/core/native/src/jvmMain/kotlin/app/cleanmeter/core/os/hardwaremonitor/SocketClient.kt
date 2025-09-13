@@ -12,7 +12,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.IOException
 import java.io.InputStream
@@ -156,6 +158,9 @@ object PipeClient {
     private val packetChannel = Channel<Packet>(Channel.CONFLATED)
     val packetFlow: Flow<Packet> = packetChannel.receiveAsFlow()
 
+    private val _currentForegroundApplication = MutableStateFlow<String?>(null)
+    val currentForegroundApplication: Flow<String?> = _currentForegroundApplication
+
     init {
         if (PreferencesRepository.getPreferenceBoolean(PREFERENCE_PERMISSION_CONSENT, false)) {
             connect()
@@ -228,7 +233,6 @@ object PipeClient {
 
     private fun observeFocusedProcess() {
         CoroutineScope(Dispatchers.IO).launch {
-            var currentFocusedProcess: String? = null
             while (true) {
                 if (pipeFile == null) continue
                 when (getCurrentPlatform()) {
@@ -237,8 +241,8 @@ object PipeClient {
                             FileSystems.getDefault().separator
                         )?.last() ?: continue
 
-                        if (foregroundProcessName != currentFocusedProcess) {
-                            currentFocusedProcess = foregroundProcessName
+                        if (foregroundProcessName != _currentForegroundApplication.value) {
+                            _currentForegroundApplication.update { foregroundProcessName }
                             println("Foreground process: $foregroundProcessName")
                             sendPacket(SetForegroundApplication(foregroundProcessName))
                         }
