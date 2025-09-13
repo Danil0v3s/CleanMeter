@@ -7,8 +7,12 @@ import app.cleanmeter.core.os.PlatformService
 import app.cleanmeter.core.os.PREFERENCE_PERMISSION_CONSENT
 import app.cleanmeter.core.os.PreferencesRepository
 import app.cleanmeter.core.os.hardwaremonitor.HardwareMonitorProcessManager
+import app.cleanmeter.core.os.win32.JnaConfig
 
 fun main(vararg args: String) = singleInstance(args) {
+    // Initialize JNA configuration early, especially for distributable
+    JnaConfig.initialize()
+    
     if (PreferencesRepository.getPreferenceBoolean(PREFERENCE_PERMISSION_CONSENT, false)) {
         if (isDev()) {
             HardwareMonitorProcessManager.start()

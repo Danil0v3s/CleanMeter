@@ -10,6 +10,23 @@ import com.sun.jna.ptr.IntByReference
 import java.awt.Component
 
 internal object WindowsService {
+    
+    init {
+        try {
+            println("Initializing WindowsService...")
+            println("JNA version: ${com.sun.jna.Native.VERSION}")
+            println("JNA platform: ${com.sun.jna.Platform.ARCH}")
+            println("Java version: ${System.getProperty("java.version")}")
+            println("Working directory: ${System.getProperty("user.dir")}")
+            
+            // Test basic JNA functionality
+            val testHwnd = User32.INSTANCE.GetForegroundWindow()
+            println("JNA test - GetForegroundWindow: $testHwnd")
+        } catch (e: Exception) {
+            println("Error initializing WindowsService: ${e.message}")
+            e.printStackTrace()
+        }
+    }
     fun changeWindowTransparency(w: Component, isTransparent: Boolean) {
         val hwnd = HWND().apply { pointer = Native.getComponentPointer(w) }
         val wl = if (isTransparent) {
@@ -27,25 +44,38 @@ internal object WindowsService {
     }
 
     fun getForegroundProcessName(): String? {
-        val hwnd = User32.INSTANCE.GetForegroundWindow() ?: return null
+        return try {
+            val hwnd = User32.INSTANCE.GetForegroundWindow() ?: return ProcessUtils.getForegroundProcessNameFallback()
 
-        val pid = IntByReference()
-        User32.INSTANCE.GetWindowThreadProcessId(hwnd, pid)
+            val pid = IntByReference()
+            val threadId = User32.INSTANCE.GetWindowThreadProcessId(hwnd, pid)
+            if (threadId == 0) {
+                ProcessUtils.getForegroundProcessNameFallback()
+            }
 
-        val hProcess: WinNT.HANDLE = Kernel32.INSTANCE.OpenProcess(
-            Kernel32.PROCESS_QUERY_INFORMATION or Kernel32.PROCESS_VM_READ,
-            false,
-            pid.value
-        ) ?: return ""
+            val hProcess: WinNT.HANDLE = Kernel32.INSTANCE.OpenProcess(
+                Kernel32.PROCESS_QUERY_INFORMATION or Kernel32.PROCESS_VM_READ,
+                false,
+                pid.value
+            ) ?: return ProcessUtils.getForegroundProcessNameFallback()
 
-        val buffer = CharArray(4096)
-        val bufferSize = IntByReference(buffer.size)
-        val success = Kernel32.INSTANCE.QueryFullProcessImageName(hProcess, 0, buffer, bufferSize)
+            val buffer = CharArray(4096)
+            val bufferSize = IntByReference(buffer.size)
+            val success = Kernel32.INSTANCE.QueryFullProcessImageName(hProcess, 0, buffer, bufferSize)
 
+            // Clean up: close the opened process
+            Kernel32.INSTANCE.CloseHandle(hProcess)
 
-        // Clean up: close the opened process
-        Kernel32.INSTANCE.CloseHandle(hProcess)
-
-        return if (success) String(buffer, 0, bufferSize.value) else null
+            if (success) {
+                val processName = String(buffer, 0, bufferSize.value)
+                processName
+            } else {
+                ProcessUtils.getForegroundProcessNameFallback()
+            }
+        } catch (e: Exception) {
+            println("Exception in JNA getForegroundProcessName: ${e.message}")
+            e.printStackTrace()
+            ProcessUtils.getForegroundProcessNameFallback()
+        }
     }
 }

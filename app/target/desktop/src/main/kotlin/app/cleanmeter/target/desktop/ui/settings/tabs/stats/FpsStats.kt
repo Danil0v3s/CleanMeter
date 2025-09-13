@@ -44,7 +44,7 @@ internal fun FpsStats(
                 if (presentMonApps.isNotEmpty()) {
                     DropdownMenu(
                         label = "Monitored app:",
-                        disclaimer = "Apps are auto updated every 10 seconds. ${if (currentPresentMonApp.isEmpty()) "Auto: $currentForegroundApplication" else ""}",
+                        disclaimer = "Apps are auto updated every 10 seconds. $currentPresentMonApp -> $currentForegroundApplication",
                         options = presentMonApps,
                         selectedIndex = presentMonApps.indexOf(currentPresentMonApp).coerceAtLeast(0),
                         onValueChanged = { onFpsApplicationSelect(presentMonApps[it]) },

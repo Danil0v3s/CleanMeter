@@ -41,6 +41,9 @@ compose.desktop {
             tasks.named("createDistributable") {
                 finalizedBy(compileMonitor)
             }
+            tasks.named("runDistributable") {
+                finalizedBy(compileMonitor)
+            }
         }
 
         mainClass = "app.cleanmeter.target.desktop.DesktopMainKt"
