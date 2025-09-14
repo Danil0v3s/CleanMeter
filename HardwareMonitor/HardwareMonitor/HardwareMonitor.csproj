@@ -38,14 +38,9 @@
         <Copy SourceFiles="@(RootFiles)" DestinationFolder="$(PresentMonDestDir)"/>
     </Target>
 
-    <Target AfterTargets="AfterBuild" Name="CopyNativeToBin">
-        <PropertyGroup>
-            <SourceDir Condition="'$(PublishDir)' != ''">$(PublishDir)</SourceDir>
-            <SourceDir Condition="'$(SourceDir)' == ''">$(TargetDir)\publish</SourceDir>
-        </PropertyGroup>
-
+    <Target AfterTargets="Publish" Name="CopyNativeToBin">
         <ItemGroup>
-            <Native Include="$(SourceDir)\*" Exclude="$(SourceDir)\libMonoPosixHelper.dylib"/>
+            <RootFiles Include="$(TargetDir)publish\*"/>
         </ItemGroup>
 
         <PropertyGroup>
@@ -56,7 +51,7 @@
         </PropertyGroup>
 
         <MakeDir Directories="$(ProjectDir)..\..\app\bin\$(ArchFolder)"/>
-        <Copy SourceFiles="@(Native)" DestinationFolder="$(ProjectDir)..\..\app\bin\$(ArchFolder)"/>
+        <Copy SourceFiles="@(RootFiles)" DestinationFolder="$(ProjectDir)..\..\app\bin\$(ArchFolder)"/>
     </Target>
 
 </Project>
