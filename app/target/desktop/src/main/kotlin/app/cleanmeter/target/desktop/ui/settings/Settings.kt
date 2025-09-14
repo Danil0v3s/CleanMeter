@@ -71,7 +71,9 @@ fun WindowScope.Settings(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(LocalColorScheme.current.background.surface, RoundedCornerShape(12.dp))
+            .background(LocalColorScheme.current.border.brandSubtle, RoundedCornerShape(12.dp))
+            .padding(4.dp)
+            .background(LocalColorScheme.current.background.surface, RoundedCornerShape(8.dp))
     ) {
         WindowDraggableArea {
             TopBar(onCloseRequest = onCloseRequest, onMinimizeRequest = onMinimizeRequest)
