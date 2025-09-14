@@ -12,9 +12,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.IOException
 import java.io.InputStream
@@ -158,8 +158,29 @@ object PipeClient {
     private val packetChannel = Channel<Packet>(Channel.CONFLATED)
     val packetFlow: Flow<Packet> = packetChannel.receiveAsFlow()
 
-    private val _currentForegroundApplication = MutableStateFlow<String?>(null)
-    val currentForegroundApplication: Flow<String?> = _currentForegroundApplication
+    val currentForegroundApplication: Flow<String?> = flow {
+        var currentForegroundApplication: String? = null
+        while(true) {
+            when (getCurrentPlatform()) {
+                Platform.WINDOWS -> {
+                    val foregroundProcessName = getForegroundProcessName()?.split(
+                        FileSystems.getDefault().separator
+                    )?.last() ?: continue
+
+                    if (foregroundProcessName != currentForegroundApplication) {
+                        currentForegroundApplication = foregroundProcessName
+                        println("Foreground process: $foregroundProcessName")
+                        emit(foregroundProcessName)
+                        sendPacket(SetForegroundApplication(foregroundProcessName))
+                    }
+                }
+
+                Platform.MACOS -> println("TODO macos")
+                Platform.LINUX -> println("TODO linux")
+            }
+            delay(2000L)
+        }
+    }.flowOn(Dispatchers.IO)
 
     init {
         if (PreferencesRepository.getPreferenceBoolean(PREFERENCE_PERMISSION_CONSENT, false)) {
@@ -169,7 +190,6 @@ object PipeClient {
 
     private fun connect() {
         connectToNamedPipe()
-        observeFocusedProcess()
     }
 
     private fun connectToNamedPipe() {
@@ -227,31 +247,6 @@ object PipeClient {
                         close()
                     }
                 }
-            }
-        }
-    }
-
-    private fun observeFocusedProcess() {
-        CoroutineScope(Dispatchers.IO).launch {
-            while (true) {
-                if (pipeFile == null) continue
-                when (getCurrentPlatform()) {
-                    Platform.WINDOWS -> {
-                        val foregroundProcessName = getForegroundProcessName()?.split(
-                            FileSystems.getDefault().separator
-                        )?.last() ?: continue
-
-                        if (foregroundProcessName != _currentForegroundApplication.value) {
-                            _currentForegroundApplication.update { foregroundProcessName }
-                            println("Foreground process: $foregroundProcessName")
-                            sendPacket(SetForegroundApplication(foregroundProcessName))
-                        }
-                    }
-
-                    Platform.MACOS -> println("TODO macos")
-                    Platform.LINUX -> println("TODO linux")
-                }
-                delay(2000L)
             }
         }
     }
