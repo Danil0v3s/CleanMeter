@@ -158,4 +158,4 @@ bin/
 /dataSources.local.xml
 
 !app/bin/*.bat
-
+preferences.json
