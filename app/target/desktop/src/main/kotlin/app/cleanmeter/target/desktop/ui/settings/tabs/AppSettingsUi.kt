@@ -110,12 +110,6 @@ fun AppSettingsUi(
 private fun startWithWindowsCheckbox() {
     var state by remember { mutableStateOf(StartupManager.isAppRegisteredToStartWithSystem()) }
 
-    LaunchedEffect(Unit) {
-        if (state) {
-            StartupManager.removeAppFromStartWithSystem()
-        }
-    }
-
     CheckboxWithLabel(
         label = "Start with Windows",
         checked = state,
