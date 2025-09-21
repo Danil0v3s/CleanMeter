@@ -1,0 +1,110 @@
+name: Nightly Release
+
+on:
+  schedule:
+    # Run every night at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+
+jobs:
+  check-changes:
+    name: Check for changes since last release
+    runs-on: ubuntu-latest
+    outputs:
+      has-changes: ${{ steps.check.outputs.has-changes }}
+      new-tag: ${{ steps.tag.outputs.new-tag }}
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Get latest release tag
+      id: latest-release
+      run: |
+        latest_tag=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+        echo "latest-tag=$latest_tag" >> $GITHUB_OUTPUT
+        echo "Latest release tag: $latest_tag"
+    
+    - name: Check for changes since last release
+      id: check
+      run: |
+        latest_tag="${{ steps.latest-release.outputs.latest-tag }}"
+        if [ -z "$latest_tag" ]; then
+          echo "No previous releases found, will create first release"
+          echo "has-changes=true" >> $GITHUB_OUTPUT
+        else
+          # Check if there are commits since the last release
+          commits_since=$(git rev-list --count $latest_tag..HEAD 2>/dev/null || echo "1")
+          echo "Commits since last release: $commits_since"
+          if [ "$commits_since" -gt "0" ]; then
+            echo "has-changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "has-changes=false" >> $GITHUB_OUTPUT
+          fi
+        fi
+    
+    - name: Generate new tag
+      id: tag
+      if: steps.check.outputs.has-changes == 'true'
+      run: |
+        # Generate nightly tag with date
+        new_tag="nightly-$(date +%Y%m%d)"
+        echo "new-tag=$new_tag" >> $GITHUB_OUTPUT
+        echo "New tag will be: $new_tag"
+
+  build-and-release:
+    name: Build and create nightly release
+    runs-on: windows-latest
+    needs: check-changes
+    if: needs.check-changes.outputs.has-changes == 'true'
+    permissions:
+      contents: write
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up JDK
+      uses: actions/setup-java@v4
+      with:
+        java-version: '22'
+        distribution: 'corretto'
+
+    - name: Build with Gradle Wrapper
+      run: cd app; ./gradlew :target:desktop:createDistributable
+
+    - name: Zip distributable
+      run: |
+        cd app
+        Compress-Archive -Path "target/desktop/build/compose/binaries/main/app" -DestinationPath "../cleanmeter-nightly.zip"
+    
+    - name: Create Release
+      id: create-release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ needs.check-changes.outputs.new-tag }}
+        release_name: Nightly Release ${{ needs.check-changes.outputs.new-tag }}
+        body: |
+          🌙 **Nightly Release** - Automatically generated from latest changes on main branch
+          
+          This is an automated nightly build containing the latest changes from the main branch.
+          
+          **⚠️ Note:** This is a development build and may contain unstable features.
+          
+          **Installation:** Download and extract the cleanmeter-nightly.zip file.
+          
+          Built from commit: ${{ github.sha }}
+        draft: false
+        prerelease: true
+    
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create-release.outputs.upload_url }}
+        asset_path: ./cleanmeter-nightly.zip
+        asset_name: cleanmeter-nightly.zip
+        asset_content_type: application/zip
