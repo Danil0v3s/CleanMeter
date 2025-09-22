@@ -525,6 +525,9 @@ class SettingsViewModel : ViewModel() {
                         ),
                         vramUsage = overlaySettings.sensors.vramUsage.copy(
                             isEnabled = isEnabled
+                        ),
+                        gpuConsumption = overlaySettings.sensors.gpuConsumption.copy(
+                            isEnabled = isEnabled
                         )
                     )
                 )
@@ -535,6 +538,9 @@ class SettingsViewModel : ViewModel() {
                             isEnabled = isEnabled
                         ),
                         cpuUsage = overlaySettings.sensors.cpuUsage.copy(
+                            isEnabled = isEnabled
+                        ),
+                        cpuConsumption = overlaySettings.sensors.cpuConsumption.copy(
                             isEnabled = isEnabled
                         )
                     )
