@@ -1,5 +1,10 @@
 package app.cleanmeter.target.desktop.ui.overlay.sections
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
@@ -23,7 +28,11 @@ private fun OverlaySettings.Sensors.isAllValid(): Boolean {
 
 @Composable
 internal fun GpuSection(overlaySettings: OverlaySettings, data: HardwareMonitorData) {
-    if (overlaySettings.sensors.isAllValid()) {
+    AnimatedVisibility(
+        visible = overlaySettings.sensors.isAllValid(),
+        enter = scaleIn() + fadeIn(),
+        exit = scaleOut() + fadeOut(),
+    ) {
         Pill(
             title = "GPU",
             isHorizontal = overlaySettings.isHorizontal,
@@ -51,8 +60,13 @@ internal fun GpuSection(overlaySettings: OverlaySettings, data: HardwareMonitorD
             }
 
             if (overlaySettings.sensors.vramUsage.isValid() && overlaySettings.sensors.totalVramUsed.isValid()) {
-                val vramUsage = data.getReading(overlaySettings.sensors.vramUsage.customReadingId, "memory")?.Value?.coerceAtLeast(1f) ?: 1f
-                val totalVramUsed = data.getReading(overlaySettings.sensors.totalVramUsed.customReadingId)?.Value?.coerceAtLeast(1f) ?: 1f
+                val vramUsage =
+                    data.getReading(overlaySettings.sensors.vramUsage.customReadingId, "memory")?.Value?.coerceAtLeast(
+                        1f
+                    ) ?: 1f
+                val totalVramUsed =
+                    data.getReading(overlaySettings.sensors.totalVramUsed.customReadingId)?.Value?.coerceAtLeast(1f)
+                        ?: 1f
 
                 Progress(
                     value = vramUsage / 100f,
@@ -66,7 +80,10 @@ internal fun GpuSection(overlaySettings: OverlaySettings, data: HardwareMonitorD
             if (overlaySettings.sensors.gpuConsumption.isValid()) {
                 val reading = data.getReading(overlaySettings.sensors.gpuConsumption.customReadingId)
                 val value = (reading?.Value ?: 1f).coerceAtLeast(1f).toInt()
-                Row(verticalAlignment = Alignment.Bottom, modifier = Modifier.widthIn(min = 35.dp).padding(bottom = 2.dp)) {
+                Row(
+                    verticalAlignment = Alignment.Bottom,
+                    modifier = Modifier.widthIn(min = 35.dp).padding(bottom = 2.dp)
+                ) {
                     ProgressLabel("$value")
                     ProgressUnit("W")
                 }

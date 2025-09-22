@@ -1,5 +1,10 @@
 package app.cleanmeter.target.desktop.ui.overlay.sections
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -39,7 +44,11 @@ import java.util.*
 
 @Composable
 internal fun FpsSection(overlaySettings: OverlaySettings, data: HardwareMonitorData) {
-    if (overlaySettings.sensors.framerate.isEnabled || overlaySettings.sensors.frametime.isEnabled) {
+    AnimatedVisibility(
+        enter = scaleIn() + fadeIn(),
+        exit = scaleOut() + fadeOut(),
+        visible = overlaySettings.sensors.framerate.isEnabled || overlaySettings.sensors.frametime.isEnabled,
+    ) {
         if (overlaySettings.isHorizontal) {
             Pill(
                 title = "FPS",

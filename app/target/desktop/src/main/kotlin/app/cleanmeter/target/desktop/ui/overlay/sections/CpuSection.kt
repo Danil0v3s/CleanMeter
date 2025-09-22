@@ -1,5 +1,10 @@
 package app.cleanmeter.target.desktop.ui.overlay.sections
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -25,7 +30,11 @@ import java.util.*
 
 @Composable
 internal fun CpuSection(overlaySettings: OverlaySettings, data: HardwareMonitorData) {
-    if (overlaySettings.sensors.cpuTemp.isValid() || overlaySettings.sensors.cpuUsage.isValid()) {
+    AnimatedVisibility(
+        visible = overlaySettings.sensors.cpuTemp.isValid() || overlaySettings.sensors.cpuUsage.isValid(),
+        enter = scaleIn() + fadeIn(),
+        exit = scaleOut() + fadeOut(),
+    ) {
         Pill(
             title = "CPU",
             isHorizontal = overlaySettings.isHorizontal,
@@ -55,7 +64,10 @@ internal fun CpuSection(overlaySettings: OverlaySettings, data: HardwareMonitorD
             if (overlaySettings.sensors.cpuConsumption.isValid()) {
                 val reading = data.getReading(overlaySettings.sensors.cpuConsumption.customReadingId)
                 val value = (reading?.Value ?: 1f).coerceAtLeast(1f).toInt()
-                Row(verticalAlignment = Alignment.Bottom, modifier = Modifier.widthIn(min = 35.dp).padding(bottom = 2.dp)) {
+                Row(
+                    verticalAlignment = Alignment.Bottom,
+                    modifier = Modifier.widthIn(min = 35.dp).padding(bottom = 2.dp)
+                ) {
                     ProgressLabel("$value")
                     ProgressUnit("W")
                 }

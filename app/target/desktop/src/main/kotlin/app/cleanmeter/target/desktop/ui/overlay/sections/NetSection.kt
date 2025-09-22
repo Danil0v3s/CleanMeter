@@ -1,5 +1,10 @@
 package app.cleanmeter.target.desktop.ui.overlay.sections
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -43,7 +48,11 @@ import app.cleanmeter.target.desktop.ui.overlay.conditional
 
 @Composable
 internal fun NetSection(overlaySettings: OverlaySettings, data: HardwareMonitorData) {
-    if (overlaySettings.sensors.upRate.isValid() || overlaySettings.sensors.downRate.isValid()) {
+    AnimatedVisibility(
+        visible = overlaySettings.sensors.upRate.isValid() || overlaySettings.sensors.downRate.isValid(),
+        enter = scaleIn() + fadeIn(),
+        exit = scaleOut() + fadeOut(),
+    ) {
         if (overlaySettings.isHorizontal) {
             Pill(
                 title = "NET",
@@ -68,7 +77,8 @@ internal fun NetSection(overlaySettings: OverlaySettings, data: HardwareMonitorD
                             painterResource("icons/arrow_down.svg"),
                             "",
                             tint = Purple,
-                            modifier = Modifier.padding(end = 4.dp, bottom = 3.dp).rotate(180f).alpha(upRate.coerceAtMost(1f))
+                            modifier = Modifier.padding(end = 4.dp, bottom = 3.dp).rotate(180f)
+                                .alpha(upRate.coerceAtMost(1f))
                         )
                     }
                 }
@@ -108,7 +118,8 @@ internal fun NetSection(overlaySettings: OverlaySettings, data: HardwareMonitorD
                                     painterResource("icons/arrow_down.svg"),
                                     "",
                                     tint = Cyan,
-                                    modifier = Modifier.padding(end = 4.dp, bottom = 3.dp).alpha(dlRate.coerceAtMost(1f))
+                                    modifier = Modifier.padding(end = 4.dp, bottom = 3.dp)
+                                        .alpha(dlRate.coerceAtMost(1f))
                                 )
                             }
                         }
@@ -120,7 +131,8 @@ internal fun NetSection(overlaySettings: OverlaySettings, data: HardwareMonitorD
                                     painterResource("icons/arrow_down.svg"),
                                     "",
                                     tint = Purple,
-                                    modifier = Modifier.padding(end = 4.dp, bottom = 3.dp).rotate(180f).alpha(upRate.coerceAtMost(1f))
+                                    modifier = Modifier.padding(end = 4.dp, bottom = 3.dp).rotate(180f)
+                                        .alpha(upRate.coerceAtMost(1f))
                                 )
                             }
                         }
@@ -174,7 +186,8 @@ private fun NetGraph(data: HardwareMonitorData, isHorizontal: Boolean, overlaySe
         largestDown.floatValue = downRatePoints.max() + .2f
     }
 
-    Box(modifier = Modifier
+    Box(
+        modifier = Modifier
         .conditional(
             predicate = isHorizontal,
             ifTrue = { width(100.dp) },
