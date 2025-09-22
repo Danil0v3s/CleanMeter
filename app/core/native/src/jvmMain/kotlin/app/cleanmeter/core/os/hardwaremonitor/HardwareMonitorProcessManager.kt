@@ -27,7 +27,7 @@ actual object HardwareMonitorProcessManager {
         }
 
     actual fun start() {
-        if (!isDev()) return
+        if (!isDev() || isServiceCreated()) return
 
         when (getCurrentPlatform()) {
             Platform.WINDOWS -> {
@@ -65,7 +65,7 @@ actual object HardwareMonitorProcessManager {
     }
 
     actual fun stop() {
-        if (!isDev()) return
+        if (!isDev() || isServiceCreated()) return
 
         when (getCurrentPlatform()) {
             Platform.WINDOWS -> {
