@@ -243,6 +243,7 @@ private fun TabContent(
             },
             onLayoutChange = { viewModel.onEvent(SettingsEvent.OverlayOrientationSelect(it)) },
             onOpacityChange = { viewModel.onEvent(SettingsEvent.OverlayOpacityChange(it)) },
+            onScaleChange = { viewModel.onEvent(SettingsEvent.OverlayScaleChange(it)) },
             onGraphTypeChange = { viewModel.onEvent(SettingsEvent.OverlayGraphChange(it)) },
             onOverlayCustomPositionEnable = { viewModel.onEvent(SettingsEvent.OverlayCustomPositionEnable(it)) },
             onDisplaySelect = {

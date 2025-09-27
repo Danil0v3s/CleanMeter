@@ -21,6 +21,7 @@ fun StyleUi(
     onOverlayCustomPosition: (IntOffset, Boolean) -> Unit,
     onLayoutChange: (Boolean) -> Unit,
     onOpacityChange: (Float) -> Unit,
+    onScaleChange: (Float) -> Unit,
     onGraphTypeChange: (OverlaySettings.ProgressType) -> Unit,
     onOverlayCustomPositionEnable: (Boolean) -> Unit,
     onDisplaySelect: (Int) -> Unit,
@@ -47,6 +48,11 @@ fun StyleUi(
     Opacity(
         overlaySettings = overlaySettings,
         onOpacityChange = onOpacityChange
+    )
+
+    Scale(
+        overlaySettings = overlaySettings,
+        onScaleChange = onScaleChange
     )
 
     GraphType(

@@ -55,6 +55,7 @@ sealed class SettingsEvent {
     data class OverlayCustomPositionEnable(val isEnabled: Boolean) : SettingsEvent()
     data class OverlayOrientationSelect(val isHorizontal: Boolean) : SettingsEvent()
     data class OverlayOpacityChange(val opacity: Float) : SettingsEvent()
+    data class OverlayScaleChange(val scale: Float) : SettingsEvent()
     data class OverlayGraphChange(val progressType: OverlaySettings.ProgressType) : SettingsEvent()
     data class DarkThemeToggle(val isEnabled: Boolean) : SettingsEvent()
     data class FpsApplicationSelect(val applicationName: String) : SettingsEvent()
@@ -204,6 +205,7 @@ class SettingsViewModel : ViewModel() {
             is SettingsEvent.ConsentGiven -> onConsentGiven()
             is SettingsEvent.PollingRateSelect -> onPollingRateSelect(event.pollingRate, this)
             is SettingsEvent.ToggleLoggingEnabled -> onToggleLoggingEnabled(this)
+            is SettingsEvent.OverlayScaleChange -> onOverlayScaleChange(event.scale, this)
         }
     }
 
@@ -345,6 +347,16 @@ class SettingsViewModel : ViewModel() {
         with(settingsState) {
             val newSettings = overlaySettings?.copy(
                 opacity = opacity,
+            )
+
+            OverlaySettingsRepository.setOverlaySettings(newSettings)
+        }
+    }
+
+    private fun onOverlayScaleChange(scale: Float, settingsState: SettingsState) {
+        with(settingsState) {
+            val newSettings = overlaySettings?.copy(
+                scale = scale,
             )
 
             OverlaySettingsRepository.setOverlaySettings(newSettings)

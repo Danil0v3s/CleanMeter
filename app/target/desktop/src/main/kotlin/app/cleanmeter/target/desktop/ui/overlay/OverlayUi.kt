@@ -12,6 +12,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.IntrinsicMeasurable
 import androidx.compose.ui.layout.IntrinsicMeasureScope
@@ -29,6 +30,10 @@ import app.cleanmeter.target.desktop.ui.overlay.sections.FpsSection
 import app.cleanmeter.target.desktop.ui.overlay.sections.GpuSection
 import app.cleanmeter.target.desktop.ui.overlay.sections.NetSection
 import app.cleanmeter.target.desktop.ui.overlay.sections.RamSection
+
+private fun Float.map(fromMin: Float, fromMax: Float, toMin: Float, toMax: Float): Float {
+    return (this - fromMin) / (fromMax - fromMin) * (toMax - toMin) + toMin
+}
 
 inline fun Modifier.conditional(
     predicate: Boolean,
@@ -48,6 +53,7 @@ fun OverlayUi(
     if (overlaySettings.isHorizontal) {
         Row(
             modifier = Modifier
+                .scale(overlaySettings.scale.map(0f,1f,.5f, 1f))
                 .padding(16.dp)
                 .fillMaxHeight()
                 .background(Color.Black.copy(alpha = 0.36f), CircleShape)
@@ -63,6 +69,7 @@ fun OverlayUi(
     } else {
         Column(
             modifier = Modifier
+                .scale(overlaySettings.scale.map(0f,1f,.5f, 1f))
                 .padding(16.dp)
                 .background(Color.Black.copy(alpha = 0.36f), RoundedCornerShape(12.dp))
                 .padding(4.dp),

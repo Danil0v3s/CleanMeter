@@ -16,6 +16,7 @@ data class OverlaySettings(
     val positionY: Int = 0,
     val isPositionLocked: Boolean = true,
     val opacity: Float = 1f,
+    val scale: Float = 1f,
     val pollingRate: Long = 500,
     val isLoggingEnabled: Boolean = false,
     val sensors: Sensors = Sensors(),
