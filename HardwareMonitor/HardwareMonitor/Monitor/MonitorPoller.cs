@@ -15,7 +15,7 @@ namespace HardwareMonitor.Monitor;
 public class MonitorPoller(
     IHostApplicationLifetime hostApplicationLifetime,
     ILogger<MonitorPoller> logger
-) : BackgroundService
+) : BackgroundService, IDisposable
 {
     private readonly Computer _computer = new()
     {
@@ -38,68 +38,99 @@ public class MonitorPoller(
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        logger.LogInformation("Starting monitor");
+        logger.LogInformation("Starting hardware monitor service");
 
-        _computer.Open();
-        _computer.Accept(new UpdateVisitor());
-        _presentMonPoller.Start(stoppingToken);
-        _presentMonPoller.OnUpdateApps += SendPresentMonAppsToClients;
-        _socketHost.StartServer();
-        _socketHost.OnClientData += OnClientData;
-        _socketHost.OnClientConnected += OnClientConnected;
-
-        var sharedMemoryData = QueryHardwareData();
-
-        using var memoryStream = new MemoryStream();
-        using var writer = new BinaryWriter(memoryStream);
-        var accumulator = 0;
-
-        WriteDataToStream(writer, sharedMemoryData);
-
-        while (!stoppingToken.IsCancellationRequested)
+        try
         {
-            if (!_socketHost.HasConnections())
-            {
-                //logger.LogInformation("No clients connected, waiting for connections...");
-                await Task.Delay(1000, stoppingToken);
-                continue;
-            }
+            _computer.Open();
+            _computer.Accept(new UpdateVisitor());
+            _presentMonPoller.Start(stoppingToken);
+            _presentMonPoller.OnUpdateApps += SendPresentMonAppsToClients;
+            _socketHost.StartServer();
+            _socketHost.OnClientData += OnClientData;
+            _socketHost.OnClientConnected += OnClientConnected;
 
-            foreach (var hardware in sharedMemoryData.Hardwares)
-            {
-                try
-                {
-                    hardware.Update();
-                }
-                catch
-                {
-                    hardware.StopUpdates();
-                    logger.LogError("Stopping updates of {HardwareName} - {HardwareIdentifier}", hardware.Name, hardware.Identifier);
-                }
-            }
+            var sharedMemoryData = QueryHardwareData();
+
+            using var memoryStream = new MemoryStream();
+            using var writer = new BinaryWriter(memoryStream);
+            var accumulator = 0;
 
             WriteDataToStream(writer, sharedMemoryData);
 
-            if (_socketHost.HasConnections())
-            {
-                _socketHost.SendToAll(memoryStream.ToArray());
-            } else
-            {
-                //logger.LogInformation("No clients connected, not sending data");
-            }
+            logger.LogInformation("Hardware monitor service started successfully");
 
-            if (accumulator >= 1000)
+            while (!stoppingToken.IsCancellationRequested)
             {
-                GC.Collect();
-                accumulator = 0;
-            }
+                if (!_socketHost.HasConnections())
+                {
+                    //logger.LogInformation("No clients connected, waiting for connections...");
+                    await Task.Delay(1000, stoppingToken);
+                    continue;
+                }
 
-            accumulator += 500;
-            await Task.Delay(_pollingRate, stoppingToken);
+                foreach (var hardware in sharedMemoryData.Hardwares)
+                {
+                    try
+                    {
+                        hardware.Update();
+                    }
+                    catch
+                    {
+                        hardware.StopUpdates();
+                        logger.LogError("Stopping updates of {HardwareName} - {HardwareIdentifier}", hardware.Name,
+                            hardware.Identifier);
+                    }
+                }
+
+                WriteDataToStream(writer, sharedMemoryData);
+
+                if (_socketHost.HasConnections())
+                {
+                    _socketHost.SendToAll(memoryStream.ToArray());
+                }
+                else
+                {
+                    //logger.LogInformation("No clients connected, not sending data");
+                }
+
+                if (accumulator >= 1000)
+                {
+                    GC.Collect();
+                    accumulator = 0;
+                }
+
+                accumulator += 500;
+                await Task.Delay(_pollingRate, stoppingToken);
+            }
         }
+        catch (OperationCanceledException)
+        {
+            logger.LogInformation("Hardware monitor service shutdown requested");
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Unexpected error in hardware monitor service");
+            throw;
+        }
+        finally
+        {
+            logger.LogInformation("Shutting down hardware monitor service");
+        }
+    }
 
-        Stop();
-        hostApplicationLifetime.StopApplication();
+    public override async Task StopAsync(CancellationToken cancellationToken)
+    {
+        logger.LogInformation("Stop requested for hardware monitor service");
+
+        try
+        {
+            await base.StopAsync(cancellationToken);
+        }
+        finally
+        {
+            Stop();
+        }
     }
 
     private static void WriteDataToStream(BinaryWriter writer, SharedMemoryData sharedMemoryData)
@@ -155,6 +186,9 @@ public class MonitorPoller(
             case MonitorPacketCommand.SelectPollingRate:
                 SelectPollingRate(data);
                 break;
+            case MonitorPacketCommand.SetForegroundApplication:
+                SetForegroundApplication(data);
+                break;
 
             // server -> client cases 
             case MonitorPacketCommand.Data:
@@ -179,6 +213,14 @@ public class MonitorPoller(
         var size = BitConverter.ToInt16(data, 2);
         var appName = Encoding.UTF8.GetString(data, 4, size);
         _presentMonPoller.SetSelectedApp(appName);
+    }
+
+    private void SetForegroundApplication(byte[] data)
+    {
+        // start at 2 because the first 2 were the command
+        var size = BitConverter.ToInt16(data, 2);
+        var appName = Encoding.UTF8.GetString(data, 4, size);
+        _presentMonPoller.SetForegroundApplication(appName);
     }
 
     private void SendPresentMonAppsToClients()
@@ -244,10 +286,37 @@ public class MonitorPoller(
 
     private void Stop()
     {
-        _computer.Close();
-        _presentMonPoller.Stop();
-        _socketHost.Close();
-        _socketHost.OnClientData -= OnClientData;
+        logger.LogInformation("Stopping monitor services");
+
+        try
+        {
+            _presentMonPoller.Stop();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error stopping PresentMon poller");
+        }
+
+        try
+        {
+            _socketHost.Close();
+            _socketHost.OnClientData -= OnClientData;
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error closing socket host");
+        }
+
+        try
+        {
+            _computer.Close();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error closing hardware computer");
+        }
+
+        logger.LogInformation("Monitor services stopped");
     }
 
     private static SharedMemoryHardware MapHardware(IHardware hardware) => new()
@@ -282,5 +351,12 @@ public class MonitorPoller(
     {
         int binary = *(int*)(&f);
         return ((binary & 0x7F800000) == 0x7F800000) && ((binary & 0x007FFFFF) != 0);
+    }
+
+    public void Dispose()
+    {
+        Stop();
+        _computer?.Close();
+        GC.SuppressFinalize(this);
     }
 }

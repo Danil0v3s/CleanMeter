@@ -156,3 +156,6 @@ bin/
 # Datasource local storage ignored files
 /dataSources/
 /dataSources.local.xml
+
+!app/bin/*.bat
+preferences.json

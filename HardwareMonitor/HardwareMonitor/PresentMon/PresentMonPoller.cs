@@ -24,6 +24,7 @@ public class PresentMonPoller(ILogger logger)
     private CultureInfo _cultureInfo = (CultureInfo)CultureInfo.CurrentCulture.Clone();
 
     private string _currentSelectedApp = NO_SELECTED_APP;
+    private string _currentForegroundApp;
 
     public async void Start(CancellationToken stoppingToken)
     {
@@ -68,7 +69,31 @@ public class PresentMonPoller(ILogger logger)
 
     public void Stop()
     {
-        _process.Kill(true);
+        try
+        {
+            if (_process != null && !_process.HasExited)
+            {
+                logger.LogInformation("Stopping PresentMon process");
+                
+                // Try graceful shutdown first
+                _process.CancelOutputRead();
+                _process.CancelErrorRead();
+                
+                // Give it a moment to exit gracefully
+                if (!_process.WaitForExit(1000))
+                {
+                    // Force kill if it doesn't exit gracefully
+                    _process.Kill(true);
+                }
+                
+                _process.Dispose();
+                logger.LogInformation("PresentMon process stopped");
+            }
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error stopping PresentMon process");
+        }
     }
 
     private void ParseData(string? argsData)
@@ -80,6 +105,11 @@ public class PresentMonPoller(ILogger logger)
             CurrentApps.Add(parts[0]);
 
             if (_currentSelectedApp != NO_SELECTED_APP && _currentSelectedApp != parts[0])
+            {
+                return;
+            }
+
+            if (_currentSelectedApp == NO_SELECTED_APP && _currentForegroundApp != parts[0])
             {
                 return;
             }
@@ -110,6 +140,11 @@ public class PresentMonPoller(ILogger logger)
         }
 
         _currentSelectedApp = appName;
+    }
+
+    public void SetForegroundApplication(string appName)
+    {
+        _currentForegroundApp = appName;
     }
 
     private async Task TerminateCurrentPresentMon()

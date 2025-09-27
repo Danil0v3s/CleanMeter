@@ -1,10 +1,14 @@
-﻿using System.IO.Pipes;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.IO.Pipes;
+using System.Security.AccessControl;
+using System.Security.Principal;
 using Microsoft.Extensions.Logging;
 // ReSharper disable FieldCanBeMadeReadOnly.Local
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
 
 namespace HardwareMonitor.Sockets;
 
+[SuppressMessage("Interoperability", "CA1416:Validate platform compatibility")]
 public class PipeHost(ILogger logger)
 {
     private readonly string _pipeName = "HardwareMonitor_31337";
@@ -27,14 +31,18 @@ public class PipeHost(ILogger logger)
         {
             try
             {
-                var pipeServer = new NamedPipeServerStream(
+                var pipeSecurity = new PipeSecurity();
+                var everyoneSid = new SecurityIdentifier(WellKnownSidType.WorldSid, null);
+                pipeSecurity.AddAccessRule(new PipeAccessRule(everyoneSid, PipeAccessRights.FullControl, AccessControlType.Allow));
+                var pipeServer = NamedPipeServerStreamAcl.Create(
                     _pipeName,
                     PipeDirection.InOut,
                     NamedPipeServerStream.MaxAllowedServerInstances,
                     PipeTransmissionMode.Byte,
                     PipeOptions.Asynchronous,
                     4096, // inBufferSize
-                    4096  // outBufferSize
+                    4096,  // outBufferSize
+                    pipeSecurity
                 );
 
                 logger.LogInformation("Waiting for client connection on pipe: {PipeName}", _pipeName);
@@ -130,7 +138,8 @@ public class PipeHost(ILogger logger)
 
         try
         {
-            _serverTask?.Wait(5000);
+            // Reduce timeout for faster shutdown during Windows shutdown
+            _serverTask?.Wait(1000);
         }
         catch { }
 

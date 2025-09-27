@@ -2,33 +2,56 @@
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFramework>net9.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <ApplicationIcon>..\..\target\desktop\src\main\resources\imgs\favicon.ico</ApplicationIcon>
+        <ApplicationIcon>..\..\app\target\desktop\src\main\resources\imgs\favicon.ico</ApplicationIcon>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    </PropertyGroup>
-
-    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-        <DebugType>none</DebugType>
+        <UseAppHost>true</UseAppHost>
+        <PublishSingleFile>true</PublishSingleFile>
+        <SelfContained>true</SelfContained>
+        <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+        <DebugType>None</DebugType>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="LibreHardwareMonitorLib" Version="0.9.5-pre392" />
+        <PackageReference Include="LibreHardwareMonitorLib" Version="0.9.5-pre449"/>
         <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.0"/>
         <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="9.0.0"/>
+        <PackageReference Include="Microsoft.Extensions.Logging.EventLog" Version="9.0.0"/>
         <PackageReference Include="Serilog.Settings.Configuration" Version="8.0.0"/>
         <PackageReference Include="Serilog.Extensions.Hosting" Version="8.0.0"/>
         <PackageReference Include="Serilog.Sinks.File" Version="6.0.0"/>
         <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0"/>
     </ItemGroup>
 
-    <Target AfterTargets="AfterBuild" Name="CopyPresentMon">
+    <Target AfterTargets="AfterBuild" Name="CopyPresentMon" Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Windows)))' == 'True'">
         <ItemGroup>
             <RootFiles Include="$(ProjectDir)..\..\presentmon\*"/>
         </ItemGroup>
 
-        <Copy SourceFiles="@(RootFiles)" DestinationFolder="$(TargetDir)\native"/>
+        <PropertyGroup>
+            <PresentMonDestDir Condition="'$(PublishDir)' != ''">$(PublishDir)</PresentMonDestDir>
+            <PresentMonDestDir Condition="'$(PresentMonDestDir)' == ''">$(TargetDir)\publish</PresentMonDestDir>
+        </PropertyGroup>
+
+        <Copy SourceFiles="@(RootFiles)" DestinationFolder="$(PresentMonDestDir)"/>
+    </Target>
+
+    <Target AfterTargets="Publish" Name="CopyNativeToBin">
+        <ItemGroup>
+            <RootFiles Include="$(TargetDir)publish\*"/>
+        </ItemGroup>
+
+        <PropertyGroup>
+            <ArchFolder Condition="'$(RuntimeIdentifier)' == 'win-x64'">win-x64</ArchFolder>
+            <ArchFolder Condition="'$(RuntimeIdentifier)' == 'osx-arm64'">osx-arm64</ArchFolder>
+            <ArchFolder Condition="'$(RuntimeIdentifier)' == 'linux-x64'">linux-x64</ArchFolder>
+            <ArchFolder Condition="'$(ArchFolder)' == ''">$(RuntimeIdentifier)</ArchFolder>
+        </PropertyGroup>
+
+        <MakeDir Directories="$(ProjectDir)..\..\app\bin\$(ArchFolder)"/>
+        <Copy SourceFiles="@(RootFiles)" DestinationFolder="$(ProjectDir)..\..\app\bin\$(ArchFolder)"/>
     </Target>
 
 </Project>
