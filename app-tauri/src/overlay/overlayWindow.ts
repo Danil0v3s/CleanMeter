@@ -1,16 +1,22 @@
 // Applies overlay window behavior (size, position, click-through) from the
-// current OverlaySettings. All calls are guarded and no-op outside Tauri.
+// current OverlaySettings + the measured content size. The overlay window is
+// sized to its content (the bar), so position presets land the bar precisely
+// at the chosen edge/corner. All calls are no-op outside Tauri.
 
 import type { OverlaySettings } from "@/lib/model/overlaySettings"
 import { isTauri } from "@/lib/tauri"
 
-const HORIZONTAL = { width: 1280, height: 80 }
-const VERTICAL = { width: 350, height: 1280 }
+export interface OverlaySize {
+  width: number
+  height: number
+}
 
 export async function applyOverlayWindow(
   settings: OverlaySettings,
+  size: OverlaySize,
 ): Promise<void> {
   if (!isTauri()) return
+  if (size.width < 1 || size.height < 1) return
   try {
     const {
       getCurrentWindow,
@@ -21,13 +27,14 @@ export async function applyOverlayWindow(
     } = await import("@tauri-apps/api/window")
 
     const win = getCurrentWindow()
-    const size = settings.isHorizontal ? HORIZONTAL : VERTICAL
-    await win.setSize(new LogicalSize(size.width, size.height))
+    const w = Math.ceil(size.width)
+    const h = Math.ceil(size.height)
+    await win.setSize(new LogicalSize(w, h))
 
     // Click-through + focusability follow the lock state.
     await win.setIgnoreCursorEvents(settings.isPositionLocked)
 
-    // Position: 6 presets (Top/Bottom × Start/Center/End) or absolute custom.
+    // Custom absolute position.
     if (settings.positionIndex >= 6) {
       await win.setPosition(
         new LogicalPosition(settings.positionX, settings.positionY),
@@ -35,6 +42,7 @@ export async function applyOverlayWindow(
       return
     }
 
+    // Preset: 6 corners/edges relative to the selected monitor.
     const monitors = await availableMonitors()
     const monitor =
       monitors[settings.selectedDisplayIndex] ?? (await primaryMonitor())
@@ -49,8 +57,9 @@ export async function applyOverlayWindow(
     const col = settings.positionIndex % 3 // 0 start, 1 center, 2 end
     const row = settings.positionIndex < 3 ? 0 : 1 // 0 top, 1 bottom
 
-    const x = ox + (col === 0 ? 0 : col === 1 ? (mw - size.width) / 2 : mw - size.width)
-    const y = oy + (row === 0 ? 0 : mh - size.height)
+    const x =
+      ox + (col === 0 ? 0 : col === 1 ? (mw - w) / 2 : mw - w)
+    const y = oy + (row === 0 ? 0 : mh - h)
 
     await win.setPosition(new LogicalPosition(x, y))
   } catch (e) {

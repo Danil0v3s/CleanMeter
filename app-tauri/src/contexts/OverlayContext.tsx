@@ -4,7 +4,6 @@ import type { HardwareMonitorData } from "@/lib/model/hardwareMonitorData"
 import type { OverlaySettings } from "@/lib/model/overlaySettings"
 import { isTauri } from "@/lib/tauri"
 import { mockOverlayData, mockOverlaySettings } from "@/overlay/mockOverlay"
-import { applyOverlayWindow } from "@/overlay/overlayWindow"
 
 interface OverlayContextValue {
   settings: OverlaySettings
@@ -33,11 +32,6 @@ export function OverlayProvider({ children }: { children: React.ReactNode }) {
     })()
     return () => unlisten?.()
   }, [])
-
-  // Apply window size / position / click-through whenever settings change.
-  React.useEffect(() => {
-    void applyOverlayWindow(settings)
-  }, [settings])
 
   // Drive the mock data feed. The real native feed replaces this later.
   React.useEffect(() => {
