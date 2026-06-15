@@ -56,6 +56,10 @@ export function OverlayUi() {
       ref={barRef}
       style={{
         display: "inline-flex",
+        // Size to content, not the (capped) available window width — otherwise
+        // the background stops growing and children bleed out once they exceed
+        // the window width.
+        width: "max-content",
         transform: `scale(${scale})`,
         transformOrigin: "top left",
         padding: 16,
