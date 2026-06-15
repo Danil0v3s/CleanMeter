@@ -1,0 +1,59 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Clean Meter",
+  "version": "0.0.1",
+  "identifier": "app.cleanmeter.desktop",
+  "build": {
+    "beforeDevCommand": "bun run dev",
+    "devUrl": "http://localhost:1420",
+    "beforeBuildCommand": "bun run build",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "macOSPrivateApi": true,
+    "withGlobalTauri": true,
+    "windows": [
+      {
+        "label": "settings",
+        "title": "Clean Meter",
+        "url": "index.html",
+        "width": 650,
+        "height": 800,
+        "minWidth": 650,
+        "maxWidth": 650,
+        "resizable": true,
+        "decorations": false,
+        "transparent": true,
+        "center": true
+      },
+      {
+        "label": "overlay",
+        "title": "Clean Meter Overlay",
+        "url": "overlay.html",
+        "width": 1280,
+        "height": 80,
+        "resizable": false,
+        "decorations": false,
+        "transparent": true,
+        "alwaysOnTop": true,
+        "skipTaskbar": true,
+        "focus": false,
+        "shadow": false
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ]
+  }
+}
