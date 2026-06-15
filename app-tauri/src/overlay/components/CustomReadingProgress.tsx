@@ -3,6 +3,7 @@ import {
   type HardwareMonitorData,
 } from "@/lib/model/hardwareMonitorData"
 import { type Boundaries, type ProgressType } from "@/lib/model/overlaySettings"
+import type { LabelSlot } from "../tokens"
 import { Progress } from "./Progress"
 
 /** CustomReadingProgress.kt — resolves a reading and renders a Progress. */
@@ -13,6 +14,7 @@ export function CustomReadingProgress({
   progressUnit,
   label,
   boundaries,
+  slot,
 }: {
   data: HardwareMonitorData
   customReadingId: string
@@ -20,6 +22,7 @@ export function CustomReadingProgress({
   progressUnit: string
   label: (value: number) => string
   boundaries: Boundaries
+  slot: LabelSlot
 }) {
   const reading = getReading(data, customReadingId)
   const value = Math.max(1, reading?.Value ?? 1)
@@ -30,6 +33,7 @@ export function CustomReadingProgress({
       unit={progressUnit}
       progressType={progressType}
       boundaries={boundaries}
+      slot={slot}
     />
   )
 }

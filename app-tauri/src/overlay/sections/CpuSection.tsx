@@ -10,8 +10,9 @@ import {
 import { AnimatedVisible } from "../components/AnimatedVisible"
 import { CustomReadingProgress } from "../components/CustomReadingProgress"
 import { Pill } from "../components/Pill"
-import { ProgressLabel, ProgressUnit } from "../components/Progress"
+import { ValueUnit } from "../components/Progress"
 import { pad2 } from "../components/format"
+import { LABEL } from "../tokens"
 
 export function CpuSection({
   settings,
@@ -34,6 +35,7 @@ export function CpuSection({
             progressUnit="°C"
             label={(v) => `${Math.trunc(v)}`}
             boundaries={cpuTemp.boundaries ?? defaultBoundaries()}
+            slot={LABEL.temp}
           />
         )}
         {sensorIsValid(cpuUsage) && (
@@ -44,27 +46,20 @@ export function CpuSection({
             progressUnit="%"
             label={(v) => pad2(v)}
             boundaries={cpuUsage.boundaries ?? defaultBoundaries()}
+            slot={LABEL.usage}
           />
         )}
         {sensorIsValid(cpuConsumption) && (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "flex-end",
-              minWidth: 35,
-              paddingBottom: 2,
-            }}
-          >
-            <ProgressLabel>
-              {Math.trunc(
-                Math.max(
-                  1,
-                  getReading(data, cpuConsumption.customReadingId)?.Value ?? 1,
-                ),
-              )}
-            </ProgressLabel>
-            <ProgressUnit>W</ProgressUnit>
-          </div>
+          <ValueUnit
+            label={`${Math.trunc(
+              Math.max(
+                1,
+                getReading(data, cpuConsumption.customReadingId)?.Value ?? 1,
+              ),
+            )}`}
+            unit="W"
+            slot={LABEL.watts}
+          />
         )}
       </Pill>
     </AnimatedVisible>

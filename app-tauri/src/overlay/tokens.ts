@@ -19,3 +19,22 @@ export function mapScale(scale: number): number {
 }
 
 export const OVERLAY_FONT = "Inter, ui-sans-serif, system-ui, sans-serif"
+
+export interface LabelSlot {
+  width: number
+  maxFontSize: number
+  minFontSize: number
+}
+
+// Fixed slot widths (px) for each data label + the font floor/ceiling the text
+// is allowed to auto-fit within. Tuned so the common case sits at the ceiling
+// and only outliers shrink — keeping the overlay width stable.
+export const LABEL = {
+  fps: { width: 40, maxFontSize: 16, minFontSize: 10 },
+  frametime: { width: 52, maxFontSize: 12, minFontSize: 8 },
+  temp: { width: 28, maxFontSize: 16, minFontSize: 9 }, // "52" … "100"
+  usage: { width: 28, maxFontSize: 16, minFontSize: 9 }, // "0" … "100"
+  vram: { width: 38, maxFontSize: 16, minFontSize: 9 }, // "4.2" … "16.0"
+  ram: { width: 40, maxFontSize: 16, minFontSize: 9 }, // "12.4" … "128.0"
+  watts: { width: 30, maxFontSize: 16, minFontSize: 9 }, // "65" … "450"
+} as const satisfies Record<string, LabelSlot>

@@ -1,5 +1,6 @@
 import { ProgressType, type Boundaries } from "@/lib/model/overlaySettings"
-import { overlayColors as c } from "../tokens"
+import { type LabelSlot, overlayColors as c } from "../tokens"
+import { AutoFitText } from "./AutoFitText"
 
 export function ProgressLabel({ children }: { children: React.ReactNode }) {
   return (
@@ -21,6 +22,33 @@ export function ProgressUnit({ children }: { children: React.ReactNode }) {
     >
       {children}
     </span>
+  )
+}
+
+/**
+ * Fixed-width auto-fitting numeric value followed by its (fixed) unit. The
+ * value is right-aligned so the unit always hugs it regardless of digit count.
+ */
+export function ValueUnit({
+  label,
+  unit,
+  slot,
+}: {
+  label: string
+  unit: string
+  slot: LabelSlot
+}) {
+  return (
+    <div style={{ display: "flex", alignItems: "flex-end", paddingBottom: 2 }}>
+      <AutoFitText
+        text={label}
+        width={slot.width}
+        maxFontSize={slot.maxFontSize}
+        minFontSize={slot.minFontSize}
+        align="right"
+      />
+      <ProgressUnit>{unit}</ProgressUnit>
+    </div>
   )
 }
 
@@ -97,12 +125,14 @@ export function Progress({
   unit,
   progressType,
   boundaries,
+  slot,
 }: {
   value: number
   label: string
   unit: string
   progressType: ProgressType
   boundaries: Boundaries
+  slot: LabelSlot
 }) {
   const color = boundaryColor(value, boundaries)
   return (
@@ -111,17 +141,7 @@ export function Progress({
         <CircularProgress value={value} color={color} />
       )}
       {progressType === ProgressType.Bar && <BarProgress value={value} />}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "flex-end",
-          minWidth: 35,
-          paddingBottom: 2,
-        }}
-      >
-        <ProgressLabel>{label}</ProgressLabel>
-        <ProgressUnit>{unit}</ProgressUnit>
-      </div>
+      <ValueUnit label={label} unit={unit} slot={slot} />
     </div>
   )
 }

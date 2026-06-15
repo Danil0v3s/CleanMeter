@@ -6,8 +6,9 @@ import {
   type HardwareMonitorData,
 } from "@/lib/model/hardwareMonitorData"
 import type { OverlaySettings } from "@/lib/model/overlaySettings"
-import { overlayColors as c } from "../tokens"
+import { LABEL, overlayColors as c } from "../tokens"
 import { AnimatedVisible } from "../components/AnimatedVisible"
+import { AutoFitText } from "../components/AutoFitText"
 import { LineGraph } from "../components/LineGraph"
 import { Pill } from "../components/Pill"
 import { oneDecimal } from "../components/format"
@@ -55,16 +56,21 @@ export function FpsSection({
   const visible = framerate.isEnabled || ftSensor.isEnabled
 
   const framerateText = (
-    <span style={{ fontSize: 16, lineHeight: 1, color: c.white }}>
-      {fps(data)}
-    </span>
+    <AutoFitText
+      text={`${fps(data)}`}
+      width={LABEL.fps.width}
+      maxFontSize={LABEL.fps.maxFontSize}
+      minFontSize={LABEL.fps.minFontSize}
+    />
   )
   const frametimeText = (
-    <span
-      style={{ fontSize: 12, lineHeight: 1, color: c.white, paddingBottom: 2 }}
-    >
-      {oneDecimal(frametime(data))} ms
-    </span>
+    <AutoFitText
+      text={`${oneDecimal(frametime(data))} ms`}
+      width={LABEL.frametime.width}
+      maxFontSize={LABEL.frametime.maxFontSize}
+      minFontSize={LABEL.frametime.minFontSize}
+      style={{ paddingBottom: 2 }}
+    />
   )
 
   return (
@@ -109,16 +115,8 @@ export function FpsSection({
                 justifyContent: "space-between",
               }}
             >
-              {framerate.isEnabled && (
-                <span style={{ width: 50, fontSize: 16, color: c.white }}>
-                  {fps(data)}
-                </span>
-              )}
-              {ftSensor.isEnabled && (
-                <span style={{ width: 50, fontSize: 12, color: c.white }}>
-                  {oneDecimal(frametime(data))} ms
-                </span>
-              )}
+              {framerate.isEnabled && framerateText}
+              {ftSensor.isEnabled && frametimeText}
             </div>
           </div>
           {ftSensor.isEnabled && (

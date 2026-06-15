@@ -10,8 +10,9 @@ import {
 import { AnimatedVisible } from "../components/AnimatedVisible"
 import { CustomReadingProgress } from "../components/CustomReadingProgress"
 import { Pill } from "../components/Pill"
-import { Progress, ProgressLabel, ProgressUnit } from "../components/Progress"
+import { Progress, ValueUnit } from "../components/Progress"
 import { oneDecimal, pad2 } from "../components/format"
+import { LABEL } from "../tokens"
 
 export function GpuSection({
   settings,
@@ -44,6 +45,7 @@ export function GpuSection({
             progressUnit="°C"
             label={(v) => `${Math.trunc(v)}`}
             boundaries={gpuTemp.boundaries ?? defaultBoundaries()}
+            slot={LABEL.temp}
           />
         )}
         {sensorIsValid(gpuUsage) && (
@@ -54,6 +56,7 @@ export function GpuSection({
             progressUnit="%"
             label={(v) => pad2(v)}
             boundaries={gpuUsage.boundaries ?? defaultBoundaries()}
+            slot={LABEL.usage}
           />
         )}
         {sensorIsValid(vramUsage) && sensorIsValid(totalVramUsed) && (
@@ -68,27 +71,20 @@ export function GpuSection({
             unit="GB"
             progressType={settings.progressType}
             boundaries={vramUsage.boundaries ?? defaultBoundaries()}
+            slot={LABEL.vram}
           />
         )}
         {sensorIsValid(gpuConsumption) && (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "flex-end",
-              minWidth: 35,
-              paddingBottom: 2,
-            }}
-          >
-            <ProgressLabel>
-              {Math.trunc(
-                Math.max(
-                  1,
-                  getReading(data, gpuConsumption.customReadingId)?.Value ?? 1,
-                ),
-              )}
-            </ProgressLabel>
-            <ProgressUnit>W</ProgressUnit>
-          </div>
+          <ValueUnit
+            label={`${Math.trunc(
+              Math.max(
+                1,
+                getReading(data, gpuConsumption.customReadingId)?.Value ?? 1,
+              ),
+            )}`}
+            unit="W"
+            slot={LABEL.watts}
+          />
         )}
       </Pill>
     </AnimatedVisible>

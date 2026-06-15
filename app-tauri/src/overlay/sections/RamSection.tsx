@@ -11,6 +11,7 @@ import { AnimatedVisible } from "../components/AnimatedVisible"
 import { Pill } from "../components/Pill"
 import { Progress } from "../components/Progress"
 import { oneDecimal } from "../components/format"
+import { LABEL } from "../tokens"
 
 export function RamSection({
   settings,
@@ -29,6 +30,7 @@ export function RamSection({
           unit="GB"
           progressType={settings.progressType}
           boundaries={ram.boundaries ?? defaultBoundaries()}
+          slot={LABEL.ram}
         />
       </Pill>
     </AnimatedVisible>
