@@ -53,6 +53,11 @@ function initialState(): SettingsState {
 export function SettingsProvider({ children }: { children: React.ReactNode }) {
   const [state, setState] = React.useState<SettingsState>(initialState)
 
+  // Serialized settings we last exchanged with the backend, used to break the
+  // emit -> overlay-settings-changed -> receive -> emit echo loop between this
+  // window and the overlay window (which can push position changes from drags).
+  const lastSyncedRef = React.useRef<string>("")
+
   const onEvent = React.useCallback((event: SettingsEvent) => {
     setState((prev) => reduceSettings(prev, event))
   }, [])
@@ -101,14 +106,39 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     return () => unlisten?.()
   }, [])
 
+  // Mirror changes the overlay window pushes back (e.g. a drag-to-move updating
+  // positionX/Y), so this window's state doesn't hold a stale position that a
+  // later re-lock or unrelated toggle would clobber the dragged spot with.
+  React.useEffect(() => {
+    if (!isTauri()) return
+    let unlisten: (() => void) | undefined
+    void (async () => {
+      const { listen } = await import("@tauri-apps/api/event")
+      unlisten = await listen<OverlaySettings>(
+        "overlay-settings-changed",
+        (event) => {
+          const merged = mergeOverlaySettings(event.payload)
+          const json = JSON.stringify(merged)
+          if (json === lastSyncedRef.current) return // our own echo
+          lastSyncedRef.current = json
+          setState((prev) => ({ ...prev, overlaySettings: merged }))
+        },
+      )
+    })()
+    return () => unlisten?.()
+  }, [])
+
   // Relay settings to the overlay window and persist them (no-op outside Tauri).
   // Gated on `hydrated` so the saved file isn't overwritten with defaults at start.
   const overlaySettings = state.overlaySettings
   React.useEffect(() => {
-    if (!hydrated) return
-    if (overlaySettings) {
-      void safeInvoke("set_overlay_settings", { settings: overlaySettings })
-    }
+    if (!hydrated || !overlaySettings) return
+    const json = JSON.stringify(overlaySettings)
+    // Skip if this exact value just arrived from the backend (our own echo, or a
+    // position drag persisted by the overlay) — otherwise we'd bounce it back.
+    if (json === lastSyncedRef.current) return
+    lastSyncedRef.current = json
+    void safeInvoke("set_overlay_settings", { settings: overlaySettings })
   }, [hydrated, overlaySettings])
 
   // Push the polling rate to the backend once connected and on every change
