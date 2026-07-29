@@ -6,7 +6,7 @@
   "build": {
     "beforeDevCommand": "bun run dev",
     "devUrl": "http://localhost:1420",
-    "beforeBuildCommand": "bun run build",
+    "beforeBuildCommand": "bun run build:backend && bun run build",
     "frontendDist": "../dist"
   },
   "app": {
@@ -48,6 +48,9 @@
   "bundle": {
     "active": true,
     "targets": "all",
+    "resources": {
+      "resources/win-x64/*": "win-x64/"
+    },
     "icon": [
       "icons/32x32.png",
       "icons/128x128.png",

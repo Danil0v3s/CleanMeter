@@ -35,7 +35,9 @@
             <PresentMonDestDir Condition="'$(PresentMonDestDir)' == ''">$(TargetDir)\publish</PresentMonDestDir>
         </PropertyGroup>
 
-        <Copy SourceFiles="@(RootFiles)" DestinationFolder="$(PresentMonDestDir)"/>
+        <!-- SkipUnchanged + ContinueOnError so a running PresentMonService.exe
+             (which locks its own binary) can't fail the whole publish. -->
+        <Copy SourceFiles="@(RootFiles)" DestinationFolder="$(PresentMonDestDir)" SkipUnchangedFiles="true" ContinueOnError="true"/>
     </Target>
 
     <Target AfterTargets="Publish" Name="CopyNativeToBin">
