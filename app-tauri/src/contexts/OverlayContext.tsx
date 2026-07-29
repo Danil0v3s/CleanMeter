@@ -1,8 +1,11 @@
 import * as React from "react"
 
 import type { HardwareMonitorData } from "@/lib/model/hardwareMonitorData"
-import type { OverlaySettings } from "@/lib/model/overlaySettings"
-import { isTauri } from "@/lib/tauri"
+import {
+  mergeOverlaySettings,
+  type OverlaySettings,
+} from "@/lib/model/overlaySettings"
+import { isTauri, safeInvoke } from "@/lib/tauri"
 import { mockOverlayData, mockOverlaySettings } from "@/overlay/mockOverlay"
 import { applyOverlayWindow } from "@/overlay/overlayWindow"
 
@@ -20,11 +23,16 @@ export function OverlayProvider({ children }: { children: React.ReactNode }) {
   const [data, setData] = React.useState<HardwareMonitorData | null>(null)
   const tickRef = React.useRef(0)
 
-  // Listen for settings pushed from the settings window (Tauri only).
+  // Hydrate from the persisted settings, then listen for live changes pushed
+  // from the settings window (Tauri only).
   React.useEffect(() => {
     if (!isTauri()) return
     let unlisten: (() => void) | undefined
     void (async () => {
+      const saved = await safeInvoke<OverlaySettings | null>(
+        "get_overlay_settings",
+      )
+      if (saved) setSettings(mergeOverlaySettings(saved))
       const { listen } = await import("@tauri-apps/api/event")
       unlisten = await listen<OverlaySettings>(
         "overlay-settings-changed",
@@ -39,8 +47,23 @@ export function OverlayProvider({ children }: { children: React.ReactNode }) {
     void applyOverlayWindow(settings)
   }, [settings])
 
-  // Drive the mock data feed. The real native feed replaces this later.
+  // Real native feed: the Rust pipe client emits decoded backend readings.
   React.useEffect(() => {
+    if (!isTauri()) return
+    let unlisten: (() => void) | undefined
+    void (async () => {
+      const { listen } = await import("@tauri-apps/api/event")
+      unlisten = await listen<HardwareMonitorData>("hardware-data", (event) =>
+        setData(event.payload),
+      )
+    })()
+    return () => unlisten?.()
+  }, [])
+
+  // Outside Tauri (browser preview) there's no backend, so fall back to the
+  // animated mock feed.
+  React.useEffect(() => {
+    if (isTauri()) return
     setData(mockOverlayData(0))
     const interval = window.setInterval(() => {
       tickRef.current += 1

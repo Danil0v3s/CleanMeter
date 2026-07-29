@@ -108,3 +108,23 @@ export const defaultOverlaySettings = (): OverlaySettings => ({
   sensors: defaultSensors(),
   currentPresentMonApp: "",
 })
+
+/**
+ * Merges persisted (possibly partial or older-schema) settings over the
+ * defaults so missing keys fall back gracefully — the equivalent of Kotlin's
+ * `ignoreUnknownKeys` + data-class defaults.
+ */
+export function mergeOverlaySettings(
+  loaded: Partial<OverlaySettings> | null | undefined,
+): OverlaySettings {
+  const defaults = defaultOverlaySettings()
+  if (!loaded || typeof loaded !== "object") return defaults
+
+  const loadedSensors = (loaded.sensors ?? {}) as Partial<Sensors>
+  const sensors = {} as Sensors
+  for (const key of Object.keys(defaults.sensors) as (keyof Sensors)[]) {
+    sensors[key] = { ...defaults.sensors[key], ...(loadedSensors[key] ?? {}) }
+  }
+
+  return { ...defaults, ...loaded, sensors }
+}

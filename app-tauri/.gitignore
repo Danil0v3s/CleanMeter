@@ -5,6 +5,9 @@ node_modules
 dist
 dist-ssr
 
+# backend binaries produced by `bun run build:backend`
+src-tauri/resources
+
 # misc
 .DS_Store
 *.local
